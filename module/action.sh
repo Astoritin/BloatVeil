@@ -3,7 +3,7 @@ MODDIR=${0%/*}
 
 CONFIG_DIR="/data/adb/bloat_veil"
 
-MOD_INTRO="Bloatware vanishing act."
+MOD_INTRO="A bloatware vanishing act on the system."
 SEPARATE_LINE="---------------------------------------------"
 
 ROOT_FILE_MANAGERS="
@@ -22,18 +22,18 @@ me.zhanghai.android.files/me.zhanghai.android.files.filelist.FileListActivity
 "
 
 echo "$SEPARATE_LINE"
-echo "- BloatVeil"
-echo "- By Astoritin"
+echo " BloatVeil"
+echo " By Astoritin"
 echo "$SEPARATE_LINE"
-echo "- $MOD_INTRO"
+echo " $MOD_INTRO"
+echo "$SEPARATE_LINE"
+echo " If nothing happened after a while"
+echo " that means no any available root"
+echo " file explorer is found on your device"
+echo " You can open config dir"
+echo " with your preferred root file manager manually"
 echo "$SEPARATE_LINE"
 echo "- Opening config dir"
-echo "$SEPARATE_LINE"
-echo "- If nothing happened after a while"
-echo "- that means no any available root"
-echo "- file explorer is found on your device"
-echo "- You can open config dir"
-echo "- with your preferred root file manager manually"
 echo "$SEPARATE_LINE"
 sleep 1
 
@@ -46,7 +46,7 @@ for fm in $ROOT_FILE_MANAGERS; do
     if pm path "$PKG" >/dev/null 2>&1; then
         am start -n "$fm" "file://$CONFIG_DIR"
         result_action="$?"
-        echo "> Launching $PKG ($result_action)"
+        echo "- Launching $PKG ($result_action)"
         if [ $result_action -eq 0 ]; then
             echo "$SEPARATE_LINE"
             sleep 1
@@ -57,5 +57,3 @@ for fm in $ROOT_FILE_MANAGERS; do
     fi
 
 done
-
-echo "$SEPARATE_LINE"

@@ -16,7 +16,7 @@ TARGET_LIST_BSA="$LOG_DIR/target_bsa.old"
 LAST_WORKED_DIR="$CONFIG_DIR/last_worked"
 TARGET_LIST_LW="$LAST_WORKED_DIR/target_lw.old"
 
-MOD_INTRO="Bloatware vanishing act."
+MOD_INTRO="A bloatware vanishing act on the system."
 
 config_loader() {
 
@@ -45,7 +45,6 @@ config_loader
 
 if [ "$brick_rescue" = true ] && [ -f "$FLAG_BRICKED" ]; then
     eco "Find flag bricked!" "F"
-    eco "Skip processing"
     exit 1
 fi
 
@@ -53,7 +52,6 @@ eco "Current boot timeout: ${brick_timeout}s"
 while [ "$(getprop sys.boot_completed)" != "1" ]; do
     if [ $brick_timeout -le "0" ]; then
         print_line
-        eco "Unable to boot after reaching the limit!" "F"
         eco "Set flag bricked"
         touch "$FLAG_BRICKED"
         if [ "$brick_rescue" = false ]; then
@@ -64,13 +62,12 @@ while [ "$(getprop sys.boot_completed)" != "1" ]; do
             eco "Disable $MOD_NAME"
             touch "$MODDIR/disable"
         fi
-        DESCRIPTION="[⚠ Trigger brick rescue! Root: ${ROOT_SOL_DETAIL}] $MOD_INTRO"
+        DESCRIPTION="[⚠ Trigger brick rescue! Powered by ${ROOT_SOL_DETAIL}] $MOD_INTRO"
         update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
-        sync && eco "Notify system for sync"
-        eco "setprop sys.powerctl reboot"
+        sync && eco "Request system for sync"
         setprop sys.powerctl reboot
         sleep 5
-        eco "Reboot command does not take effect, exiting"
+        eco "Exiting"
         exit 1
     fi
     brick_timeout=$((brick_timeout-1))
@@ -79,14 +76,13 @@ done
 
 eco "Boot complete! Countdown: ${brick_timeout}s"
 rm -f "$FLAG_BRICKED"
-eco "Remove flag bricked"
 
 if [ "$mb_call" = true ] && [ "$mb_umount_bind" = true ]; then
     print_line
-    eco "Unmount bind points"
     if [ ! -f "$TARGET_LIST_BSA" ]; then
-        eco "$TARGET_LIST_BSA does not exist, skip unmounting" "W"
+        eco "$TARGET_LIST_BSA does not exist" "W"
     else
+        eco "Unmount bind points"
         TOTAL_APPS_COUNT=0
         UMOUNT_APPS_COUNT=0
         while IFS= read -r line || [ -n "$line" ]; do
@@ -109,30 +105,28 @@ if [ "$mb_call" = true ] && [ "$mb_umount_bind" = true ]; then
 
             case "$package" in
                 *.apex|*.capex)
-                    eco "Skip processing $package" "*"
+                    eco "Skip $package" "*"
                     continue
                     ;;
             esac
 
-            eco "Process $package"
             umount -f $package
             result_umount=$?
-            eco "umount -f $package ($result_umount)"
+            eco "Process $package ($result_umount)"
             app_name="$(basename "$package")"
             if [ $result_umount -eq 0 ]; then
                 UMOUNT_APPS_COUNT=$((UMOUNT_APPS_COUNT + 1))
-                eco "$app_name has been unmounted" ">"
+                eco "$app_name unmounted" ">"
             fi
         done < "$TARGET_LIST_BSA"
         print_line
-        eco "Total: $TOTAL_APPS_COUNT APP(s)"
         eco "Unmount: $UMOUNT_APPS_COUNT APP(s)"
+        eco "Total: $TOTAL_APPS_COUNT APP(s)"
         print_line
     fi
 else
     [ "$mb_call" = false ] && eco "No items uses Mount Bind method"
-    [ "$mb_umount_bind" = false ] && eco "Umount point by mount bind is disabled"
-    eco "Skip umounting"
+    [ "$mb_umount_bind" = false ] && eco "Umounting point by Mount Bind method is disabled"
 fi
 
 if [ "$last_worked_target_list" = true ]; then

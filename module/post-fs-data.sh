@@ -16,7 +16,7 @@ TARGET_LIST_BSA="$LOG_DIR/target_bsa.old"
 LAST_WORKED_DIR="$CONFIG_DIR/last_worked"
 TARGET_LIST_LW="$LAST_WORKED_DIR/target_lw.old"
 
-MOD_INTRO="Bloatware vanishing act."
+MOD_INTRO="A bloatware vanishing act on the system."
 
 MN_SUPPORT=false
 MR_SUPPORT=false
@@ -50,7 +50,6 @@ unbrick() {
             rm -f "$FLAG_BRICKED" && eco "Remove flag bricked"
             return 0
         else
-            eco "Skip $MOD_NAME process"
             exit 1
         fi
     else
@@ -80,23 +79,23 @@ preparation() {
     fi
 
     if [ "$DETECT_KSU" = true ] || [ "$DETECT_APATCH" = true ]; then
-        eco "Make Node support is present"
+        eco "Make Node: supported"
         MN_SUPPORT=true
         MR_SUPPORT=false
         [ "$hide_mode" = "MR" ] && hide_mode="MB"
     elif [ "$DETECT_MAGISK" = true ]; then
         if [ $MAGISK_V_VER_CODE -ge 28102 ]; then
-            eco "Make Node support is present"
+            eco "Make Node: supported"
             MN_SUPPORT=true
         else
             MN_SUPPORT=false
             if [ "$hide_mode" = "MN" ]; then
-                eco "Make Node support is not present"
-                eco "Turn back to Magisk Replace mode"
+                eco "Make Node: unsupported"
+                eco "Revert to Magisk Replace mode"
                 hide_mode="MR"
             fi
         fi
-        eco "Magisk Replace support is present"
+        eco "Magisk Replace: supported"
         MR_SUPPORT=true
     fi
 
@@ -295,7 +294,7 @@ bloatveil() {
                     if check_duplicate_items "$app_path" "$TARGET_LIST_BSA"; then
                         echo "$app_path" >> "$TARGET_LIST_BSA"
                         vanished_apps_count=$((vanished_apps_count + 1))
-                        eco "$app_name has been hidden" ">"
+                        eco "$app_name hidden" ">"
                     else
                         eco "Find duplicate item $app_name"
                         duplicated_apps_count=$((duplicated_apps_count + 1))
@@ -315,7 +314,7 @@ bloatveil() {
                         if check_duplicate_items "$app_path" "$TARGET_LIST_BSA"; then
                             echo "$app_path" >> "$TARGET_LIST_BSA"
                             vanished_apps_count=$((vanished_apps_count + 1))
-                            eco "$app_name has been hidden" ">"
+                            eco "$app_name hidden" ">"
                         else
                             eco "Find duplicate item $app_name"
                             duplicated_apps_count=$((duplicated_apps_count + 1))
@@ -347,13 +346,13 @@ module_status_update() {
 
     apps_not_found_count=$((total_apps_count - vanished_apps_count - duplicated_apps_count))
     print_line
-    eco "Total: $total_apps_count APP(s)"
     eco "Vanished: $vanished_apps_count APP(s)"
     eco "with Mount Bind: $mb_count APP(s)"
     eco "with Magisk Replace: $mr_count APP(s)"
     eco "with Make Node: $mn_count APP(s)"
     eco "Not found: $apps_not_found_count APP(s)"
     eco "Duplicate: $duplicated_apps_count APP(s)"
+    eco "Total: $total_apps_count APP(s)"
 
     [ $mb_count -gt 0 ] && hide_mode_desc="Mount Bind" && mb_call=true
     [ $mr_count -gt 0 ] && hide_mode_desc="Magisk Replace"

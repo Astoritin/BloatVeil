@@ -5,8 +5,8 @@ MODDIR=${0%/*}
 
 CONFIG_DIR="/data/adb/bloat_veil"
 
-CONFIG_FILE="$CONFIG_DIR/settings.cfg"
-TARGET_LIST="$CONFIG_DIR/target.cfg"
+CONFIG_FILE="$CONFIG_DIR/settings.conf"
+TARGET_LIST="$CONFIG_DIR/target.txt"
 FLAG_BRICKED="$CONFIG_DIR/bricked"
 
 LOG_DIR="$CONFIG_DIR/logs"

@@ -3,14 +3,16 @@ SKIPUNZIP=1
 
 CONFIG_DIR="/data/adb/bloat_veil"
 
-CONFIG_FILE="$CONFIG_DIR/settings.cfg"
-TARGET_LIST="$CONFIG_DIR/target.cfg"
+CONFIG_FILE="$CONFIG_DIR/settings.conf"
+TARGET_LIST="$CONFIG_DIR/target.txt"
 LOG_DIR="$CONFIG_DIR/logs"
 
 MOD_PROP="${TMPDIR}/module.prop"
 MOD_NAME="$(grep_prop name "$MOD_PROP")"
 MOD_VER="$(grep_prop version "$MOD_PROP") ($(grep_prop versionCode "$MOD_PROP"))"
 MOD_INTRO="A bloatware vanishing act on the system."
+
+POST_D="/data/adb/post-fs-data.d/"
 
 unzip -o "$ZIPFILE" "wanderer.sh" -d "$TMPDIR" >&2
 if [ ! -f "$TMPDIR/wanderer.sh" ]; then
@@ -31,10 +33,11 @@ extract "module.prop"
 extract "wanderer.sh"
 extract "post-fs-data.sh"
 extract "service.sh"
+extract "reset-desc.sh"
 extract "action.sh"
 extract "uninstall.sh"
-[ ! -f "$CONFIG_FILE" ] && extract "settings.cfg" "$CONFIG_DIR"
-[ ! -f "$TARGET_LIST" ] && extract "target.cfg" "$CONFIG_DIR"
+[ ! -f "$CONFIG_FILE" ] && extract "settings.conf" "$CONFIG_DIR"
+[ ! -f "$TARGET_LIST" ] && extract "target.txt" "$CONFIG_DIR"
 DESCRIPTION="[⚠ Check $TARGET_LIST carefully before reboot! Powered by ${ROOT_SOL_DETAIL}] $MOD_INTRO"
 update_config_var "description" "$MODPATH/module.prop" "$DESCRIPTION"
 eco "Setting permission"

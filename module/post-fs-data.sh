@@ -5,8 +5,8 @@ MODDIR=${0%/*}
 
 CONFIG_DIR="/data/adb/bloat_veil"
 
-CONFIG_FILE="$CONFIG_DIR/settings.cfg"
-TARGET_LIST="$CONFIG_DIR/target.cfg"
+CONFIG_FILE="$CONFIG_DIR/settings.conf"
+TARGET_LIST="$CONFIG_DIR/target.txt"
 FLAG_BRICKED="$CONFIG_DIR/bricked"
 
 LOG_DIR="$CONFIG_DIR/logs"
@@ -396,6 +396,19 @@ module_status_update() {
 
 }
 
+module_description_reset_schedule() {
+
+    MOD_DESC_RESET="/data/adb/post-fs-data.d/reset-desc.sh"
+    POST_D="/data/adb/post-fs-data.d/"
+
+    if [ ! -f "$MOD_DESC_RESET" ]; then
+        mkdir -p "$POST_D"
+        cat "$MODDIR/reset-desc.sh" > "$MOD_DESC_RESET"
+        chmod +x "$MOD_DESC_RESET"
+    fi
+
+}
+
 eco_init "$LOG_DIR"
 module_intro >> "$LOG_FILE"
 show_system_info >> "$LOG_FILE"
@@ -404,5 +417,6 @@ config_loader
 unbrick
 preparation && bloatveil
 module_status_update
+module_description_reset_schedule
 print_line
 eco "All done!"

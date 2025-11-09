@@ -3,8 +3,8 @@
 DESCRIPTION="A bloatware vanishing act on the system."
 
 POST_D="/data/adb/post-fs-data.d/"
-CLEANUP_SH_FILENAME="bloat_veil_cleanup.sh"
-CLEANUP_SH="${POST_D}/${CLEANUP_SH_FILENAME}"
+CLEANUP_SH="bloat_veil_cleanup.sh"
+CLEANUP_PATH="${POST_D}/${CLEANUP_SH}"
 
 MOD_DIR="/data/adb/modules/bloat_veil"
 LITE_MOD_DIR="/data/adb/lite_modules/bloat_veil"
@@ -39,4 +39,4 @@ elif [ -f "$LITE_MOD_DIR/disable" ]; then
     update_config_var "description" "$LITE_MOD_DIR/module.prop" "$DESCRIPTION"
 fi
 
-rm -f "${CLEANUP_SH}"
+rm -f "${CLEANUP_PATH}"

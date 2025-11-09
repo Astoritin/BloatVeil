@@ -13,6 +13,8 @@ MOD_VER="$(grep_prop version "$MOD_PROP") ($(grep_prop versionCode "$MOD_PROP"))
 MOD_INTRO="A bloatware vanishing act on the system."
 
 POST_D="/data/adb/post-fs-data.d/"
+CLEANUP_SH="bloat_veil_cleanup.sh"
+CLEANUP_PATH="${POST_D}/${CLEANUP_SH}"
 
 unzip -o "$ZIPFILE" "wanderer.sh" -d "$TMPDIR" >&2
 if [ ! -f "$TMPDIR/wanderer.sh" ]; then
@@ -34,6 +36,8 @@ extract "wanderer.sh"
 extract "post-fs-data.sh"
 extract "service.sh"
 extract "bloat_veil_cleanup.sh"
+cat "$MODPATH/$CLEANUP_SH" > "$CLEANUP_PATH"
+chmod +x "$CLEANUP_PATH"
 extract "action.sh"
 extract "uninstall.sh"
 [ ! -f "$CONFIG_FILE" ] && extract "settings.conf" "$CONFIG_DIR"

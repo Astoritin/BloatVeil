@@ -399,13 +399,13 @@ module_status_update() {
 module_cleanup_schedule() {
 
     POST_D="/data/adb/post-fs-data.d/"
-    CLEANUP_SH_FILENAME="bloat_veil_cleanup.sh"
-    CLEANUP_SH="${POST_D}/${CLEANUP_SH_FILENAME}"
+    CLEANUP_SH="bloat_veil_cleanup.sh"
+    CLEANUP_PATH="${POST_D}/${CLEANUP_SH}"
 
-    if [ ! -f "$CLEANUP_SH" ]; then
+    if [ ! -f "$CLEANUP_PATH" ]; then
         mkdir -p "$POST_D"
-        cat "$MODDIR/${CLEANUP_SH_FILENAME}" > "$CLEANUP_SH"
-        chmod +x "$CLEANUP_SH"
+        cat "$MODDIR/${CLEANUP_SH}" > "$CLEANUP_PATH"
+        chmod +x "$CLEANUP_PATH"
     fi
 
 }

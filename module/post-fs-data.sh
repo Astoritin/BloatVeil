@@ -229,6 +229,7 @@ bloatveil() {
     mr_count=0
     mn_count=0
 
+    [ -f "$TARGET_LIST_BVA" ] && rm -f "$TARGET_LIST_BVA"
     touch "$TARGET_LIST_BVA"
 
     while IFS= read -r line || [ -n "$line" ]; do

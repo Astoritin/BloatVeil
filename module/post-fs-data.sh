@@ -11,10 +11,10 @@ FLAG_BRICKED="$CONFIG_DIR/bricked"
 
 LOG_DIR="$CONFIG_DIR/logs"
 LOG_FILE="$LOG_DIR/bv_2_$(date +"%Y%m%dT%H%M%S").log"
-TARGET_LIST_BSA="$LOG_DIR/target_bsa.old"
+TARGET_LIST_BVA="$LOG_DIR/target_bva.txt"
 
 LAST_WORKED_DIR="$CONFIG_DIR/last_worked"
-TARGET_LIST_LW="$LAST_WORKED_DIR/target_lw.old"
+TARGET_LIST_LW="$LAST_WORKED_DIR/target_lw.txt"
 
 MOD_INTRO="A bloatware vanishing act on the system."
 
@@ -33,19 +33,14 @@ unbrick() {
 
     if [ -f "$FLAG_BRICKED" ]; then
         eco "Flag bricked exists!" "F"
-
-        result_compare_lw_t=false
+    
         if file_compare "$TARGET_LIST_LW" "$TARGET_LIST"; then
             eco "Last worked target list is identical to current target list"
-            result_compare_lw_t=true
+            rm -f "$TARGET_LIST_LW" && eco "Remove last worked target list"
         fi
 
         if [ "$disable_module_as_brick" = false ] && [ "$last_worked_target_list" = true ]; then
             if [ -f "$TARGET_LIST_LW" ]; then
-                if [ "$result_compare_lw_t" = true ]; then
-                    rm -f "$TARGET_LIST_LW" && eco "Remove last worked target list"
-                    exit 1
-                fi
                 cp "$TARGET_LIST_LW" "$TARGET_LIST" && eco "Switch to last worked target list"
                 rm -f "$MODDIR/disable" && eco "Enable $MOD_NAME again"
                 rm -f "$FLAG_BRICKED" && eco "Reset brick state"
@@ -234,7 +229,7 @@ bloatveil() {
     mr_count=0
     mn_count=0
 
-    touch "$TARGET_LIST_BSA"
+    touch "$TARGET_LIST_BVA"
 
     while IFS= read -r line || [ -n "$line" ]; do
         line=$(echo "$line" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
@@ -302,8 +297,8 @@ bloatveil() {
                     "MR")   mr_count=$((mr_count + 1));;
                     "MN")   mn_count=$((mn_count + 1));;
                     esac
-                    if check_duplicate_items "$app_path" "$TARGET_LIST_BSA"; then
-                        echo "$app_path" >> "$TARGET_LIST_BSA"
+                    if check_duplicate_items "$app_path" "$TARGET_LIST_BVA"; then
+                        echo "$app_path" >> "$TARGET_LIST_BVA"
                         vanished_apps_count=$((vanished_apps_count + 1))
                         eco "$app_name hidden" ">"
                     else
@@ -322,8 +317,8 @@ bloatveil() {
                     file_process_result=$?
                     if [ $file_process_result -eq 0 ]; then
                         mn_count=$((mn_count + 1))
-                        if check_duplicate_items "$app_path" "$TARGET_LIST_BSA"; then
-                            echo "$app_path" >> "$TARGET_LIST_BSA"
+                        if check_duplicate_items "$app_path" "$TARGET_LIST_BVA"; then
+                            echo "$app_path" >> "$TARGET_LIST_BVA"
                             vanished_apps_count=$((vanished_apps_count + 1))
                             eco "$app_name hidden" ">"
                         else
@@ -347,7 +342,7 @@ bloatveil() {
     done < "$TARGET_LIST"
 
     eco "Clean duplicate items"
-    clean_duplicate_items "$TARGET_LIST_BSA"
+    clean_duplicate_items "$TARGET_LIST_BVA"
 
 }
 

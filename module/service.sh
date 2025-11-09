@@ -11,10 +11,10 @@ FLAG_BRICKED="$CONFIG_DIR/bricked"
 
 LOG_DIR="$CONFIG_DIR/logs"
 LOG_FILE="$LOG_DIR/bv_4_$(date +"%Y%m%dT%H%M%S").log"
-TARGET_LIST_BSA="$LOG_DIR/target_bsa.old"
+TARGET_LIST_BVA="$LOG_DIR/target_bva.txt"
 
 LAST_WORKED_DIR="$CONFIG_DIR/last_worked"
-TARGET_LIST_LW="$LAST_WORKED_DIR/target_lw.old"
+TARGET_LIST_LW="$LAST_WORKED_DIR/target_lw.txt"
 
 MOD_INTRO="A bloatware vanishing act on the system."
 
@@ -79,8 +79,8 @@ rm -f "$FLAG_BRICKED"
 
 if [ "$mb_call" = true ] && [ "$mb_umount_bind" = true ]; then
     print_line
-    if [ ! -f "$TARGET_LIST_BSA" ]; then
-        eco "$TARGET_LIST_BSA does not exist" "W"
+    if [ ! -f "$TARGET_LIST_BVA" ]; then
+        eco "$TARGET_LIST_BVA does not exist" "W"
     else
         eco "Unmount bind points"
         TOTAL_APPS_COUNT=0
@@ -118,7 +118,7 @@ if [ "$mb_call" = true ] && [ "$mb_umount_bind" = true ]; then
                 UMOUNT_APPS_COUNT=$((UMOUNT_APPS_COUNT + 1))
                 eco "$app_name unmounted" ">"
             fi
-        done < "$TARGET_LIST_BSA"
+        done < "$TARGET_LIST_BVA"
         print_line
         eco "Unmount: $UMOUNT_APPS_COUNT APP(s)"
         eco "Total: $TOTAL_APPS_COUNT APP(s)"
@@ -133,17 +133,17 @@ if [ "$last_worked_target_list" = true ]; then
     eco "Backup last worked target list"
     [ ! -d "$LAST_WORKED_DIR" ] && mkdir -p "$LAST_WORKED_DIR"
     if [ "$auto_update_target_list" = true ]; then
-        cp "$TARGET_LIST_BSA" "$TARGET_LIST_LW"
+        cp "$TARGET_LIST_BVA" "$TARGET_LIST_LW"
     elif [ "$auto_update_target_list" = false ]; then
         cp "$TARGET_LIST" "$TARGET_LIST_LW"
     fi
 fi
 if [ "$auto_update_target_list" = true ]; then
     eco "Update target list"
-    cp -p "$TARGET_LIST_BSA" "$TARGET_LIST"
+    cp -p "$TARGET_LIST_BVA" "$TARGET_LIST"
 fi
 eco "Cleanup temporary file"
-rm -f "$TARGET_LIST_BSA"
+rm -f "$TARGET_LIST_BVA"
 remove_config_var "mb_call" "$CONFIG_FILE"
 print_line
 eco "All done!"

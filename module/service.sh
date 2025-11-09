@@ -10,7 +10,7 @@ TARGET_LIST="$CONFIG_DIR/target.txt"
 FLAG_BRICKED="$CONFIG_DIR/bricked"
 
 LOG_DIR="$CONFIG_DIR/logs"
-LOG_FILE="$LOG_DIR/bv_3_$(date +"%Y%m%dT%H%M%S").log"
+LOG_FILE="$LOG_DIR/bv_4_$(date +"%Y%m%dT%H%M%S").log"
 TARGET_LIST_BSA="$LOG_DIR/target_bsa.old"
 
 LAST_WORKED_DIR="$CONFIG_DIR/last_worked"

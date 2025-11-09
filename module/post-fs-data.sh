@@ -109,7 +109,7 @@ preparation() {
 
     if [ ! -f "$TARGET_LIST" ]; then
         eco "Target list does not exist" "F"d
-        DESCRIPTION="[⚠ Target list file does not exist! Powered by ${ROOT_SOL_DETAIL}] $MOD_INTRO"
+        DESCRIPTION="[❌Target list file does not exist! Powered by ${ROOT_SOL_DETAIL}] $MOD_INTRO"
         update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
         exit 1
     fi
@@ -371,20 +371,20 @@ module_status_update() {
     if [ -f "$MODULE_PROP" ]; then
         if [ $vanished_apps_count -gt 0 ]; then
             if [ $apps_not_found_count -eq 0 ]; then
-                DESCRIPTION="✔ All done! $vanished_apps_count APP(s) vanished."
+                DESCRIPTION="✅All done! $vanished_apps_count APP(s) vanished."
             else
-                DESCRIPTION="✔ Done. $vanished_apps_count APP(s) vanished. $apps_not_found_count APP(s) not found. $total_apps_count APP(s) in total."
+                DESCRIPTION="✅Done. $vanished_apps_count APP(s) vanished. $apps_not_found_count APP(s) not found. $total_apps_count APP(s) in total."
             fi
         else
             if [ $total_apps_count -gt 0 ]; then
                 if [ $duplicated_apps_count -gt 0 ]; then
-                    DESCRIPTION="✔ All done! $duplicated_apps_count APP(s) vanished."
+                    DESCRIPTION="✅All done! $duplicated_apps_count APP(s) vanished."
                 else
-                    DESCRIPTION="⚠ Standby. $total_apps_count APP(s) not found."
+                    DESCRIPTION="⏳Standby. $total_apps_count APP(s) not found."
                     no_effect=true
                 fi
             else
-                DESCRIPTION="⚠ No valid items found in target list!"
+                DESCRIPTION="❌No valid items found in target list!"
                 no_effect=true
             fi
         fi
@@ -396,15 +396,16 @@ module_status_update() {
 
 }
 
-module_description_reset_schedule() {
+module_cleanup_schedule() {
 
-    MOD_DESC_RESET="/data/adb/post-fs-data.d/reset-desc.sh"
     POST_D="/data/adb/post-fs-data.d/"
+    CLEANUP_SH_FILENAME="bloat_veil_cleanup.sh"
+    CLEANUP_SH="${POST_D}/${CLEANUP_SH_FILENAME}"
 
-    if [ ! -f "$MOD_DESC_RESET" ]; then
+    if [ ! -f "$CLEANUP_SH" ]; then
         mkdir -p "$POST_D"
-        cat "$MODDIR/reset-desc.sh" > "$MOD_DESC_RESET"
-        chmod +x "$MOD_DESC_RESET"
+        cat "$MODDIR/${CLEANUP_SH_FILENAME}" > "$CLEANUP_SH"
+        chmod +x "$CLEANUP_SH"
     fi
 
 }
@@ -417,6 +418,6 @@ config_loader
 unbrick
 preparation && bloatveil
 module_status_update
-module_description_reset_schedule
+module_cleanup_schedule
 print_line
 eco "All done!"

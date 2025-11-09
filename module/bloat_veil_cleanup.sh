@@ -2,6 +2,9 @@
 
 DESCRIPTION="A bloatware vanishing act on the system."
 
+CONFIG_DIR="/data/adb/bloat_veil"
+FLAG_BRICKED="$CONFIG_DIR/bricked"
+
 POST_D="/data/adb/post-fs-data.d/"
 CLEANUP_SH="bloat_veil_cleanup.sh"
 CLEANUP_PATH="${POST_D}/${CLEANUP_SH}"
@@ -33,10 +36,12 @@ update_config_var() {
     return "$result_update_value"
 }
 
-if [ -f "$MOD_DIR/disable" ]; then
-    update_config_var "description" "$MOD_DIR/module.prop" "$DESCRIPTION"
-elif [ -f "$LITE_MOD_DIR/disable" ]; then
-    update_config_var "description" "$LITE_MOD_DIR/module.prop" "$DESCRIPTION"
+if [ ! -f "$FLAG_BRICKED" ]; then
+    if [ -f "$MOD_DIR/disable" ]; then
+        update_config_var "description" "$MOD_DIR/module.prop" "$DESCRIPTION"
+    elif [ -f "$LITE_MOD_DIR/disable" ]; then
+        update_config_var "description" "$LITE_MOD_DIR/module.prop" "$DESCRIPTION"
+    fi
 fi
 
 rm -f "${CLEANUP_PATH}"

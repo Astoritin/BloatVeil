@@ -33,8 +33,19 @@ unbrick() {
 
     if [ -f "$FLAG_BRICKED" ]; then
         eco "Flag bricked exists!" "F"
+
+        result_compare_lw_t=false
+        if file_compare "$TARGET_LIST_LW" "$TARGET_LIST"; then
+            eco "Last worked target list is identical to current target list"
+            result_compare_lw_t=true
+        fi
+
         if [ "$disable_module_as_brick" = false ] && [ "$last_worked_target_list" = true ]; then
             if [ -f "$TARGET_LIST_LW" ]; then
+                if [ "$result_compare_lw_t" = true ]; then
+                    rm -f "$TARGET_LIST_LW" && eco "Remove last worked target list"
+                    exit 1
+                fi
                 cp "$TARGET_LIST_LW" "$TARGET_LIST" && eco "Switch to last worked target list"
                 rm -f "$MODDIR/disable" && eco "Enable $MOD_NAME again"
                 rm -f "$FLAG_BRICKED" && eco "Reset brick state"

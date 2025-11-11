@@ -354,9 +354,7 @@ module_status_update() {
     apps_not_found_count=$((total_apps_count - vanished_apps_count - duplicated_apps_count))
     print_line
     eco "Vanished: $vanished_apps_count APP(s)"
-    eco "with Mount Bind: $mb_count APP(s)"
-    eco "with Magisk Replace: $mr_count APP(s)"
-    eco "with Make Node: $mn_count APP(s)"
+    eco "MB: $mb_count APP(s), MR: $mr_count APP(s), MN: $mn_count APP(s)"
     eco "Not found: $apps_not_found_count APP(s)"
     eco "Duplicate: $duplicated_apps_count APP(s)"
     eco "Total: $total_apps_count APP(s)"
@@ -378,14 +376,14 @@ module_status_update() {
     if [ -f "$MODULE_PROP" ]; then
         if [ $vanished_apps_count -gt 0 ]; then
             if [ $apps_not_found_count -eq 0 ]; then
-                DESCRIPTION="✅All done! $vanished_apps_count APP(s) vanished."
+                DESCRIPTION="✅All done. $vanished_apps_count APP(s) vanished."
             else
                 DESCRIPTION="✅Done. $vanished_apps_count APP(s) vanished. $apps_not_found_count APP(s) not found. $total_apps_count APP(s) in total."
             fi
         else
             if [ $total_apps_count -gt 0 ]; then
                 if [ $duplicated_apps_count -gt 0 ]; then
-                    DESCRIPTION="✅All done! $duplicated_apps_count APP(s) vanished."
+                    DESCRIPTION="✅All done. $duplicated_apps_count APP(s) vanished."
                 else
                     DESCRIPTION="⏳Standby. $total_apps_count APP(s) not found."
                     no_effect=true

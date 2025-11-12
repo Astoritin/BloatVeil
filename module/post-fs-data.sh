@@ -24,11 +24,11 @@ MIRROR_DIR="$MODDIR/system"
 
 unbrick() {
     if [ "$brick_rescue" = false ]; then
-        eco "$MOD_NAME will skip brick rescue"
+        eco "Skip brick rescue"
         return 1
     fi
 
-    eco "Check flag brick"
+    eco "Check flag bricked"
     rescue_from_last_worked_target_list=false
 
     if [ -f "$FLAG_BRICKED" ]; then
@@ -114,7 +114,7 @@ preparation() {
     mkdir -p "$MIRROR_DIR" && eco "Create new mirror dir"
 
     if [ ! -f "$TARGET_LIST" ]; then
-        eco "Target list does not exist" "F"d
+        eco "Target list does not exist" "F"
         DESCRIPTION="[❌Target list file does not exist! Powered by ${ROOT_SOL_DETAIL}] $MOD_INTRO"
         update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
         exit 1
@@ -145,12 +145,7 @@ mirror_make_node() {
     if [ ! -e "$mirror_node_path" ]; then
         mknod "$mirror_node_path" c 0 0
         result_make_node="$?"
-        eco "mknod $mirror_node_path c 0 0 ($result_make_node)"
-        if [ $result_make_node -eq 0 ]; then
-            return 0
-        else
-            return $result_make_node
-        fi
+        return $result_make_node
     else
         eco "Node $mirror_node_path exists already"
         return 1
@@ -180,13 +175,9 @@ mirror_magisk_replace() {
     if [ ! -e "$mirror_app_path/.replace" ]; then
         touch "$mirror_app_path/.replace"
         result_magisk_replace="$?"
-        eco "touch $mirror_app_path/.replace ($result_magisk_replace)"
-        if [ $result_magisk_replace -eq 0 ]; then
-            return 0
-        else
-            return $result_magisk_replace
-        fi
+        return $result_magisk_replace
     else
+        eco "File $mirror_app_path exists already"
         return 1
     fi
 
@@ -207,18 +198,13 @@ link_mount_bind() {
 
     mount -o bind "$link_path" "$target_path"
     result_mount_bind="$?"
-    eco "mount -o bind $link_path $target_path ($result_mount_bind)"
-    if [ $result_mount_bind -eq 0 ]; then
-        return 0
-    else
-        return $result_mount_bind
-    fi
+    return $result_mount_bind
 }
 
-bloatveil() {
+bloat_veil() {
 
     print_line
-    eco "Hiding bloatwares"
+    eco "Tricking bloatwares"
     print_line
 
     total_apps_count=0
@@ -229,8 +215,8 @@ bloatveil() {
     mr_count=0
     mn_count=0
 
-    [ -f "$TARGET_LIST_BVA" ] && rm -f "$TARGET_LIST_BVA"
-    touch "$TARGET_LIST_BVA"
+    [ -f "$TARGET_LIST_BVA" ] && rm -f "$TARGET_LIST_BVA" && eco "Remove old temporary file"
+    touch "$TARGET_LIST_BVA" && eco "Create new temporary file"
 
     while IFS= read -r line || [ -n "$line" ]; do
         line=$(echo "$line" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
@@ -285,13 +271,14 @@ bloatveil() {
 
             app_name="$(basename "$app_path")"
             if [ -d "$app_path" ]; then
-                eco "Process path $app_path"
+                eco "Check path $app_path"
                 case "$hide_mode" in
                     "MB")   link_mount_bind "$MIRROR_DIR" "$app_path";;
                     "MR")   mirror_magisk_replace "$app_path";;
                     "MN")   mirror_make_node "$app_path";;
                 esac
                 app_process_result=$?
+                eco "Process APP $app_name ($app_process_result)"
                 if [ $app_process_result -eq 0 ]; then
                     case "$hide_mode" in
                     "MB")   mb_count=$((mb_count + 1));;
@@ -301,34 +288,27 @@ bloatveil() {
                     if check_duplicate_items "$app_path" "$TARGET_LIST_BVA"; then
                         echo "$app_path" >> "$TARGET_LIST_BVA"
                         vanished_apps_count=$((vanished_apps_count + 1))
-                        eco "$app_name hidden" ">"
                     else
-                        eco "Find duplicate item $app_name"
                         duplicated_apps_count=$((duplicated_apps_count + 1))
                     fi
                     break
-                else
-                    eco "Failed to hide $app_name ($app_process_result)" "W"
                 fi
 
             elif [ -f "$app_path" ] && [ -d "$(dirname $app_path)" ]; then
-                eco "Process path $app_path"
+                eco "Check path $app_path"
                 if [ "$hide_mode" = "MN" ] || [ "$MN_SUPPORT" = true ]; then
                     mirror_make_node "$app_path"
                     file_process_result=$?
+                    eco "Process APP $app_name ($file_process_result)"
                     if [ $file_process_result -eq 0 ]; then
                         mn_count=$((mn_count + 1))
                         if check_duplicate_items "$app_path" "$TARGET_LIST_BVA"; then
                             echo "$app_path" >> "$TARGET_LIST_BVA"
                             vanished_apps_count=$((vanished_apps_count + 1))
-                            eco "$app_name hidden" ">"
                         else
-                            eco "Find duplicate item $app_name"
                             duplicated_apps_count=$((duplicated_apps_count + 1))
                         fi
                         break
-                    else
-                        eco "Failed to hide $app_name ($file_process_result)" "W"
                     fi
                 fi
             else
@@ -342,8 +322,7 @@ bloatveil() {
         done
     done < "$TARGET_LIST"
 
-    eco "Clean duplicate items"
-    clean_duplicate_items "$TARGET_LIST_BVA"
+    clean_duplicate_items "$TARGET_LIST_BVA" && eco "Clean duplicate items"
 
 }
 
@@ -354,10 +333,15 @@ module_status_update() {
     apps_not_found_count=$((total_apps_count - vanished_apps_count - duplicated_apps_count))
     print_line
     eco "Vanished: $vanished_apps_count APP(s)"
-    eco "MB: $mb_count APP(s), MR: $mr_count APP(s), MN: $mn_count APP(s)"
-    eco "Not found: $apps_not_found_count APP(s)"
+    eco "Mount Bind: $mb_count APP(s)"
+    eco "Magisk Replace: $mr_count APP(s)"
+    eco "Make Node: $mn_count APP(s)"
+    print_line
     eco "Duplicate: $duplicated_apps_count APP(s)"
+    eco "Not found: $apps_not_found_count APP(s)"
+    print_line
     eco "Total: $total_apps_count APP(s)"
+    print_line
 
     [ $mb_count -gt 0 ] && hide_mode_desc="Mount Bind" && mb_call=true
     [ $mr_count -gt 0 ] && hide_mode_desc="Magisk Replace"
@@ -421,7 +405,7 @@ show_system_info >> "$LOG_FILE"
 print_line
 config_loader
 unbrick
-preparation && bloatveil
+preparation && bloat_veil
 module_status_update
 module_cleanup_schedule
 print_line

@@ -116,7 +116,6 @@ if [ "$mb_call" = true ] && [ "$mb_umount_bind" = true ]; then
             app_name="$(basename "$package")"
             if [ $result_umount -eq 0 ]; then
                 UMOUNT_APPS_COUNT=$((UMOUNT_APPS_COUNT + 1))
-                eco "$app_name unmounted" ">"
             fi
         done < "$TARGET_LIST_BVA"
         print_line
@@ -142,8 +141,7 @@ if [ "$auto_update_target_list" = true ]; then
     eco "Update target list"
     cp -p "$TARGET_LIST_BVA" "$TARGET_LIST"
 fi
-eco "Cleanup temporary file"
-rm -f "$TARGET_LIST_BVA"
+rm -f "$TARGET_LIST_BVA" && eco "Remove old temporary file"
 remove_config_var "mb_call" "$CONFIG_FILE"
 print_line
 eco "All done!"

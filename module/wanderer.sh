@@ -93,54 +93,39 @@ eco_clean() {
 }
 
 eco() {
-    LOG_MSG="$1"
-    LOG_MSG_LEVEL="$2"
-    LOG_MSG_PREFIX=""
-    SEPARATE_LINE="---------------------------------------------"
-    TIMESTAMP_FORMAT="%02d:%02d:%02d:%03d | "
+    msg="$1"
+    msg_level="${2:-}"
 
-    [ -z "$LOG_MSG" ] && return 1
+    [ -z "$msg" ] && return 1
 
-    case "$LOG_MSG_LEVEL" in
-        "W") LOG_MSG_PREFIX="? Warn: " ;;
-        "E") LOG_MSG_PREFIX="! ERROR: " ;;
-        "F") LOG_MSG_PREFIX="× FATAL: " ;;
-        ">") LOG_MSG_PREFIX="> " ;;
-        "*" ) LOG_MSG_PREFIX="* " ;;
-        " ") LOG_MSG_PREFIX="  " ;;
-        "-") LOG_MSG_PREFIX="" ;;
-        *) if [ -n "$LOG_FILE" ]; then
-            LOG_MSG_PREFIX=""
-            else
-            LOG_MSG_PREFIX="- "
-            fi
-            ;;
+    case "$msg_level" in
+        "W") msg_prefix="! Warn: " ;;
+        "E") msg_prefix="! ERROR: " ;;
+        "F") msg_prefix="× FATAL: " ;;
+        ">"|"*"|" ") msg_prefix="${msg_level} " ;;
+        "-") msg_prefix="" ;;
+        *) msg_prefix="- " ;;
     esac
 
+    separate_line="---------------------------------------------"
+
+    eco_output() {
+        case "$msg_level" in
+            "E"|"F")    "$@" "$separate_line"
+                        "$@" "${msg_prefix}${msg}"
+                        "$@" "$separate_line" ;;
+            "-")        "$@" "${msg}" ;;
+            *)          "$@" "${msg_prefix}${msg}" ;;
+        esac
+    }
+
     if [ -n "$LOG_FILE" ]; then
-        TIME_STAMP="$(date +"%Y-%m-%d %H:%M:%S.%3N") | "
-        if [ "$LOG_MSG_LEVEL" = "ERROR" ] || [ "$LOG_MSG_LEVEL" = "FATAL" ]; then
-            echo "$SEPARATE_LINE" >> "$LOG_FILE"
-            echo "${TIME_STAMP}${LOG_MSG_PREFIX}${LOG_MSG}" >> "$LOG_FILE"
-            echo "$SEPARATE_LINE" >> "$LOG_FILE"
-        elif [ "$LOG_MSG_LEVEL" = "-" ]; then
-            echo "${LOG_MSG}" >> "$LOG_FILE"
-        else
-            echo "${TIME_STAMP}${LOG_MSG_PREFIX}${LOG_MSG}" >> "$LOG_FILE"
-        fi
+        eco_output echo >> "$LOG_FILE"
     else
         if command -v ui_print >/dev/null 2>&1; then
-            if [ "$LOG_MSG_LEVEL" = "ERROR" ] || [ "$LOG_MSG_LEVEL" = "FATAL" ]; then
-                ui_print "$SEPARATE_LINE"
-                ui_print "${LOG_MSG_PREFIX}${LOG_MSG}"
-                ui_print "$SEPARATE_LINE"
-            elif [ "$LOG_MSG_LEVEL" = "-" ]; then
-                ui_print "$LOG_MSG"
-            else
-                ui_print "${LOG_MSG_PREFIX}${LOG_MSG}"
-            fi
+            eco_output ui_print
         else
-            echo "${LOG_MSG_PREFIX}${LOG_MSG}"
+            eco_output echo
         fi
     fi
 }

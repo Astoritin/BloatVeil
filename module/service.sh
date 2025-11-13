@@ -82,7 +82,7 @@ if [ "$mb_call" = true ] && [ "$mb_umount_bind" = true ]; then
     if [ ! -f "$TARGET_LIST_BVA" ]; then
         eco "$TARGET_LIST_BVA does not exist" "W"
     else
-        eco "Unmount bind points"
+        eco "Process bind points"
         TOTAL_APPS_COUNT=0
         UMOUNT_APPS_COUNT=0
         while IFS= read -r line || [ -n "$line" ]; do
@@ -112,14 +112,14 @@ if [ "$mb_call" = true ] && [ "$mb_umount_bind" = true ]; then
 
             umount -f $package
             result_umount=$?
-            eco "Process $package ($result_umount)"
+            eco "Unmount $package ($result_umount)"
             app_name="$(basename "$package")"
             if [ $result_umount -eq 0 ]; then
                 UMOUNT_APPS_COUNT=$((UMOUNT_APPS_COUNT + 1))
             fi
         done < "$TARGET_LIST_BVA"
         print_line
-        eco "Unmount: $UMOUNT_APPS_COUNT APP(s)"
+        eco "Unmounted: $UMOUNT_APPS_COUNT APP(s)"
         eco "Total: $TOTAL_APPS_COUNT APP(s)"
         print_line
     fi

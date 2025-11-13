@@ -408,5 +408,4 @@ unbrick
 preparation && bloat_veil
 module_status_update
 module_cleanup_schedule
-print_line
 eco "All done!"

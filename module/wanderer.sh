@@ -132,7 +132,7 @@ eco() {
 
 print_line() {
 
-    length=${1:-74}
+    length=${1:-45}
     symbol=${2:--}
 
     line=$(printf "%-${length}s" | tr ' ' "$symbol")

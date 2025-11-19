@@ -4,7 +4,7 @@ MODDIR=${0%/*}
 CONFIG_DIR="/data/adb/bloat_veil"
 
 MOD_INTRO="A bloatware vanishing act on the system."
-SEPARATE_LINE="---------------------------------------------"
+SEPARATE_LINE="---------------------------------------"
 
 ROOT_FILE_MANAGERS="
 com.speedsoftware.rootexplorer/com.speedsoftware.rootexplorer.RootExplorer
@@ -22,16 +22,16 @@ me.zhanghai.android.files/me.zhanghai.android.files.filelist.FileListActivity
 "
 
 echo "$SEPARATE_LINE"
-echo " BloatVeil"
-echo " By Astoritin"
+echo "  BloatVeil"
+echo "  By Astoritin"
 echo "$SEPARATE_LINE"
-echo " $MOD_INTRO"
+echo "  $MOD_INTRO"
 echo "$SEPARATE_LINE"
-echo " If nothing happened after a while"
-echo " that means no any available root"
-echo " file explorer is found on your device"
-echo " You can open config dir"
-echo " with your preferred root file manager manually"
+echo "  If nothing happened after a while"
+echo "  that means no any available root file explorer"
+echo "  is found on your device"
+echo "  Anyway, you can open config dir with"
+echo "  the root file manager you preferred manually"
 echo "$SEPARATE_LINE"
 echo "- Opening config dir"
 echo "$SEPARATE_LINE"

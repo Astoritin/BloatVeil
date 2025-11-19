@@ -107,7 +107,7 @@ eco() {
         *) msg_prefix="- " ;;
     esac
 
-    separate_line="---------------------------------------------"
+    separate_line="---------------------------------------"
 
     eco_output() {
         case "$msg_level" in
@@ -132,7 +132,7 @@ eco() {
 
 print_line() {
 
-    length=${1:-45}
+    length=${1:-39}
     symbol=${2:--}
 
     line=$(printf "%-${length}s" | tr ' ' "$symbol")

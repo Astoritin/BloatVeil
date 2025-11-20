@@ -42,8 +42,8 @@ config_loader() {
 
 init_dir "$TEMPLATE_DIR" "$LOG_DIR"
 clean_dir_if_reach_max "30"
-module_intro >> "$LOG_FILE"
-show_system_info >> "$LOG_FILE"
+module_intro
+show_system_info
 print_line
 config_loader
 

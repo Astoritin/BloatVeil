@@ -20,6 +20,14 @@ POST_D="/data/adb/post-fs-data.d/"
 CLEANUP_SH="bloat_veil_cleanup.sh"
 CLEANUP_PATH="${POST_D}/${CLEANUP_SH}"
 
+show_system_info() {
+
+    ui_print "- Device: $(getprop ro.product.brand) $(getprop ro.product.model) ($(getprop ro.product.device))"
+    ui_print "OS: Android $(getprop ro.build.version.release) (API $(getprop ro.build.version.sdk)), $(getprop ro.product.cpu.abi | cut -d '-' -f1)"
+    ui_print "Kernel: $(uname -r)"
+
+}
+
 extract() {
     file=$1
     dir=$2
@@ -77,7 +85,6 @@ extract "targets.txt" "$TMPDIR"
 cat "$TMPDIR/targets.txt" > "$TEMPLATE_FILE"
 [ ! -f "$TARGET_LIST" ] && cat "$TMPDIR/targets.txt" > "$TARGET_LIST"
 [ ! -f "$CONFIG_FILE" ] && extract "settings.conf" "$CONFIG_DIR"
-
 DESCRIPTION="[📌Check $TARGET_LIST carefully before reboot! Powered by ${ROOT_SOL_DETAIL}] $MOD_INTRO"
 update_config_var "description" "$MODPATH/module.prop" "$DESCRIPTION"
 ui_print "- Setting permission"

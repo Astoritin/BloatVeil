@@ -121,8 +121,8 @@ get_tid() {
 }
 
 eco() {
-    _eco_level="${1:-i}"
-    _eco_msg="$2"
+    _eco_msg="$1"
+    _eco_level="${2:-i}"
     _eco_tag="${3:-$MOD_NAME}"
     _eco_pid="$$"
     _eco_tid="$(get_tid)"
@@ -145,15 +145,14 @@ eco() {
     fi
     
     echo "${_eco_timestamp}  ${_eco_pid}  ${_eco_tid} ${_eco_level} ${_eco_tag}: ${_eco_msg}" >> "$LOG_FILE" 2>/dev/null
-
 }
 
-ecoi() { eco "I" "$1" ; }
-ecod() { eco "D" "$1" ; }
-ecow() { eco "W" "$1" ; }
-ecoe() { eco "E" "$1" ; }
-ecof() { eco "F" "$1" ; }
-ecov() { eco "V" "$1" ; }
+ecoi() { eco "$1" "I" ; }
+ecod() { eco "$1" "D" ; }
+ecow() { eco "$1" "W" ; }
+ecoe() { eco "$1" "E" ; }
+ecof() { eco "$1" "F" ; }
+ecov() { eco "$1" "V" ; }
 
 print_line() {
 
@@ -324,9 +323,9 @@ print_var() {
 
 show_system_info() {
 
-    echo "- Device: $(getprop ro.product.brand) $(getprop ro.product.model) ($(getprop ro.product.device))"
-    echo "- OS: Android $(getprop ro.build.version.release) (API $(getprop ro.build.version.sdk)), $(getprop ro.product.cpu.abi | cut -d '-' -f1)"
-    echo "- Kernel: $(uname -r)"
+    eco "Device: $(getprop ro.product.brand) $(getprop ro.product.model) ($(getprop ro.product.device))"
+    eco "OS: Android $(getprop ro.build.version.release) (API $(getprop ro.build.version.sdk)), $(getprop ro.product.cpu.abi | cut -d '-' -f1)"
+    eco "Kernel: $(uname -r)"
 
 }
 

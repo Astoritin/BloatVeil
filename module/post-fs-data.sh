@@ -121,7 +121,7 @@ preparation() {
 
     if [ ! -f "$TARGET_LIST" ]; then
         ecof "Target list does not exist"
-        DESCRIPTION="[💥Target list file does not exist! Powered by ${ROOT_SOL_DETAIL}] $MOD_INTRO"
+        DESCRIPTION="Target list file does not exist!❌ | ${ROOT_SOL_DETAIL} | $MOD_INTRO"
         update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
         exit 1
     fi
@@ -354,9 +354,9 @@ module_status_update() {
     eco "Total: $total_apps_count APP(s)"
     print_line
 
-    [ $mb_count -gt 0 ] && hide_mode_desc="Mount Bind" && mb_call=true
-    [ $mr_count -gt 0 ] && hide_mode_desc="Magisk Replace"
-    [ $mn_count -gt 0 ] && hide_mode_desc="Make Node"
+    [ $mb_count -gt 0 ] && hide_mode_desc="mount bind" && mb_call=true
+    [ $mr_count -gt 0 ] && hide_mode_desc="magisk replace"
+    [ $mn_count -gt 0 ] && hide_mode_desc="make node"
 
     if [ $mb_count -gt 0 ] && [ $mn_count -gt 0 ]; then
         hide_mode_desc="Mount Bind (${mb_count}), Make Node (${mn_count})"
@@ -371,25 +371,25 @@ module_status_update() {
     if [ -f "$MODULE_PROP" ]; then
         if [ $vanished_apps_count -gt 0 ]; then
             if [ $apps_not_found_count -eq 0 ]; then
-                DESCRIPTION="✨All done. $vanished_apps_count APP(s) vanished."
+                DESCRIPTION="vanished: $vanished_apps_count APP(s)✨"
             else
-                DESCRIPTION="✨Done. $vanished_apps_count APP(s) vanished. $apps_not_found_count APP(s) not found. $total_apps_count APP(s) in total."
+                DESCRIPTION="vanished: $vanished_apps_count APP(s)✨ | not found: $apps_not_found_count APP(s)❎ | in total: $total_apps_count APP(s)📋"
             fi
         else
             if [ $total_apps_count -gt 0 ]; then
                 if [ $duplicated_apps_count -gt 0 ]; then
-                    DESCRIPTION="✨All done. $duplicated_apps_count APP(s) vanished."
+                    DESCRIPTION="vanished: $duplicated_apps_count APP(s) vanished✨"
                 else
-                    DESCRIPTION="💧Standby. $total_apps_count APP(s) not found."
+                    DESCRIPTION="standby⏳ | not found: $total_apps_count APP(s)❎"
                     no_effect=true
                 fi
             else
-                DESCRIPTION="💥No valid items found in target list!"
+                DESCRIPTION="No valid items found in target list!❌"
                 no_effect=true
             fi
         fi
-        [ "$no_effect" = false ] && DESCRIPTION="[${DESCRIPTION} ${hide_mode_desc} mode${desc_last_worked}. Powered by ${ROOT_SOL_DETAIL}] $MOD_INTRO"
-        [ "$no_effect" = true ] && DESCRIPTION="[${DESCRIPTION} Powered by ${ROOT_SOL_DETAIL}] $MOD_INTRO"
+        [ "$no_effect" = false ] && DESCRIPTION="${DESCRIPTION} | ${hide_mode_desc}${desc_last_worked} | ${ROOT_SOL_DETAIL} | $MOD_INTRO"
+        [ "$no_effect" = true ] && DESCRIPTION="${DESCRIPTION} | ${ROOT_SOL_DETAIL} | $MOD_INTRO"
         update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
         update_config_var "mb_call" "$CONFIG_FILE" "$mb_call"
     fi

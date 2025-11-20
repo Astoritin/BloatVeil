@@ -52,7 +52,7 @@ extract() {
     fi
 }
 
-extract "wanderer.sh" "$TMPDIR"
+extract "wanderer.sh" "$TMPDIR" >/dev/null 2>&1
 . "$TMPDIR/wanderer.sh"
 
 show_system_info() {

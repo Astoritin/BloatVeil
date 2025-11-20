@@ -139,11 +139,7 @@ eco() {
         [fF]*) _eco_level="F" ;;
         *) _eco_level="I" ;;
     esac
-    
-    if command -v log >/dev/null 2>&1; then
-        log -p "$_eco_level" -t "$_eco_tag" "$_eco_msg"
-    fi
-    
+
     echo "${_eco_timestamp}  ${_eco_pid}  ${_eco_tid} ${_eco_level} ${_eco_tag}: ${_eco_msg}" >> "$LOG_FILE" 2>/dev/null
 }
 
@@ -156,8 +152,8 @@ ecov() { eco "$1" "V" ; }
 
 print_line() {
 
-    length=${1:-78}
-    symbol=${2:--}
+    length=${1:-56}
+    symbol=${2:-*}
 
     line=$(printf "%-${length}s" | tr ' ' "$symbol")
     eco "$line"
@@ -263,22 +259,15 @@ update_config_var() {
     append_mode="${4:-false}"
 
     if [ -z "$key_name" ] || [ -z "$expected_value" ] || [ -z "$file_path" ]; then
-		ecov "Key name, expected value, or file path is not defined"
         return 1
     elif [ ! -f "$file_path" ]; then
-		ecov "$file_path is not a file"
         return 2
     fi
 
     if grep -q "^${key_name}=" "$file_path"; then
-		ecov "Key $key_name exists in $file_path"
-        if [ "$append_mode" = true ]; then
-			ecov "Append mode enabled, will not update value"
-			return 0
-		fi
+        [ "$append_mode" = true ] && return 0
         sed -i "/^${key_name}=/c\\${key_name}=${expected_value}" "$file_path"
     else
-		ecov "Key $key_name does not exist in $file_path, adding it"
         [ -n "$(tail -c1 "$file_path")" ] && echo >> "$file_path"
         printf '%s=%s\n' "$key_name" "$expected_value" >> "$file_path"
     fi
@@ -292,10 +281,8 @@ remove_config_var() {
     file_path="$2"
 
     if [ -z "$key_name" ] || [ -z "$file_path" ]; then
-		ecov "Key name or file path is not defined"
         return 1
     elif [ ! -f "$file_path" ]; then
-		ecov "$file_path is not a file"
         return 2
     fi
 
@@ -349,31 +336,15 @@ module_intro() {
 file_compare() {
     file_a="$1"
     file_b="$2"
-	
-	if [ -z "$file_a" ] || [ -z "$file_b" ]; then
-		ecov "File A or File B path is not defined"
-		return 2
-	elif [ ! -f "$file_a" ]; then
-		ecov "$file_a is not a file"
-		return 3
-	elif [ ! -f "$file_b" ]; then
-		ecov "$file_b is not a file"
-		return 3
-	fi
+    
+    [ -z "$file_a" ] || [ ! -f "$file_a" ] && return 2
+    [ -z "$file_b" ] || [ ! -f "$file_b" ] && return 3
     
     hash_file_a=$(sha256sum "$file_a" | awk '{print $1}')
     hash_file_b=$(sha256sum "$file_b" | awk '{print $1}')
-
-	ecov "Hash of file A: $hash_file_a"
-	ecov "Hash of file B: $hash_file_b"
     
-    if [ "$hash_file_a" = "$hash_file_b" ]; then
-		ecov "Files are identical"
-		return 0
-	else
-		ecov "Files are different"
-		return 1
-	fi
+    [ "$hash_file_a" = "$hash_file_b" ] && return 0
+    [ "$hash_file_a" != "$hash_file_b" ] && return 1
 
 }
 
@@ -382,19 +353,9 @@ check_duplicate_items() {
     itemd=$1
     filed=$2
 
-	if [ -z "$itemd" ] || [ -z "$filed" ]; then
-		ecov "Item or file path is not defined"
-		return 1
-	elif [ ! -f "$filed" ]; then
-		ecov "$filed is not a file"
-		return 2
-	fi
-
     if grep -q "^$itemd$" "$filed"; then
-		ecov "Duplicate item $itemd found in $filed"
         return 1
     else
-		ecov "No duplicate item $itemd found in $filed"
         return 0
     fi
 }
@@ -403,13 +364,8 @@ clean_duplicate_items() {
 
     filed=$1
 
-    if [ -z "$filed" ]; then
-		ecov "File path is not defined"
-		return 1
-	elif [ ! -f "$filed" ]; then
-		ecov "$filed is not a file"
-		return 2
-	fi
+    [ -z "$filed" ] && return 1
+    [ ! -f "$filed" ] && return 2
 
     awk '!seen[$0]++' "$filed" > "${filed}.tmp"
     mv "${filed}.tmp" "$filed"

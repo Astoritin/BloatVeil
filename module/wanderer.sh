@@ -113,7 +113,11 @@ clean_dir_if_reach_max() {
 }
 
 get_tid() {
-    { cat /proc/self/stat | awk '{print $4}'; } 2>/dev/null || echo "$$"
+    if cat /proc/self/stat 2>/dev/null | awk '{print $4}' 2>/dev/null; then
+        :
+    else
+        echo "$$"
+    fi
 }
 
 eco() {
@@ -335,10 +339,10 @@ module_intro() {
 
     install_env_check
     print_line
-    echo "- $MOD_NAME"
-    echo "- By $MOD_AUTHOR"
-    echo "- Version: $MOD_VER"
-    echo "- Root: $ROOT_SOL_DETAIL"
+    eco "$MOD_NAME"
+    eco "By $MOD_AUTHOR"
+    eco "Version: $MOD_VER"
+    eco "Root: $ROOT_SOL_DETAIL"
     print_line
 
 }

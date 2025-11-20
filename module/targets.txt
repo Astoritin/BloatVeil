@@ -27,3 +27,5 @@
 #   /system/apex/com.android.healthfitness.apex # Healthiness Data statistics service
 # ===============================================================================================
 # Place directory names of system apps you wish to remove below (One entry per line):
+# ===============================================================================================
+

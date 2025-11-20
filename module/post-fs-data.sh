@@ -371,16 +371,16 @@ module_status_update() {
     if [ -f "$MODULE_PROP" ]; then
         if [ $vanished_apps_count -gt 0 ]; then
             if [ $apps_not_found_count -eq 0 ]; then
-                DESCRIPTION="vanished: $vanished_apps_count APP(s) ✨"
+                DESCRIPTION="vanished: $vanished_apps_count ✨"
             else
-                DESCRIPTION="vanished: $vanished_apps_count APP(s) ✨ | not found: $apps_not_found_count APP(s) ❎ | in total: $total_apps_count APP(s) 📋"
+                DESCRIPTION="vanished: $vanished_apps_count ✨ | not found: $apps_not_found_count ❎ | in total: $total_apps_count 📋"
             fi
         else
             if [ $total_apps_count -gt 0 ]; then
                 if [ $duplicated_apps_count -gt 0 ]; then
-                    DESCRIPTION="vanished: $duplicated_apps_count APP(s) ✨"
+                    DESCRIPTION="vanished: $duplicated_apps_count ✨"
                 else
-                    DESCRIPTION="standby ⏳ | not found: $total_apps_count APP(s) ❎"
+                    DESCRIPTION="standby ⏳ | not found: $total_apps_count ❎"
                     no_effect=true
                 fi
             else

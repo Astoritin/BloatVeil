@@ -6,7 +6,11 @@ MODDIR=${0%/*}
 CONFIG_DIR="/data/adb/bloat_veil"
 
 CONFIG_FILE="$CONFIG_DIR/settings.conf"
-TARGET_LIST="$CONFIG_DIR/target.txt"
+TEMPLATE_DIR="$CONFIG_DIR/template"
+
+TARGET_LIST="$CONFIG_DIR/targets.txt"
+TEMPLATE_FILE="$TEMPLATE_DIR/target_tm.txt"
+
 FLAG_BRICKED="$CONFIG_DIR/bricked"
 
 LOG_DIR="$CONFIG_DIR/logs"
@@ -36,8 +40,8 @@ config_loader() {
 
 }
 
-eco_init "$LOG_DIR"
-eco_clean "30"
+init_dir "$TEMPLATE_DIR" "$LOG_DIR"
+clean_dir_if_reach_max "30"
 module_intro >> "$LOG_FILE"
 show_system_info >> "$LOG_FILE"
 print_line

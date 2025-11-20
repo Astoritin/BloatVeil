@@ -70,65 +70,86 @@ install_env_check() {
 
 }
 
-eco_init() {
-    LOG_DIR="$1"
+init_dir() {
 
-    [ -z "$LOG_DIR" ] && return 1
-    [ ! -d "$LOG_DIR" ] && mkdir -p "$LOG_DIR" && eco "Create $LOG_DIR"
+	if [ $# -eq 0 ]; then
+		ecov "No directories specified to initialize"
+		return 1
+	fi
+
+    for dir_to_init in "$@"; do
+		if [ -z "$dir_to_init" ]; then
+			ecov "Directory to initialize is empty, skipping"
+			continue
+		fi
+		if [ ! -d "$dir_to_init" ]; then
+			mkdir -p "$dir_to_init"
+			result_mkdir=$?
+			ecov "Creating directory: $dir_to_init ($result_mkdir)"
+		fi
+	done
 
 }
 
-eco_clean() {
-    log_dir="$1"
+clean_dir_if_reach_max() {
+    dir_to_clean="$1"
     files_max="$2"
     
-    [ -z "$log_dir" ] || [ ! -d "$log_dir" ] && return 1
-    [ -z "$files_max" ] && files_max=20
+    if [ -z "$dir_to_clean" ] || [ ! -d "$dir_to_clean" ]; then
+		ecov "Directory to clean is not defined or does not exist"
+		return 1
+	elif [ -z "$files_max" ]; then
+		ecov "Maximum files limit is not defined, using default value 20"
+		files_max=20
+	fi
 
-    files_count=$(ls -1 "$log_dir" | wc -l)
+    files_count=$(ls -1 "$dir_to_clean" | wc -l)
+	ecov "Files in $dir_to_clean: $files_count, Max allowed: $files_max"
     if [ "$files_count" -gt "$files_max" ]; then
-        find "$log_dir" -maxdepth 1 -type f -exec rm -f {} +
+		ecov "Cleaning files in $dir_to_clean"
+        find "$dir_to_clean" -maxdepth 1 -type f -exec rm -f {} +
     fi
     return 0
 }
 
-eco() {
-    msg="$1"
-    msg_level="${2:-}"
-
-    [ -z "$msg" ] && return 1
-
-    case "$msg_level" in
-        "W") msg_prefix="! Warn: " ;;
-        "E") msg_prefix="! ERROR: " ;;
-        "F") msg_prefix="× FATAL: " ;;
-        ">"|"*"|" ") msg_prefix="${msg_level} " ;;
-        "-") msg_prefix="" ;;
-        *) msg_prefix="- " ;;
-    esac
-
-    separate_line="---------------------------------------"
-
-    eco_output() {
-        case "$msg_level" in
-            "E"|"F")    "$@" "$separate_line"
-                        "$@" "${msg_prefix}${msg}"
-                        "$@" "$separate_line" ;;
-            "-")        "$@" "${msg}" ;;
-            *)          "$@" "${msg_prefix}${msg}" ;;
-        esac
-    }
-
-    if [ -n "$LOG_FILE" ]; then
-        eco_output echo >> "$LOG_FILE"
-    else
-        if command -v ui_print >/dev/null 2>&1; then
-            eco_output ui_print
-        else
-            eco_output echo
-        fi
-    fi
+get_tid() {
+    { cat /proc/self/stat | awk '{print $4}'; } 2>/dev/null || echo "$$"
 }
+
+eco() {
+    _eco_level="${1:-i}"
+    _eco_msg="$2"
+    _eco_tag="${3:-$MOD_NAME}"
+    _eco_pid="$$"
+    _eco_tid="$(get_tid)"
+    _eco_timestamp=$(date '+%m-%d %H:%M:%S.000')
+
+    [ -z "$_eco_msg" ] && return 1
+
+    case "$_eco_level" in
+        [dD]*) _eco_level="D" ;;
+        [iI]*) _eco_level="I" ;;
+        [wW]*) _eco_level="W" ;;
+        [eE]*) _eco_level="E" ;;
+        [vV]*) _eco_level="V" ;;
+        [fF]*) _eco_level="F" ;;
+        *) _eco_level="I" ;;
+    esac
+    
+    if command -v log >/dev/null 2>&1; then
+        log -p "$_eco_level" -t "$_eco_tag" "$_eco_msg"
+    fi
+    
+    echo "${_eco_timestamp}  ${_eco_pid}  ${_eco_tid} ${_eco_level} ${_eco_tag}: ${_eco_msg}" >> "$LOG_FILE" 2>/dev/null
+
+}
+
+ecoi() { eco "I" "$1" ; }
+ecod() { eco "D" "$1" ; }
+ecow() { eco "W" "$1" ; }
+ecoe() { eco "E" "$1" ; }
+ecof() { eco "F" "$1" ; }
+ecov() { eco "V" "$1" ; }
 
 print_line() {
 
@@ -136,7 +157,7 @@ print_line() {
     symbol=${2:--}
 
     line=$(printf "%-${length}s" | tr ' ' "$symbol")
-    eco "$line" "-"
+    echo "$line"
 
 }
 
@@ -154,10 +175,10 @@ get_config_var() {
     config_file=$2
 
     if [ -z "$key" ] || [ -z "$config_file" ]; then
-        eco "Key or config file path is not defined" "W"
+        ecow "Key or config file path is not defined"
         return 1
     elif [ ! -f "$config_file" ]; then
-        eco "$config_file is not a file" "W"
+        ecow "$config_file is not a file"
         return 2
     fi
     
@@ -212,11 +233,11 @@ get_config_var() {
 
     awk_exit_state=$?
     case $awk_exit_state in
-        1)  eco "Failed to fetch value for $key (1)" "W"
+        1)  ecow "Failed to fetch value for $key (1)"
             return 5
             ;;
         0)  ;;
-        *)  eco "Unexpected error ($awk_exit_state)" "W"
+        *)  ecow "Unexpected error ($awk_exit_state)"
             return 6
             ;;
     esac
@@ -227,7 +248,7 @@ get_config_var() {
         echo "$value"
         return 0
     else
-        eco "Key $key does not exist in file $config_file" "W"
+        ecow "Key $key does not exist in file $config_file"
         return 1
     fi
 }
@@ -239,15 +260,22 @@ update_config_var() {
     append_mode="${4:-false}"
 
     if [ -z "$key_name" ] || [ -z "$expected_value" ] || [ -z "$file_path" ]; then
+		ecov "Key name, expected value, or file path is not defined"
         return 1
     elif [ ! -f "$file_path" ]; then
+		ecov "$file_path is not a file"
         return 2
     fi
 
     if grep -q "^${key_name}=" "$file_path"; then
-        [ "$append_mode" = true ] && return 0
+		ecov "Key $key_name exists in $file_path"
+        if [ "$append_mode" = true ]; then
+			ecov "Append mode enabled, will not update value"
+			return 0
+		fi
         sed -i "/^${key_name}=/c\\${key_name}=${expected_value}" "$file_path"
     else
+		ecov "Key $key_name does not exist in $file_path, adding it"
         [ -n "$(tail -c1 "$file_path")" ] && echo >> "$file_path"
         printf '%s=%s\n' "$key_name" "$expected_value" >> "$file_path"
     fi
@@ -261,8 +289,10 @@ remove_config_var() {
     file_path="$2"
 
     if [ -z "$key_name" ] || [ -z "$file_path" ]; then
+		ecov "Key name or file path is not defined"
         return 1
     elif [ ! -f "$file_path" ]; then
+		ecov "$file_path is not a file"
         return 2
     fi
 
@@ -283,16 +313,16 @@ print_var() {
     [ $# -eq 0 ] && return 1
 
     query_var "$@" | while IFS= read -r line || [ -n "$line" ]; do
-        eco "$line"
+        echo "- $line"
     done
 
 }
 
 show_system_info() {
 
-    eco "Device: $(getprop ro.product.brand) $(getprop ro.product.model) ($(getprop ro.product.device))"
-    eco "OS: Android $(getprop ro.build.version.release) (API $(getprop ro.build.version.sdk)), $(getprop ro.product.cpu.abi | cut -d '-' -f1)"
-    eco "Kernel: $(uname -r)"
+    echo "- Device: $(getprop ro.product.brand) $(getprop ro.product.model) ($(getprop ro.product.device))"
+    echo "- OS: Android $(getprop ro.build.version.release) (API $(getprop ro.build.version.sdk)), $(getprop ro.product.cpu.abi | cut -d '-' -f1)"
+    echo "- Kernel: $(uname -r)"
 
 }
 
@@ -305,10 +335,10 @@ module_intro() {
 
     install_env_check
     print_line
-    eco "$MOD_NAME"
-    eco "By $MOD_AUTHOR"
-    eco "Version: $MOD_VER"
-    eco "Root: $ROOT_SOL_DETAIL"
+    echo "- $MOD_NAME"
+    echo "- By $MOD_AUTHOR"
+    echo "- Version: $MOD_VER"
+    echo "- Root: $ROOT_SOL_DETAIL"
     print_line
 
 }
@@ -316,48 +346,32 @@ module_intro() {
 file_compare() {
     file_a="$1"
     file_b="$2"
-    
-    [ -z "$file_a" ] || [ ! -f "$file_a" ] && return 2
-    [ -z "$file_b" ] || [ ! -f "$file_b" ] && return 3
+	
+	if [ -z "$file_a" ] || [ -z "$file_b" ]; then
+		ecov "File A or File B path is not defined"
+		return 2
+	elif [ ! -f "$file_a" ]; then
+		ecov "$file_a is not a file"
+		return 3
+	elif [ ! -f "$file_b" ]; then
+		ecov "$file_b is not a file"
+		return 3
+	fi
     
     hash_file_a=$(sha256sum "$file_a" | awk '{print $1}')
     hash_file_b=$(sha256sum "$file_b" | awk '{print $1}')
+
+	ecov "Hash of file A: $hash_file_a"
+	ecov "Hash of file B: $hash_file_b"
     
-    [ "$hash_file_a" = "$hash_file_b" ] && return 0
-    [ "$hash_file_a" != "$hash_file_b" ] && return 1
+    if [ "$hash_file_a" = "$hash_file_b" ]; then
+		ecov "Files are identical"
+		return 0
+	else
+		ecov "Files are different"
+		return 1
+	fi
 
-}
-
-extract() {
-    file=$1
-    dir=$2
-    junk=${3:-false}
-    opts="-o"
-
-    [ -z "$dir" ] && dir="$MODPATH"
-    file_path="$dir/$file"
-    hash_path="$TMPDIR/$file.sha256"
-
-    if [ "$junk" = true ]; then
-        opts="-oj"
-        file_path="$dir/$(basename "$file")"
-        hash_path="$TMPDIR/$(basename "$file").sha256"
-    fi
-
-    unzip $opts "$ZIPFILE" "$file" -d "$dir" >&2
-    [ -f "$file_path" ] || abort "! $file does not exist"
-
-    unzip $opts "$ZIPFILE" "${file}.sha256" -d "$TMPDIR" >&2
-    [ -f "$hash_path" ] || abort "! ${file}.sha256 does not exist"
-
-    expected_hash="$(cat "$hash_path")"
-    calculated_hash="$(sha256sum "$file_path" | cut -d ' ' -f1)"
-
-    if [ "$expected_hash" == "$calculated_hash" ]; then
-        eco "Verified $file" >&1
-    else
-        abort "! Failed to verify $file"
-    fi
 }
 
 check_duplicate_items() {
@@ -365,9 +379,19 @@ check_duplicate_items() {
     itemd=$1
     filed=$2
 
+	if [ -z "$itemd" ] || [ -z "$filed" ]; then
+		ecov "Item or file path is not defined"
+		return 1
+	elif [ ! -f "$filed" ]; then
+		ecov "$filed is not a file"
+		return 2
+	fi
+
     if grep -q "^$itemd$" "$filed"; then
+		ecov "Duplicate item $itemd found in $filed"
         return 1
     else
+		ecov "No duplicate item $itemd found in $filed"
         return 0
     fi
 }
@@ -376,8 +400,13 @@ clean_duplicate_items() {
 
     filed=$1
 
-    [ -z "$filed" ] && return 1
-    [ ! -f "$filed" ] && return 2
+    if [ -z "$filed" ]; then
+		ecov "File path is not defined"
+		return 1
+	elif [ ! -f "$filed" ];
+		ecov "$filed is not a file"
+		return 2
+	fi
 
     awk '!seen[$0]++' "$filed" > "${filed}.tmp"
     mv "${filed}.tmp" "$filed"

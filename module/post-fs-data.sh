@@ -6,7 +6,11 @@ MODDIR=${0%/*}
 CONFIG_DIR="/data/adb/bloat_veil"
 
 CONFIG_FILE="$CONFIG_DIR/settings.conf"
-TARGET_LIST="$CONFIG_DIR/target.txt"
+TEMPLATE_DIR="$CONFIG_DIR/template"
+
+TARGET_LIST="$CONFIG_DIR/targets.txt"
+TEMPLATE_FILE="$TEMPLATE_DIR/target_tm.txt"
+
 FLAG_BRICKED="$CONFIG_DIR/bricked"
 
 LOG_DIR="$CONFIG_DIR/logs"
@@ -216,7 +220,13 @@ bloat_veil() {
     mn_count=0
 
     [ -f "$TARGET_LIST_BVA" ] && rm -f "$TARGET_LIST_BVA" && eco "Remove old temporary file"
-    touch "$TARGET_LIST_BVA" && eco "Create new temporary file"
+    if [ -f "$TEMPLATE_FILE" ]; then
+		cat "$TEMPLATE_FILE" > "$TARGET_LIST_BVA"
+		eco "Create new temporary file from template"
+	else
+		touch "$TARGET_LIST_BVA"
+		eco "Create empty temporary file"
+	fi
 
     while IFS= read -r line || [ -n "$line" ]; do
         line=$(echo "$line" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
@@ -399,7 +409,7 @@ module_cleanup_schedule() {
 
 }
 
-eco_init "$LOG_DIR"
+init_dir "$TEMPLATE_DIR" "$LOG_DIR"
 module_intro >> "$LOG_FILE"
 show_system_info >> "$LOG_FILE"
 print_line

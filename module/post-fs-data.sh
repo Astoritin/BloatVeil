@@ -20,7 +20,7 @@ TARGET_LIST_BVA="$LOG_DIR/targets_bva.txt"
 LAST_WORKED_DIR="$CONFIG_DIR/last_worked"
 TARGET_LIST_LW="$LAST_WORKED_DIR/targets_lw.txt"
 
-MOD_INTRO="A bloatware vanishing act on the system."
+MOD_INTRO="A bloatware vanishing act on the system"
 
 MN_SUPPORT=false
 MR_SUPPORT=false
@@ -121,7 +121,7 @@ preparation() {
 
     if [ ! -f "$TARGET_LIST" ]; then
         ecof "Target list does not exist"
-        DESCRIPTION="Target list file does not exist!❌ | ${ROOT_SOL_DETAIL} | $MOD_INTRO"
+        DESCRIPTION="Target list file does not exist❌ | ${ROOT_SOL_DETAIL} | $MOD_INTRO"
         update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
         exit 1
     fi
@@ -384,11 +384,11 @@ module_status_update() {
                     no_effect=true
                 fi
             else
-                DESCRIPTION="No valid items found in target list!❌"
+                DESCRIPTION="No valid items found in target list❌"
                 no_effect=true
             fi
         fi
-        [ "$no_effect" = false ] && DESCRIPTION="${DESCRIPTION} | ${hide_mode_desc}${desc_last_worked} | ${ROOT_SOL_DETAIL} | $MOD_INTRO"
+        [ "$no_effect" = false ] && DESCRIPTION="${DESCRIPTION} | ${hide_mode_desc}${desc_last_worked}🤖 | ${ROOT_SOL_DETAIL}🔮 | $MOD_INTRO"
         [ "$no_effect" = true ] && DESCRIPTION="${DESCRIPTION} | ${ROOT_SOL_DETAIL} | $MOD_INTRO"
         update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
         update_config_var "mb_call" "$CONFIG_FILE" "$mb_call"

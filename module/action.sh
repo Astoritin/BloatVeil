@@ -3,7 +3,7 @@ MODDIR=${0%/*}
 
 CONFIG_DIR="/data/adb/bloat_veil"
 
-MOD_INTRO="A bloatware vanishing act on the system."
+MOD_INTRO="A bloatware vanishing act on the system"
 SEPARATE_LINE="---------------------------------------"
 
 ROOT_FILE_MANAGERS="

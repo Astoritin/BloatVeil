@@ -20,7 +20,7 @@ TARGET_LIST_BVA="$LOG_DIR/targets_bva.txt"
 LAST_WORKED_DIR="$CONFIG_DIR/last_worked"
 TARGET_LIST_LW="$LAST_WORKED_DIR/targets_lw.txt"
 
-MOD_INTRO="A bloatware vanishing act on the system."
+MOD_INTRO="A bloatware vanishing act on the system"
 
 config_loader() {
 
@@ -67,7 +67,7 @@ while [ "$(getprop sys.boot_completed)" != "1" ]; do
             ecow "Disable $MOD_NAME"
             touch "$MODDIR/disable"
         fi
-        DESCRIPTION="Trigger brick rescue!❌ | ${ROOT_SOL_DETAIL} | $MOD_INTRO"
+        DESCRIPTION="Trigger brick rescue❌ | ${ROOT_SOL_DETAIL} | $MOD_INTRO"
         update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
         ecof "Request system for sync"
 		sync

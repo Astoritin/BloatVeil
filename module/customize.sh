@@ -58,8 +58,8 @@ extract "wanderer.sh" "$TMPDIR"
 show_system_info() {
 
     ui_print "- Device: $(getprop ro.product.brand) $(getprop ro.product.model) ($(getprop ro.product.device))"
-    ui_print "OS: Android $(getprop ro.build.version.release) (API $(getprop ro.build.version.sdk)), $(getprop ro.product.cpu.abi | cut -d '-' -f1)"
-    ui_print "Kernel: $(uname -r)"
+    ui_print "- OS: Android $(getprop ro.build.version.release) (API $(getprop ro.build.version.sdk)), $(getprop ro.product.cpu.abi | cut -d '-' -f1)"
+    ui_print "- Kernel: $(uname -r)"
 
 }
 

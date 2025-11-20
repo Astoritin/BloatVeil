@@ -1,67 +1,29 @@
-# BloatVeil Configure File
-# 
+# ===============================================================================================
+# BloatVeil Configuration File
+# ===============================================================================================
 # Hash symbol # indicates comment lines (ignored during processing)
-# 
-# Important: Path names are CASE-SENSITIVE
+# ===============================================================================================
+# ! Important: Path/directory names are CASE-SENSITIVE
 # - For example, "mab", "MAB", "mAb" are treated as completely different names in Linux
-# 
+# ===============================================================================================
 # You can obtain these directory names through:
 # - App Manager (https://github.com/MuntashirAkon/AppManager)
 # - Root Explorer (manual search)
-# 
+# ===============================================================================================
 # You can specify either:
-# 1. Directory name only (e.g. SogouInput)
-# 2. Full directory paths (e.g. /system/product/app/SogouInput)
-# 3. Apps located in apex/capex files (e.g. /system/apex/com.android.healthfitness.apex)
-#      Note: For apex/capex files, you must specify the full path
-#      because BloatVeil will NOT scan /system/apex directory automatically
-# 
+# - Directory name only (e.g. SogouInput)
+# - Full directory paths (e.g. /system/product/app/SogouInput)
+# - Apps located in apex/capex files (e.g. /system/apex/com.android.healthfitness.apex)
+# ! Note: For apex/capex files, you must specify the full path
+# ! because BloatVeil will NOT scan /system/apex directory automatically
+# ===============================================================================================
+# Full configuration examples
+# ===============================================================================================
+#   SogouInput
+#   SogouIME # Sogou Input Method
+#   /system/product/app/SogouInput
+#   /system/app/SogouIME # Sogou Input Method
+#   /system/apex/com.android.healthfitness.apex
+#   /system/apex/com.android.healthfitness.apex # Healthiness Data statistics service
+# ===============================================================================================
 # Place directory names of system apps you wish to remove below (One entry per line):
-
-VoiceAssistAndroidT # 超级小爱
-XiaoaiRecommendation # XiaoaiRecommendation
-SogouIME # 搜狗输入法小米版
-MIUISuperMarket # 应用商店（HyperOS）
-MiGameCenterSDKService # 小米游戏中心/框架
-MIUIQuickSearchBox # 搜索
-MIUIBrowser # 浏览器（中国特供）
-MiuiDaemon # MIUI质量服务
-HybridPlatform # 快应用服务框架
-HybirdAccessory # 智慧生活
-MIUIAICR # 小米AI
-MiuiVideo # 小米视频
-Mipay # 小米支付/钱包
-MiService # 服务与反馈
-Browser # 浏览器（中国特供）（MIUI）
-NewHome # 内容中心
-SogouInput # 搜狗输入法小米版
-QuickSearchBox # 搜索（MIUI）
-VoiceAssist # 小爱同学 （MIUI）
-mab # 恶心的通知栏广告
-Music # 音乐（QQ音乐小米定制版）
-PersonalAssistant # 智能助理
-SystemHelper # SystemHelper （某阴暗爬行专用应用）
-
-/system/product/app/system # 售后服务
-/system/system_ext/app/digitalkey # 小米数字钥匙
-/system/product/app/ThirdAppAssistant # 三方APP异常分析助手
-/system/product/app/SecurityOnetrackService # 安全跟踪服务
-/system/product/app/MiBugReportOS2 # 小米内置Bug反馈
-/system/product/app/MIUIAccessibility # 小米无障碍
-/system/product/priv-app/MIUIPersonalAssistantPhoneOS2NoBeta # 小米智能助理
-/system/product/app/MiGameService_8550 # 小米游戏中心
-/system/product/app/MIUIgreenguard # 小米家人守护
-/system/product/data-app/BaiduIME # 百度输入法小米版
-/system/product/data-app/Health # 小米健康
-/system/product/data-app/iFlytekIME # 讯飞输入法小米版
-/system/product/data-app/MIGalleryLockscreen # 小米锁屏画报
-/system/product/data-app/MIUIDuokanReader # 小米逗看
-/system/product/data-app/MIUIGameCenter # 小米游戏中心
-/system/product/data-app/MIUIMusicT # 小米音乐
-/system/product/data-app/MIUIVideo # 小米视频
-/system/product/data-app/MIUIXiaoAiSpeechEngine # 小爱语音引擎
-/system/product/data-app/MIUIYoupin # 优品
-/system/product/data-app/SmartHome # 米家
-/system/product/app/mi_connect_service # 小米网络通信互联
-
-# /system/apex/com.android.healthfitness.apex # 健康数据统计

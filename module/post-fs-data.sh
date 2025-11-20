@@ -121,7 +121,7 @@ preparation() {
 
     if [ ! -f "$TARGET_LIST" ]; then
         ecof "Target list does not exist"
-        DESCRIPTION="[❌Target list file does not exist! Powered by ${ROOT_SOL_DETAIL}] $MOD_INTRO"
+        DESCRIPTION="[✖️Target list file does not exist! Powered by ${ROOT_SOL_DETAIL}] $MOD_INTRO"
         update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
         exit 1
     fi
@@ -371,20 +371,20 @@ module_status_update() {
     if [ -f "$MODULE_PROP" ]; then
         if [ $vanished_apps_count -gt 0 ]; then
             if [ $apps_not_found_count -eq 0 ]; then
-                DESCRIPTION="✅All done. $vanished_apps_count APP(s) vanished."
+                DESCRIPTION="✔️All done. $vanished_apps_count APP(s) vanished."
             else
-                DESCRIPTION="✅Done. $vanished_apps_count APP(s) vanished. $apps_not_found_count APP(s) not found. $total_apps_count APP(s) in total."
+                DESCRIPTION="✔️Done. $vanished_apps_count APP(s) vanished. $apps_not_found_count APP(s) not found. $total_apps_count APP(s) in total."
             fi
         else
             if [ $total_apps_count -gt 0 ]; then
                 if [ $duplicated_apps_count -gt 0 ]; then
-                    DESCRIPTION="✅All done. $duplicated_apps_count APP(s) vanished."
+                    DESCRIPTION="✔️All done. $duplicated_apps_count APP(s) vanished."
                 else
-                    DESCRIPTION="⏳Standby. $total_apps_count APP(s) not found."
+                    DESCRIPTION="❄️Standby. $total_apps_count APP(s) not found."
                     no_effect=true
                 fi
             else
-                DESCRIPTION="❌No valid items found in target list!"
+                DESCRIPTION="✖️No valid items found in target list!"
                 no_effect=true
             fi
         fi

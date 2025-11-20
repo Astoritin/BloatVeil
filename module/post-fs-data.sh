@@ -121,7 +121,7 @@ preparation() {
 
     if [ ! -f "$TARGET_LIST" ]; then
         ecof "Target list does not exist"
-        DESCRIPTION="Target list file does not exist ❌ | root: ${ROOT_SOL_DETAIL} 🔮 | $MOD_INTRO"
+        DESCRIPTION="Target list file does not exist ❌丨root: ${ROOT_SOL_DETAIL} 🔮丨$MOD_INTRO"
         update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
         exit 1
     fi
@@ -373,14 +373,14 @@ module_status_update() {
             if [ $apps_not_found_count -eq 0 ]; then
                 DESCRIPTION="vanished: $vanished_apps_count ✨"
             else
-                DESCRIPTION="vanished: $vanished_apps_count ✨ | not found: $apps_not_found_count ❎ | in total: $total_apps_count 📋"
+                DESCRIPTION="vanished: $vanished_apps_count ✨丨not found: $apps_not_found_count ❎丨in total: $total_apps_count 📋"
             fi
         else
             if [ $total_apps_count -gt 0 ]; then
                 if [ $duplicated_apps_count -gt 0 ]; then
                     DESCRIPTION="vanished: $duplicated_apps_count ✨"
                 else
-                    DESCRIPTION="standby ⏳ | not found: $total_apps_count ❎"
+                    DESCRIPTION="standby ⏳丨not found: $total_apps_count ❎"
                     no_effect=true
                 fi
             else
@@ -388,8 +388,8 @@ module_status_update() {
                 no_effect=true
             fi
         fi
-        [ "$no_effect" = false ] && DESCRIPTION="${DESCRIPTION} | mode: ${hide_mode_desc}${desc_last_worked} 🤖 | root: ${ROOT_SOL_DETAIL} 🔮 | $MOD_INTRO"
-        [ "$no_effect" = true ] && DESCRIPTION="${DESCRIPTION} | root: ${ROOT_SOL_DETAIL} 🔮 | $MOD_INTRO"
+        [ "$no_effect" = false ] && DESCRIPTION="${DESCRIPTION}丨mode: ${hide_mode_desc}${desc_last_worked} 🤖丨root: ${ROOT_SOL_DETAIL} 🔮丨$MOD_INTRO"
+        [ "$no_effect" = true ] && DESCRIPTION="${DESCRIPTION}丨root: ${ROOT_SOL_DETAIL} 🔮丨$MOD_INTRO"
         update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
         update_config_var "mb_call" "$CONFIG_FILE" "$mb_call"
     fi

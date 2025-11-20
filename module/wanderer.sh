@@ -403,7 +403,7 @@ clean_duplicate_items() {
     if [ -z "$filed" ]; then
 		ecov "File path is not defined"
 		return 1
-	elif [ ! -f "$filed" ];
+	elif [ ! -f "$filed" ]; then
 		ecov "$filed is not a file"
 		return 2
 	fi

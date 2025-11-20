@@ -19,8 +19,8 @@ LITE_MOD_DIR="/data/adb/lite_modules/bloat_veil"
 . "${MOD_DIR}/wanderer.sh"
 
 init_dir "$TEMPLATE_DIR" "$LOG_DIR"
-module_intro >> "$LOG_FILE"
-show_system_info >> "$LOG_FILE"
+module_intro
+show_system_info
 print_line
 
 if [ ! -f "$FLAG_BRICKED" ]; then

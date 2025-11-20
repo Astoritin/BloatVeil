@@ -9,16 +9,16 @@ CONFIG_FILE="$CONFIG_DIR/settings.conf"
 TEMPLATE_DIR="$CONFIG_DIR/template"
 
 TARGET_LIST="$CONFIG_DIR/targets.txt"
-TEMPLATE_FILE="$TEMPLATE_DIR/target_tm.txt"
+TEMPLATE_FILE="$TEMPLATE_DIR/targets_tm.txt"
 
 FLAG_BRICKED="$CONFIG_DIR/bricked"
 
 LOG_DIR="$CONFIG_DIR/logs"
 LOG_FILE="$LOG_DIR/bv_4_$(date +"%Y%m%dT%H%M%S").log"
-TARGET_LIST_BVA="$LOG_DIR/target_bva.txt"
+TARGET_LIST_BVA="$LOG_DIR/targets_bva.txt"
 
 LAST_WORKED_DIR="$CONFIG_DIR/last_worked"
-TARGET_LIST_LW="$LAST_WORKED_DIR/target_lw.txt"
+TARGET_LIST_LW="$LAST_WORKED_DIR/targets_lw.txt"
 
 MOD_INTRO="A bloatware vanishing act on the system."
 
@@ -40,7 +40,6 @@ config_loader() {
 
 }
 
-init_dir "$TEMPLATE_DIR" "$LOG_DIR"
 clean_dir_if_reach_max "30"
 module_intro
 show_system_info

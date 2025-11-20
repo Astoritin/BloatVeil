@@ -9,16 +9,16 @@ CONFIG_FILE="$CONFIG_DIR/settings.conf"
 TEMPLATE_DIR="$CONFIG_DIR/template"
 
 TARGET_LIST="$CONFIG_DIR/targets.txt"
-TEMPLATE_FILE="$TEMPLATE_DIR/target_tm.txt"
+TEMPLATE_FILE="$TEMPLATE_DIR/targets_tm.txt"
 
 FLAG_BRICKED="$CONFIG_DIR/bricked"
 
 LOG_DIR="$CONFIG_DIR/logs"
 LOG_FILE="$LOG_DIR/bv_2_$(date +"%Y%m%dT%H%M%S").log"
-TARGET_LIST_BVA="$LOG_DIR/target_bva.txt"
+TARGET_LIST_BVA="$LOG_DIR/targets_bva.txt"
 
 LAST_WORKED_DIR="$CONFIG_DIR/last_worked"
-TARGET_LIST_LW="$LAST_WORKED_DIR/target_lw.txt"
+TARGET_LIST_LW="$LAST_WORKED_DIR/targets_lw.txt"
 
 MOD_INTRO="A bloatware vanishing act on the system."
 
@@ -223,11 +223,7 @@ bloat_veil() {
     mn_count=0
 
     [ -f "$TARGET_LIST_BVA" ] && rm -f "$TARGET_LIST_BVA" && eco "Remove old temporary file"
-    if [ -f "$TEMPLATE_FILE" ]; then
-		cat "$TEMPLATE_FILE" > "$TARGET_LIST_BVA" && eco "Created new temporary file from template"
-	else
-		touch "$TARGET_LIST_BVA" && eco "Created empty temporary file"
-	fi
+	touch "$TARGET_LIST_BVA" && eco "Created empty temporary file"
 
     while IFS= read -r line || [ -n "$line" ]; do
         line=$(echo "$line" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
@@ -336,7 +332,9 @@ bloat_veil() {
     done < "$TARGET_LIST"
 
     clean_duplicate_items "$TARGET_LIST_BVA" && eco "Clean duplicate items"
-
+	cat "$TEMPLATE_FILE" > "${TEMPLATE_FILE}.tmp" && \
+	cat "$TARGET_LIST_BVA" >> "${TEMPLATE_FILE}.tmp" && \
+	mv "${TEMPLATE_FILE}.tmp" "$TARGET_LIST_BVA"
 }
 
 module_status_update() {
@@ -413,8 +411,8 @@ module_cleanup_schedule() {
 }
 
 init_dir "$TEMPLATE_DIR" "$LOG_DIR"
-module_intro >> "$LOG_FILE"
-show_system_info >> "$LOG_FILE"
+module_intro
+show_system_info
 print_line
 config_loader
 unbrick

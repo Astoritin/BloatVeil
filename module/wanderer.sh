@@ -156,11 +156,11 @@ ecov() { eco "$1" "V" ; }
 
 print_line() {
 
-    length=${1:-39}
+    length=${1:-78}
     symbol=${2:--}
 
     line=$(printf "%-${length}s" | tr ' ' "$symbol")
-    echo "$line"
+    eco "$line"
 
 }
 

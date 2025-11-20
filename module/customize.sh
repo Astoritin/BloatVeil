@@ -7,7 +7,7 @@ CONFIG_FILE="$CONFIG_DIR/settings.conf"
 TEMPLATE_DIR="$CONFIG_DIR/template"
 
 TARGET_LIST="$CONFIG_DIR/targets.txt"
-TEMPLATE_FILE="$TEMPLATE_DIR/target_tm.txt"
+TEMPLATE_FILE="$TEMPLATE_DIR/targets_tm.txt"
 
 LOG_DIR="$CONFIG_DIR/logs"
 
@@ -19,14 +19,6 @@ MOD_INTRO="A bloatware vanishing act on the system."
 POST_D="/data/adb/post-fs-data.d/"
 CLEANUP_SH="bloat_veil_cleanup.sh"
 CLEANUP_PATH="${POST_D}/${CLEANUP_SH}"
-
-show_system_info() {
-
-    ui_print "- Device: $(getprop ro.product.brand) $(getprop ro.product.model) ($(getprop ro.product.device))"
-    ui_print "OS: Android $(getprop ro.build.version.release) (API $(getprop ro.build.version.sdk)), $(getprop ro.product.cpu.abi | cut -d '-' -f1)"
-    ui_print "Kernel: $(uname -r)"
-
-}
 
 extract() {
     file=$1
@@ -62,6 +54,14 @@ extract() {
 
 extract "wanderer.sh" "$TMPDIR"
 . "$TMPDIR/wanderer.sh"
+
+show_system_info() {
+
+    ui_print "- Device: $(getprop ro.product.brand) $(getprop ro.product.model) ($(getprop ro.product.device))"
+    ui_print "OS: Android $(getprop ro.build.version.release) (API $(getprop ro.build.version.sdk)), $(getprop ro.product.cpu.abi | cut -d '-' -f1)"
+    ui_print "Kernel: $(uname -r)"
+
+}
 
 ui_print "- Setting up $MOD_NAME"
 ui_print "- Version: $MOD_VER"

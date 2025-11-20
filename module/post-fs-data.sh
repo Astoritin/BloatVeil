@@ -28,7 +28,7 @@ MIRROR_DIR="$MODDIR/system"
 
 unbrick() {
     if [ "$brick_rescue" = false ]; then
-        eco "Skip brick rescue"
+        ecow "Skip brick rescue"
         return 1
     fi
 
@@ -36,15 +36,17 @@ unbrick() {
     rescue_from_last_worked_target_list=false
 
     if [ -f "$FLAG_BRICKED" ]; then
-        eco "Flag bricked exists!" "F"
+        ecof "Flag bricked exists!"
     
         if file_compare "$TARGET_LIST_LW" "$TARGET_LIST"; then
-            eco "Last worked target list is identical to current target list"
+            ecow "Last worked target list is identical to current target list"
             rm -f "$TARGET_LIST_LW" && eco "Remove last worked target list"
         fi
 
         if [ "$disable_module_as_brick" = false ] && [ "$last_worked_target_list" = true ]; then
+			ecov "Attempt to rescue from last worked target list"
             if [ -f "$TARGET_LIST_LW" ]; then
+				ecov "Last worked target list exists"
                 cp "$TARGET_LIST_LW" "$TARGET_LIST" && eco "Switch to last worked target list"
                 rm -f "$MODDIR/disable" && eco "Enable $MOD_NAME again"
                 rm -f "$FLAG_BRICKED" && eco "Reset brick state"
@@ -110,15 +112,15 @@ preparation() {
     fi
 
     if [ "$ROOT_SOL_COUNT" -gt 1 ]; then
-        eco "Find multiple root solutions" "W"
-        eco "$MOD_NAME will revert to Mount Bind mode"
+        ecow "Find multiple root solutions"
+        ecow "$MOD_NAME will revert to Mount Bind mode to ensure maximum compatibility"
         hide_mode="MB"
     fi
 
     mkdir -p "$MIRROR_DIR" && eco "Create new mirror dir"
 
     if [ ! -f "$TARGET_LIST" ]; then
-        eco "Target list does not exist" "F"
+        ecof "Target list does not exist"
         DESCRIPTION="[❌Target list file does not exist! Powered by ${ROOT_SOL_DETAIL}] $MOD_INTRO"
         update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
         exit 1
@@ -130,10 +132,10 @@ mirror_make_node() {
     node_path=$1
 
     if [ -z "$node_path" ]; then
-        eco "Node path is not defined (5)" "E"
+        ecoe "Node path is not defined (5)"
         return 5
     elif [ ! -e "$node_path" ]; then
-        eco "$node_path does not exist (6)" "E"
+        ecoe "$node_path does not exist (6)"
         return 6
     fi
 
@@ -142,13 +144,13 @@ mirror_make_node() {
     mirror_node_path="$MODDIR$node_path"
 
     if [ ! -d "$mirror_parent_dir" ]; then
-        mkdir -p "$mirror_parent_dir"
-        eco "Create parent dir $mirror_parent_dir"
+        mkdir -p "$mirror_parent_dir" && eco "Created parent dir $mirror_parent_dir"
     fi
 
     if [ ! -e "$mirror_node_path" ]; then
         mknod "$mirror_node_path" c 0 0
         result_make_node="$?"
+		ecod "mknod $mirror_node_path c 0 0 ($result_make_node)"
         return $result_make_node
     else
         eco "Node $mirror_node_path exists already"
@@ -162,23 +164,23 @@ mirror_magisk_replace() {
     replace_path=$1
 
     if [ -z "$replace_path" ]; then
-        eco "Replace path is not defined (5)" "E"
+        ecoe "Replace path is not defined (5)"
         return 5
     elif [ ! -d "$replace_path" ]; then
-        eco "$replace_path is not a dir (6)" "E"
+        ecoe "$replace_path is not a dir (6)"
         return 6
     fi
 
     mirror_app_path="$MODDIR$replace_path"
 
     if [ ! -d "$mirror_app_path" ]; then
-        mkdir -p "$mirror_app_path"
-        eco "Create mirror path $mirror_app_path"
+        mkdir -p "$mirror_app_path" && eco "Created mirror path $mirror_app_path"
     fi
 
     if [ ! -e "$mirror_app_path/.replace" ]; then
         touch "$mirror_app_path/.replace"
         result_magisk_replace="$?"
+		ecod "touch $mirror_app_path/.replace ($result_magisk_replace)"
         return $result_magisk_replace
     else
         eco "File $mirror_app_path exists already"
@@ -193,15 +195,16 @@ link_mount_bind() {
     target_path=$2
 
     if [ -z "$link_path" ] || [ -z "$target_path" ]; then
-        eco "Link path or target path is not defined (5)" "E"
+        ecoe "Link path or target path is not defined (5)"
         return 5
     elif [ ! -d "$link_path" ] || [ ! -d "$target_path" ]; then
-        eco "$link_path or $target_path is not a dir (6)" "E"
+        ecoe "$link_path or $target_path is not a dir (6)"
         return 6
     fi
 
     mount -o bind "$link_path" "$target_path"
     result_mount_bind="$?"
+	ecod "mount -o bind $link_path $target_path ($result_mount_bind)"
     return $result_mount_bind
 }
 
@@ -221,11 +224,9 @@ bloat_veil() {
 
     [ -f "$TARGET_LIST_BVA" ] && rm -f "$TARGET_LIST_BVA" && eco "Remove old temporary file"
     if [ -f "$TEMPLATE_FILE" ]; then
-		cat "$TEMPLATE_FILE" > "$TARGET_LIST_BVA"
-		eco "Create new temporary file from template"
+		cat "$TEMPLATE_FILE" > "$TARGET_LIST_BVA" && eco "Created new temporary file from template"
 	else
-		touch "$TARGET_LIST_BVA"
-		eco "Create empty temporary file"
+		touch "$TARGET_LIST_BVA" && eco "Created empty temporary file"
 	fi
 
     while IFS= read -r line || [ -n "$line" ]; do
@@ -250,12 +251,13 @@ bloat_veil() {
             first_char=$(printf '%s' "$line" | cut -c1)
             if [ "$first_char" = "/" ]; then
                 app_path="$package"
+				ecov "Custom dir specified: $app_path"
                 case "$app_path" in
                     /apex*|/system/apex*)
                         case "$app_path" in
                             *.apex|*.capex) ;;
                             *)  if [ "${app_path#/apex}" != "$app_path" ]; then
-                                    eco "Redirect to /system$app_path" "*"
+                                    eco "Redirect to /system$app_path"
                                     app_path="/system$app_path"
                                 fi
                                 app_path=$(echo "$app_path" | sed -n 's|^/system/apex/\([^/]*\).*|/system/apex/\1|p')
@@ -270,18 +272,19 @@ bloat_veil() {
                         esac
                         ;;
                     /app*|/product*|/priv-app*|/system_ext*|/vendor*|/data-app*)
-                        eco "Redirect to /system$app_path" "*"
+                        eco "Redirect to /system$app_path"
                         app_path="/system$app_path";;
                     /system*)   [ "$app_path" = "/system" ] && break;;
                     *)  break;;
                 esac
             else
+				ecov "Standard system app path specified: $path/$package"
                 app_path="$path/$package"
             fi
 
             app_name="$(basename "$app_path")"
             if [ -d "$app_path" ]; then
-                eco "Check path $app_path"
+                eco "Checking path $app_path"
                 case "$hide_mode" in
                     "MB")   link_mount_bind "$MIRROR_DIR" "$app_path";;
                     "MR")   mirror_magisk_replace "$app_path";;

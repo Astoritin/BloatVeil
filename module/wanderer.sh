@@ -313,7 +313,7 @@ print_var() {
     [ $# -eq 0 ] && return 1
 
     query_var "$@" | while IFS= read -r line || [ -n "$line" ]; do
-        echo "- $line"
+        eco "$line"
     done
 
 }

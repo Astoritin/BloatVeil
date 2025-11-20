@@ -3,6 +3,10 @@
 DESCRIPTION="A bloatware vanishing act on the system."
 
 CONFIG_DIR="/data/adb/bloat_veil"
+
+LOG_DIR="$CONFIG_DIR/logs"
+LOG_FILE="$LOG_DIR/bv_1_$(date +"%Y%m%dT%H%M%S").log"
+
 FLAG_BRICKED="$CONFIG_DIR/bricked"
 
 POST_D="/data/adb/post-fs-data.d/"
@@ -12,36 +16,22 @@ CLEANUP_PATH="${POST_D}/${CLEANUP_SH}"
 MOD_DIR="/data/adb/modules/bloat_veil"
 LITE_MOD_DIR="/data/adb/lite_modules/bloat_veil"
 
-update_config_var() {
-    key_name="$1"
-    file_path="$2"
-    expected_value="$3"
-    append_mode="${4:-false}"
+. "${MOD_DIR}/wanderer.sh"
 
-    if [ -z "$key_name" ] || [ -z "$expected_value" ] || [ -z "$file_path" ]; then
-        return 1
-    elif [ ! -f "$file_path" ]; then
-        return 2
-    fi
-
-    if grep -q "^${key_name}=" "$file_path"; then
-        [ "$append_mode" = true ] && return 0
-        sed -i "/^${key_name}=/c\\${key_name}=${expected_value}" "$file_path"
-    else
-        [ -n "$(tail -c1 "$file_path")" ] && echo >> "$file_path"
-        printf '%s=%s\n' "$key_name" "$expected_value" >> "$file_path"
-    fi
-
-    result_update_value=$?
-    return "$result_update_value"
-}
+init_dir "$TEMPLATE_DIR" "$LOG_DIR"
+module_intro >> "$LOG_FILE"
+show_system_info >> "$LOG_FILE"
+print_line
 
 if [ ! -f "$FLAG_BRICKED" ]; then
+	ecov "Module not marked as bricked, skipping cleanup"
     if [ -f "$MOD_DIR/disable" ]; then
+		ecov "Updating description in module.prop of $MOD_DIR"
         update_config_var "description" "$MOD_DIR/module.prop" "$DESCRIPTION"
     elif [ -f "$LITE_MOD_DIR/disable" ]; then
+		ecov "Updating description in module.prop of $LITE_MOD_DIR"
         update_config_var "description" "$LITE_MOD_DIR/module.prop" "$DESCRIPTION"
     fi
 fi
 
-rm -f "${CLEANUP_PATH}"
+rm -f "${CLEANUP_PATH}" && ecov "Removed cleanup script at ${CLEANUP_PATH}"

@@ -40,7 +40,7 @@ config_loader() {
 
 }
 
-clean_dir_if_reach_max "30"
+clean_dir_if_reach_max "$LOG_DIR"
 module_intro
 show_system_info
 print_line

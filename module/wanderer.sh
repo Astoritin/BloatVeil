@@ -71,45 +71,25 @@ install_env_check() {
 }
 
 init_dir() {
-
-	if [ $# -eq 0 ]; then
-		ecov "No directories specified to initialize"
-		return 1
-	fi
+	[ $# -eq 0 ] && return 1
 
     for dir_to_init in "$@"; do
-		if [ -z "$dir_to_init" ]; then
-			ecov "Directory to initialize is empty, skipping"
-			continue
-		fi
-		if [ ! -d "$dir_to_init" ]; then
-			mkdir -p "$dir_to_init"
-			result_mkdir=$?
-			ecov "Creating directory: $dir_to_init ($result_mkdir)"
-		fi
+		[ -z "$dir_to_init" ] && continue
+		[ ! -d "$dir_to_init" ] && mkdir -p "$dir_to_init"
 	done
-
 }
 
 clean_dir_if_reach_max() {
     dir_to_clean="$1"
     files_max="$2"
     
-    if [ -z "$dir_to_clean" ] || [ ! -d "$dir_to_clean" ]; then
-		ecov "Directory to clean is not defined or does not exist"
-		return 1
-	elif [ -z "$files_max" ]; then
-		ecov "Maximum files limit is not defined, using default value 20"
-		files_max=20
-	fi
+    [ -z "$dir_to_clean" ] || [ ! -d "$dir_to_clean" ] && return 1
+	[ -z "$files_max" ] && files_max=20
 
     files_count=$(ls -1 "$dir_to_clean" | wc -l)
-	ecov "Files in $dir_to_clean: $files_count, Max allowed: $files_max"
     if [ "$files_count" -gt "$files_max" ]; then
-		ecov "Cleaning files in $dir_to_clean"
         find "$dir_to_clean" -maxdepth 1 -type f -exec rm -f {} +
     fi
-    return 0
 }
 
 get_tid() {

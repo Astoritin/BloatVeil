@@ -1,31 +1,31 @@
-# ***********************************************************************************************
+#################################################################################################
 # BloatVeil Configuration File
-# ***********************************************************************************************
+#################################################################################################
 # Hash symbol # indicates comment lines (ignored during processing)
-# ***********************************************************************************************
+#################################################################################################
 # ! Important: Path/directory names are CASE-SENSITIVE
 # - For example, "mab", "MAB", "mAb" are treated as completely different names in Linux
-# ***********************************************************************************************
+#################################################################################################
 # You can obtain these directory names through:
 # - App Manager (https://github.com/MuntashirAkon/AppManager)
 # - Root Explorer (manual search)
-# ***********************************************************************************************
+#################################################################################################
 # You can specify either:
 # - Directory name only (e.g. SogouInput)
 # - Full directory paths (e.g. /system/product/app/SogouInput)
 # - Apps located in apex/capex files (e.g. /system/apex/com.android.healthfitness.apex)
 # ! Note: For apex/capex files, you must specify the full path
 # ! because BloatVeil will NOT scan /system/apex directory automatically
-# ***********************************************************************************************
+#################################################################################################
 # Full configuration examples
-# ***********************************************************************************************
+#################################################################################################
 #   SogouInput
 #   SogouIME # Sogou Input Method
 #   /system/product/app/SogouInput
 #   /system/app/SogouIME # Sogou Input Method
 #   /system/apex/com.android.healthfitness.apex
 #   /system/apex/com.android.healthfitness.apex # Healthiness Data statistics service
-# ***********************************************************************************************
+#################################################################################################
 # Place directory names of system apps you wish to remove below (One entry per line):
-# ***********************************************************************************************
+#################################################################################################
 

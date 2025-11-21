@@ -12,7 +12,7 @@ CLEANUP_PATH="${POST_D}/${CLEANUP_SH}"
 MOD_DIR="/data/adb/modules/bloat_veil"
 LITE_MOD_DIR="/data/adb/lite_modules/bloat_veil"
 
-. "${MOD_DIR}/wanderer.sh"
+. "$MOD_DIR/wanderer.sh"
 
 if [ ! -f "$FLAG_BRICKED" ]; then
     if [ -f "$MOD_DIR/disable" ]; then

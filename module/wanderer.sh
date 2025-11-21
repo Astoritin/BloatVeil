@@ -92,48 +92,12 @@ clean_dir_if_reach_max() {
     fi
 }
 
-get_tid() {
-    if cat /proc/self/stat 2>/dev/null | awk '{print $4}' 2>/dev/null; then
-        :
-    else
-        echo "$$"
-    fi
-}
-
-eco() {
-    _eco_msg="$1"
-    _eco_level="${2:-i}"
-    _eco_tag="${3:-$MOD_NAME}"
-    _eco_pid="$$"
-    _eco_tid="$(get_tid)"
-    _eco_timestamp=$(date '+%m-%d %H:%M:%S.000')
-
-    [ -z "$_eco_msg" ] && return 1
-
-    case "$_eco_level" in
-        [dD]*) _eco_level="D" ;;
-        [iI]*) _eco_level="I" ;;
-        [wW]*) _eco_level="W" ;;
-        [eE]*) _eco_level="E" ;;
-        [vV]*) _eco_level="V" ;;
-        [fF]*) _eco_level="F" ;;
-        *) _eco_level="I" ;;
-    esac
-
-    echo "${_eco_timestamp}  ${_eco_pid}  ${_eco_tid} ${_eco_level} ${_eco_tag}: ${_eco_msg}" >> "$LOG_FILE" 2>/dev/null
-}
-
-ecoi() { eco "$1" "I" ; }
-ecod() { eco "$1" "D" ; }
-ecow() { eco "$1" "W" ; }
-ecoe() { eco "$1" "E" ; }
-ecof() { eco "$1" "F" ; }
-ecov() { eco "$1" "V" ; }
+eco() { echo "$1" >> "$LOG_FILE" 2>/dev/null; }
 
 print_line() {
 
-    length=${1:-56}
-    symbol=${2:-*}
+    length=${1:-64}
+    symbol=${2:-#}
 
     line=$(printf "%-${length}s" | tr ' ' "$symbol")
     eco "$line"
@@ -154,10 +118,8 @@ get_config_var() {
     config_file=$2
 
     if [ -z "$key" ] || [ -z "$config_file" ]; then
-        ecow "Key or config file path is not defined"
         return 1
     elif [ ! -f "$config_file" ]; then
-        ecow "$config_file is not a file"
         return 2
     fi
     
@@ -212,13 +174,9 @@ get_config_var() {
 
     awk_exit_state=$?
     case $awk_exit_state in
-        1)  ecow "Failed to fetch value for $key (1)"
-            return 5
-            ;;
+        1)  return 5 ;;
         0)  ;;
-        *)  ecow "Unexpected error ($awk_exit_state)"
-            return 6
-            ;;
+        *)  return 6 ;;
     esac
 
     value=$(echo "$value" | dos2unix | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | sed 's/'\''/'\\\\'\'''\''/g' | sed 's/[$;&|<>`"()]/\\&/g')
@@ -227,7 +185,6 @@ get_config_var() {
         echo "$value"
         return 0
     else
-        ecow "Key $key does not exist in file $config_file"
         return 1
     fi
 }

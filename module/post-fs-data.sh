@@ -14,7 +14,7 @@ TEMPLATE_FILE="$TEMPLATE_DIR/targets_tm.txt"
 FLAG_BRICKED="$CONFIG_DIR/bricked"
 
 LOG_DIR="$CONFIG_DIR/logs"
-LOG_FILE="$LOG_DIR/bv_2_$(date +"%Y%m%dT%H%M%S").log"
+LOG_FILE="$LOG_DIR/BloatVeil_2_$(date +"%Y%m%dT%H%M%S").log"
 TARGET_LIST_BVA="$LOG_DIR/targets_bva.txt"
 
 LAST_WORKED_DIR="$CONFIG_DIR/last_worked"
@@ -28,25 +28,22 @@ MIRROR_DIR="$MODDIR/system"
 
 unbrick() {
     if [ "$brick_rescue" = false ]; then
-        ecow "Skip brick rescue"
+        eco "Skip brick rescue"
         return 1
     fi
 
-    eco "Check flag bricked"
     rescue_from_last_worked_target_list=false
 
     if [ -f "$FLAG_BRICKED" ]; then
-        ecof "Flag bricked exists!"
-    
+        eco "Flag bricked exists!"
         if file_compare "$TARGET_LIST_LW" "$TARGET_LIST"; then
-            ecow "Last worked target list is identical to current target list"
+            eco "Last worked target list is identical to current target list"
             rm -f "$TARGET_LIST_LW" && eco "Remove last worked target list"
         fi
-
         if [ "$disable_module_as_brick" = false ] && [ "$last_worked_target_list" = true ]; then
-			ecov "Attempt to rescue from last worked target list"
+			eco "Attempt to rescue from last worked target list"
             if [ -f "$TARGET_LIST_LW" ]; then
-				ecov "Last worked target list exists"
+				eco "Last worked target list exists"
                 cp "$TARGET_LIST_LW" "$TARGET_LIST" && eco "Switch to last worked target list"
                 rm -f "$MODDIR/disable" && eco "Enable $MOD_NAME again"
                 rm -f "$FLAG_BRICKED" && eco "Reset brick state"
@@ -54,11 +51,9 @@ unbrick() {
                 return 0
             fi
         fi
-
         if [ "$disable_module_as_brick" = true ] && [ ! -f "$MODDIR/disable" ]; then
             eco "Flag bricked exists"
-            eco "but $MOD_NAME has not been disabled"
-            eco "Maybe $MOD_NAME is enabled manually"
+            eco "Flag disable does not exist"
             rm -f "$FLAG_BRICKED" && eco "Remove flag bricked"
             return 0
         else
@@ -71,7 +66,7 @@ unbrick() {
 
 config_loader() {
 
-    eco "Load config"
+    eco "Loading config"
     brick_rescue=$(get_config_var "brick_rescue" "$CONFIG_FILE") || brick_rescue=true
     disable_module_as_brick=$(get_config_var "disable_module_as_brick" "$CONFIG_FILE") || disable_module_as_brick=true
     last_worked_target_list=$(get_config_var "last_worked_target_list" "$CONFIG_FILE") || last_worked_target_list=true
@@ -103,7 +98,7 @@ preparation() {
             MN_SUPPORT=false
             if [ "$hide_mode" = "MN" ]; then
                 eco "Make Node: unsupported"
-                eco "Revert to Magisk Replace mode"
+                eco "$MOD_NAME will revert to Magisk Replace mode"
                 hide_mode="MR"
             fi
         fi
@@ -112,16 +107,16 @@ preparation() {
     fi
 
     if [ "$ROOT_SOL_COUNT" -gt 1 ]; then
-        ecow "Find multiple root solutions"
-        ecow "$MOD_NAME will revert to Mount Bind mode to ensure maximum compatibility"
+        eco "Find multiple root solutions"
+        eco "$MOD_NAME will revert to Mount Bind mode to ensure maximum compatibility"
         hide_mode="MB"
     fi
 
     mkdir -p "$MIRROR_DIR" && eco "Create new mirror dir"
 
     if [ ! -f "$TARGET_LIST" ]; then
-        ecof "Target list does not exist"
-        DESCRIPTION="Target list file does not exist ❌丨root: ${ROOT_SOL_DETAIL} 🔮丨$MOD_INTRO"
+        eco "Target list does not exist"
+        DESCRIPTION="Target list file does not exist❌ | ${ROOT_SOL_DETAIL}🔮 | $MOD_INTRO"
         update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
         exit 1
     fi
@@ -132,10 +127,8 @@ mirror_make_node() {
     node_path=$1
 
     if [ -z "$node_path" ]; then
-        ecoe "Node path is not defined (5)"
         return 5
     elif [ ! -e "$node_path" ]; then
-        ecoe "$node_path does not exist (6)"
         return 6
     fi
 
@@ -150,10 +143,8 @@ mirror_make_node() {
     if [ ! -e "$mirror_node_path" ]; then
         mknod "$mirror_node_path" c 0 0
         result_make_node="$?"
-		ecod "mknod $mirror_node_path c 0 0 ($result_make_node)"
         return $result_make_node
     else
-        eco "Node $mirror_node_path exists already"
         return 1
     fi
 
@@ -164,10 +155,8 @@ mirror_magisk_replace() {
     replace_path=$1
 
     if [ -z "$replace_path" ]; then
-        ecoe "Replace path is not defined (5)"
         return 5
     elif [ ! -d "$replace_path" ]; then
-        ecoe "$replace_path is not a dir (6)"
         return 6
     fi
 
@@ -180,10 +169,8 @@ mirror_magisk_replace() {
     if [ ! -e "$mirror_app_path/.replace" ]; then
         touch "$mirror_app_path/.replace"
         result_magisk_replace="$?"
-		ecod "touch $mirror_app_path/.replace ($result_magisk_replace)"
         return $result_magisk_replace
     else
-        eco "File $mirror_app_path exists already"
         return 1
     fi
 
@@ -195,23 +182,20 @@ link_mount_bind() {
     target_path=$2
 
     if [ -z "$link_path" ] || [ -z "$target_path" ]; then
-        ecoe "Link path or target path is not defined (5)"
         return 5
     elif [ ! -d "$link_path" ] || [ ! -d "$target_path" ]; then
-        ecoe "$link_path or $target_path is not a dir (6)"
         return 6
     fi
 
     mount -o bind "$link_path" "$target_path"
     result_mount_bind="$?"
-	ecod "mount -o bind $link_path $target_path ($result_mount_bind)"
     return $result_mount_bind
 }
 
 bloat_veil() {
 
     print_line
-    eco "Tricking bloatwares"
+    eco "Start tricking"
     print_line
 
     total_apps_count=0
@@ -247,7 +231,7 @@ bloat_veil() {
             first_char=$(printf '%s' "$line" | cut -c1)
             if [ "$first_char" = "/" ]; then
                 app_path="$package"
-				ecov "Custom dir specified: $app_path"
+				eco "Custom path specified: $app_path"
                 case "$app_path" in
                     /apex*|/system/apex*)
                         case "$app_path" in
@@ -274,13 +258,12 @@ bloat_veil() {
                     *)  break;;
                 esac
             else
-				ecov "Standard system app path specified: $path/$package"
+				eco "Standard path specified: $path/$package"
                 app_path="$path/$package"
             fi
 
             app_name="$(basename "$app_path")"
             if [ -d "$app_path" ]; then
-                eco "Checking path $app_path"
                 case "$hide_mode" in
                     "MB")   link_mount_bind "$MIRROR_DIR" "$app_path";;
                     "MR")   mirror_magisk_replace "$app_path";;
@@ -304,7 +287,6 @@ bloat_veil() {
                 fi
 
             elif [ -f "$app_path" ] && [ -d "$(dirname $app_path)" ]; then
-                eco "Check path $app_path"
                 if [ "$hide_mode" = "MN" ] || [ "$MN_SUPPORT" = true ]; then
                     mirror_make_node "$app_path"
                     file_process_result=$?
@@ -322,10 +304,10 @@ bloat_veil() {
                 fi
             else
                 if [ "$first_char" = "/" ]; then
-                    eco "Custom dir $app_path does not exist"
+                    eco "Custom path $app_path does not exist"
                     break
                 else
-                    eco "Dir $app_path does not exist"
+                    eco "Standard path $app_path does not exist"
                 fi
             fi
         done
@@ -343,15 +325,15 @@ module_status_update() {
 
     apps_not_found_count=$((total_apps_count - vanished_apps_count - duplicated_apps_count))
     print_line
-    eco "Vanished: $vanished_apps_count APP(s)"
-    eco "Mount Bind: $mb_count APP(s)"
-    eco "Magisk Replace: $mr_count APP(s)"
-    eco "Make Node: $mn_count APP(s)"
+    eco "Vanished: $vanished_apps_count"
+    eco "Mount Bind: $mb_count"
+    eco "Magisk Replace: $mr_count"
+    eco "Make Node: $mn_count"
     print_line
-    eco "Duplicate: $duplicated_apps_count APP(s)"
-    eco "Not found: $apps_not_found_count APP(s)"
+    eco "Duplicate: $duplicated_apps_count"
+    eco "Not found: $apps_not_found_count"
     print_line
-    eco "Total: $total_apps_count APP(s)"
+    eco "In total: $total_apps_count"
     print_line
 
     [ $mb_count -gt 0 ] && hide_mode_desc="Mount Bind" && mb_call=true
@@ -359,9 +341,9 @@ module_status_update() {
     [ $mn_count -gt 0 ] && hide_mode_desc="Make Node"
 
     if [ $mb_count -gt 0 ] && [ $mn_count -gt 0 ]; then
-        hide_mode_desc="Mount Bind(${mb_count}),Make Node(${mn_count})"
+        hide_mode_desc="Mount Bind(${mb_count}), Make Node(${mn_count})"
     elif [ $mr_count -ne 0 ] && [ $mn_count -ne 0 ]; then
-        hide_mode_desc="Magisk Replace(${mr_count}),Make Node(${mn_count})"
+        hide_mode_desc="Magisk Replace(${mr_count}), Make Node(${mn_count})"
     fi
 
     desc_last_worked=""
@@ -371,25 +353,25 @@ module_status_update() {
     if [ -f "$MODULE_PROP" ]; then
         if [ $vanished_apps_count -gt 0 ]; then
             if [ $apps_not_found_count -eq 0 ]; then
-                DESCRIPTION="vanished: $vanished_apps_count ✨"
+                DESCRIPTION="Vanished: ${vanished_apps_count}✨"
             else
-                DESCRIPTION="vanished: $vanished_apps_count ✨丨not found: $apps_not_found_count ❎丨in total: $total_apps_count 📋"
+                DESCRIPTION="Vanished: ${vanished_apps_count}✨ | Not found: ${apps_not_found_count}❎ | In total: ${total_apps_count}📋"
             fi
         else
             if [ $total_apps_count -gt 0 ]; then
                 if [ $duplicated_apps_count -gt 0 ]; then
-                    DESCRIPTION="vanished: $duplicated_apps_count ✨"
+                    DESCRIPTION="Vanished: ${duplicated_apps_count}✨"
                 else
-                    DESCRIPTION="standby ⏳丨not found: $total_apps_count ❎"
+                    DESCRIPTION="Standby⏳ | Not found: ${total_apps_count}❎"
                     no_effect=true
                 fi
             else
-                DESCRIPTION="No valid items found in target list ❌"
+                DESCRIPTION="No valid items found in target list❌"
                 no_effect=true
             fi
         fi
-        [ "$no_effect" = false ] && DESCRIPTION="${DESCRIPTION}丨mode: ${hide_mode_desc}${desc_last_worked} 🤖丨root: ${ROOT_SOL_DETAIL} 🔮丨$MOD_INTRO"
-        [ "$no_effect" = true ] && DESCRIPTION="${DESCRIPTION}丨root: ${ROOT_SOL_DETAIL} 🔮丨$MOD_INTRO"
+        [ "$no_effect" = false ] && DESCRIPTION="${DESCRIPTION} | ${hide_mode_desc}${desc_last_worked} mode🤖 | ${ROOT_SOL_DETAIL}🔮 | $MOD_INTRO"
+        [ "$no_effect" = true ] && DESCRIPTION="${DESCRIPTION} | ${ROOT_SOL_DETAIL}🔮 | $MOD_INTRO"
         update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
         update_config_var "mb_call" "$CONFIG_FILE" "$mb_call"
     fi

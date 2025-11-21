@@ -24,7 +24,7 @@ MOD_INTRO="A bloatware vanishing act on the system"
 
 config_loader() {
 
-    eco "Load config"
+    eco "Loading config"
 
     brick_rescue=$(get_config_var "brick_rescue" "$CONFIG_FILE") || brick_rescue=true
     brick_timeout=$(get_config_var "brick_timeout" "$CONFIG_FILE") || brick_timeout=120
@@ -47,34 +47,34 @@ print_line
 config_loader
 
 if [ "$brick_rescue" = true ] && [ -f "$FLAG_BRICKED" ]; then
-    ecof "Find flag bricked!"
-	ecof "Skip processing"
+    eco "Flag bricked exists!"
+	eco "Skip processing"
     exit 1
 fi
 
-eco "Current boot timeout: ${brick_timeout}s"
+eco "Set timeout: ${brick_timeout}s"
 while [ "$(getprop sys.boot_completed)" != "1" ]; do
     if [ $brick_timeout -le "0" ]; then
         print_line
-		ecow "Boot timeout reached after $MOD_NAME enabled and system not booted!"
-        ecow "Setting flag bricked"
+		eco "Booting timeout reached!"
+        eco "Set flag bricked"
         touch "$FLAG_BRICKED"
         if [ "$brick_rescue" = false ]; then
-            ecow "Skip birck rescue"
+            eco "Skip birck rescue"
             exit 1
         fi
         if [ "$disable_module_as_brick" = true ]; then
-            ecow "Disable $MOD_NAME"
+            eco "Disable $MOD_NAME"
             touch "$MODDIR/disable"
         fi
-        DESCRIPTION="Trigger brick rescue ❌ | root: ${ROOT_SOL_DETAIL} 🔮 | $MOD_INTRO"
+        DESCRIPTION="Trigger brick rescue❌ | ${ROOT_SOL_DETAIL}🔮 | $MOD_INTRO"
         update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
-        ecof "Request system for sync"
+        eco "Request system for sync"
 		sync
-		ecof "setprop sys.powerctl reboot"
+		eco "setprop sys.powerctl reboot"
         setprop sys.powerctl reboot
         sleep 5
-        ecof "Failed to reboot system, exiting script"
+        eco "Failed to reboot system, exiting"
         exit 1
     fi
     brick_timeout=$((brick_timeout-1))
@@ -87,8 +87,8 @@ rm -f "$FLAG_BRICKED"
 if [ "$mb_call" = true ] && [ "$mb_umount_bind" = true ]; then
     print_line
     if [ ! -f "$TARGET_LIST_BVA" ]; then
-        ecow "$TARGET_LIST_BVA does not exist"
-		ecow "$MOD_NAME will not unmount bind points"
+        eco "$TARGET_LIST_BVA does not exist"
+		eco "$MOD_NAME will not unmount bind points"
     else
         eco "Process bind points"
         TOTAL_APPS_COUNT=0
@@ -120,7 +120,7 @@ if [ "$mb_call" = true ] && [ "$mb_umount_bind" = true ]; then
 
             umount -f $package
             result_umount=$?
-            ecod "Unmount $package ($result_umount)"
+            eco "Unmount $package ($result_umount)"
             app_name="$(basename "$package")"
             if [ $result_umount -eq 0 ]; then
                 UMOUNT_APPS_COUNT=$((UMOUNT_APPS_COUNT + 1))

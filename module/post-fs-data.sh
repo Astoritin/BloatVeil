@@ -14,7 +14,7 @@ TEMPLATE_FILE="$TEMPLATE_DIR/targets_tm.txt"
 FLAG_BRICKED="$CONFIG_DIR/bricked"
 
 LOG_DIR="$CONFIG_DIR/logs"
-LOG_FILE="$LOG_DIR/BloatVeil_2_$(date +"%Y%m%dT%H%M%S").log"
+LOG_FILE="$LOG_DIR/BloatVeil_2_$(date +"%Y%m%dT%H%M%S").txt"
 TARGET_LIST_BVA="$LOG_DIR/targets_bva.txt"
 
 LAST_WORKED_DIR="$CONFIG_DIR/last_worked"
@@ -72,9 +72,9 @@ config_loader() {
     last_worked_target_list=$(get_config_var "last_worked_target_list" "$CONFIG_FILE") || last_worked_target_list=true
     hide_mode=$(get_config_var "hide_mode" "$CONFIG_FILE") || hide_mode=MB
     system_app_paths=$(get_config_var "system_app_paths" "$CONFIG_FILE") || system_app_paths="/system/app /system/product/app /system/product/data-app /system/product/priv-app /system/priv-app /system/system_ext/app /system/system_ext/priv-app /system/vendor/app /system/vendor/priv-app"
-    print_line
+    ecol
     print_var "brick_rescue" "disable_module_as_brick" "last_worked_target_list" "hide_mode" "system_app_paths"
-    print_line
+    ecol
 }
 
 preparation() {
@@ -116,7 +116,7 @@ preparation() {
 
     if [ ! -f "$TARGET_LIST" ]; then
         eco "Target list does not exist"
-        DESCRIPTION="Target list file does not exist❌ | ${ROOT_SOL_DETAIL}🔮 | $MOD_INTRO"
+        DESCRIPTION="Target list file does not exist ❌ | ${ROOT_SOL_DETAIL} 🔮 | $MOD_INTRO"
         update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
         exit 1
     fi
@@ -194,9 +194,9 @@ link_mount_bind() {
 
 bloat_veil() {
 
-    print_line
+    ecol
     eco "Start tricking"
-    print_line
+    ecol
 
     total_apps_count=0
     vanished_apps_count=0
@@ -231,7 +231,7 @@ bloat_veil() {
             first_char=$(printf '%s' "$line" | cut -c1)
             if [ "$first_char" = "/" ]; then
                 app_path="$package"
-				eco "Custom path specified: $app_path"
+				eco "Checking custom path: $app_path"
                 case "$app_path" in
                     /apex*|/system/apex*)
                         case "$app_path" in
@@ -258,7 +258,7 @@ bloat_veil() {
                     *)  break;;
                 esac
             else
-				eco "Standard path specified: $path/$package"
+				eco "Checking standard path: $path/$package"
                 app_path="$path/$package"
             fi
 
@@ -270,7 +270,7 @@ bloat_veil() {
                     "MN")   mirror_make_node "$app_path";;
                 esac
                 app_process_result=$?
-                eco "Process APP $app_name ($app_process_result)"
+                eco "Processing APP $app_name ($app_process_result)"
                 if [ $app_process_result -eq 0 ]; then
                     case "$hide_mode" in
                     "MB")   mb_count=$((mb_count + 1));;
@@ -290,7 +290,7 @@ bloat_veil() {
                 if [ "$hide_mode" = "MN" ] || [ "$MN_SUPPORT" = true ]; then
                     mirror_make_node "$app_path"
                     file_process_result=$?
-                    eco "Process APP $app_name ($file_process_result)"
+                    eco "Processing APP $app_name ($file_process_result)"
                     if [ $file_process_result -eq 0 ]; then
                         mn_count=$((mn_count + 1))
                         if check_duplicate_items "$app_path" "$TARGET_LIST_BVA"; then
@@ -324,17 +324,17 @@ module_status_update() {
     mb_call=false
 
     apps_not_found_count=$((total_apps_count - vanished_apps_count - duplicated_apps_count))
-    print_line
-    eco "Vanished: $vanished_apps_count"
-    eco "Mount Bind: $mb_count"
-    eco "Magisk Replace: $mr_count"
-    eco "Make Node: $mn_count"
-    print_line
-    eco "Duplicate: $duplicated_apps_count"
-    eco "Not found: $apps_not_found_count"
-    print_line
-    eco "In total: $total_apps_count"
-    print_line
+    ecol
+    eco "Vanished: ${vanished_apps_count} App(s)"
+    eco "Mount Bind: ${mb_count} App(s)"
+    eco "Magisk Replace: ${mr_count} App(s)"
+    eco "Make Node: ${mn_count} App(s)"
+    ecol
+    eco "Duplicate: ${duplicated_apps_count} App(s)"
+    eco "Not found: ${apps_not_found_count} App(s)"
+    ecol
+    eco "In total: ${total_apps_count} App(s)"
+    ecol
 
     [ $mb_count -gt 0 ] && hide_mode_desc="Mount Bind" && mb_call=true
     [ $mr_count -gt 0 ] && hide_mode_desc="Magisk Replace"
@@ -353,25 +353,25 @@ module_status_update() {
     if [ -f "$MODULE_PROP" ]; then
         if [ $vanished_apps_count -gt 0 ]; then
             if [ $apps_not_found_count -eq 0 ]; then
-                DESCRIPTION="Vanished: ${vanished_apps_count}✨"
+                DESCRIPTION="${vanished_apps_count} App(s) vanished ✨"
             else
-                DESCRIPTION="Vanished: ${vanished_apps_count}✨ | Not found: ${apps_not_found_count}❎ | In total: ${total_apps_count}📋"
+                DESCRIPTION="${vanished_apps_count} App(s) vanished ✨ | ${apps_not_found_count} App(s) not found ❎ | ${total_apps_count} App(s) in total 📋"
             fi
         else
             if [ $total_apps_count -gt 0 ]; then
                 if [ $duplicated_apps_count -gt 0 ]; then
-                    DESCRIPTION="Vanished: ${duplicated_apps_count}✨"
+                    DESCRIPTION="${duplicated_apps_count} App(s) vanished ✨"
                 else
-                    DESCRIPTION="Standby⏳ | Not found: ${total_apps_count}❎"
+                    DESCRIPTION="Standby ⏳ | ${total_apps_count} App(s) not found ❎"
                     no_effect=true
                 fi
             else
-                DESCRIPTION="No valid items found in target list❌"
+                DESCRIPTION="No valid items found in target list ❌"
                 no_effect=true
             fi
         fi
-        [ "$no_effect" = false ] && DESCRIPTION="${DESCRIPTION} | ${hide_mode_desc}${desc_last_worked}🤖 | ${ROOT_SOL_DETAIL}🔮 | $MOD_INTRO"
-        [ "$no_effect" = true ] && DESCRIPTION="${DESCRIPTION} | ${ROOT_SOL_DETAIL}🔮 | $MOD_INTRO"
+        [ "$no_effect" = false ] && DESCRIPTION="${DESCRIPTION} | ${hide_mode_desc}${desc_last_worked} 🤖 | ${ROOT_SOL_DETAIL} 🔮 | $MOD_INTRO"
+        [ "$no_effect" = true ] && DESCRIPTION="${DESCRIPTION} | ${ROOT_SOL_DETAIL} 🔮 | $MOD_INTRO"
         update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
         update_config_var "mb_call" "$CONFIG_FILE" "$mb_call"
     fi
@@ -395,7 +395,7 @@ module_cleanup_schedule() {
 init_dir "$TEMPLATE_DIR" "$LOG_DIR"
 module_intro
 show_system_info
-print_line
+ecol
 config_loader
 unbrick
 preparation && bloat_veil

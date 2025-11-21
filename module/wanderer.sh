@@ -261,12 +261,12 @@ module_intro() {
     MOD_VER="$(grep_config_var "version" "$MODULE_PROP") ($(grep_config_var "versionCode" "$MODULE_PROP"))"
 
     install_env_check
-    print_line
+    ecol
     eco "$MOD_NAME"
     eco "By $MOD_AUTHOR"
     eco "Version: $MOD_VER"
     eco "Root: $ROOT_SOL_DETAIL"
-    print_line
+    ecol
 
 }
 

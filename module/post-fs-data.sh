@@ -370,7 +370,7 @@ module_status_update() {
                 no_effect=true
             fi
         fi
-        [ "$no_effect" = false ] && DESCRIPTION="${DESCRIPTION} | ${hide_mode_desc}${desc_last_worked} mode🤖 | ${ROOT_SOL_DETAIL}🔮 | $MOD_INTRO"
+        [ "$no_effect" = false ] && DESCRIPTION="${DESCRIPTION} | ${hide_mode_desc}${desc_last_worked}🤖 | ${ROOT_SOL_DETAIL}🔮 | $MOD_INTRO"
         [ "$no_effect" = true ] && DESCRIPTION="${DESCRIPTION} | ${ROOT_SOL_DETAIL}🔮 | $MOD_INTRO"
         update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
         update_config_var "mb_call" "$CONFIG_FILE" "$mb_call"

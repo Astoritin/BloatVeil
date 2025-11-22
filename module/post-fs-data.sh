@@ -116,7 +116,7 @@ preparation() {
 
     if [ ! -f "$TARGET_LIST" ]; then
         eco "Target list does not exist"
-        DESCRIPTION="Target list file does not exist! ❌ ｜ ${ROOT_SOL_DETAIL} 🤖 ｜ $MOD_INTRO"
+        DESCRIPTION="Target list file does not exist! ❌ ｜ ${ROOT_SOL_DETAIL} 🔮 ｜ $MOD_INTRO"
         update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
         exit 1
     fi
@@ -363,16 +363,16 @@ module_status_update() {
 
     if [ $vanished_apps_count -gt 0 ]; then
         if [ $apps_not_found_count -eq 0 ]; then
-            DESCRIPTION="vanished: ${vanished_apps_count} ✅"
+            DESCRIPTION="Vanished: ${vanished_apps_count} ✅"
         else
-            DESCRIPTION="vanished: ${vanished_apps_count} ✅ ｜ not found: ${apps_not_found_count} ❌"
+            DESCRIPTION="Vanished: ${vanished_apps_count} ✅ ｜ Not found: ${apps_not_found_count} ❌"
         fi
     else
         if [ $total_apps_count -gt 0 ]; then
             if [ $duplicated_apps_count -gt 0 ]; then
-                DESCRIPTION="vanished: ${duplicated_apps_count} ✅"
+                DESCRIPTION="Vanished: ${duplicated_apps_count} ✅"
             else
-                DESCRIPTION="not found: ${total_apps_count} ❌"
+                DESCRIPTION="Not found: ${total_apps_count} ❌"
                 no_effect=true
             fi
         else
@@ -381,12 +381,12 @@ module_status_update() {
         fi
     fi
 
-    DESCRIPTION="${DESCRIPTION} ｜ in total: ${total_apps_count} 📋"
+    DESCRIPTION="${DESCRIPTION} ｜ In total: ${total_apps_count} 📋"
 
     if [ "$no_effect" = "false" ]; then
-        DESCRIPTION="${DESCRIPTION} ｜ ${hide_mode_desc}${desc_last_worked} ⚙️ ｜ ${ROOT_SOL_DETAIL} 🤖 ｜ ${MOD_INTRO}"
+        DESCRIPTION="${DESCRIPTION} ｜ ${hide_mode_desc}${desc_last_worked} 🤖 ｜ ${ROOT_SOL_DETAIL} 🔮 ｜ ${MOD_INTRO}"
     else
-        DESCRIPTION="${DESCRIPTION} ｜ ${ROOT_SOL_DETAIL} 🤖 ｜ ${MOD_INTRO}"
+        DESCRIPTION="${DESCRIPTION} ｜ ${ROOT_SOL_DETAIL} 🔮 ｜ ${MOD_INTRO}"
     fi
 
     if [ -f "$MODULE_PROP" ]; then

@@ -85,7 +85,7 @@ extract "targets.txt" "$TMPDIR"
 cat "$TMPDIR/targets.txt" > "$TEMPLATE_FILE"
 [ ! -f "$TARGET_LIST" ] && cat "$TMPDIR/targets.txt" > "$TARGET_LIST"
 [ ! -f "$CONFIG_FILE" ] && extract "settings.conf" "$CONFIG_DIR"
-DESCRIPTION="Check $TARGET_LIST carefully before reboot ⚠️｜$MOD_INTRO"
+DESCRIPTION="Check $TARGET_LIST carefully before reboot! ⚠️ ｜ $MOD_INTRO"
 update_config_var "description" "$MODPATH/module.prop" "$DESCRIPTION"
 ui_print "- Setting permission"
 set_perm_recursive "$MODPATH" 0 0 0755 0644

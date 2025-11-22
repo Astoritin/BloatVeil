@@ -1,6 +1,6 @@
 #!/system/bin/sh
 
-DESCRIPTION="A bloatware vanishing act on the system"
+DESCRIPTION="A bloatware vanishing act on the system."
 
 CONFIG_DIR="/data/adb/bloat_veil"
 FLAG_BRICKED="$CONFIG_DIR/bricked"

@@ -20,7 +20,7 @@ TARGET_LIST_BVA="$LOG_DIR/targets_bva.txt"
 LAST_WORKED_DIR="$CONFIG_DIR/last_worked"
 TARGET_LIST_LW="$LAST_WORKED_DIR/targets_lw.txt"
 
-MOD_INTRO="A bloatware vanishing act on the system"
+MOD_INTRO="A bloatware vanishing act on the system."
 
 config_loader() {
 

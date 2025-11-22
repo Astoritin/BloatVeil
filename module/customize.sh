@@ -14,7 +14,7 @@ LOG_DIR="$CONFIG_DIR/logs"
 MOD_PROP="${TMPDIR}/module.prop"
 MOD_NAME="$(grep_prop name "$MOD_PROP")"
 MOD_VER="$(grep_prop version "$MOD_PROP") ($(grep_prop versionCode "$MOD_PROP"))"
-MOD_INTRO="A bloatware vanishing act on the system"
+MOD_INTRO="A bloatware vanishing act on the system."
 
 POST_D="/data/adb/post-fs-data.d/"
 CLEANUP_SH="bloat_veil_cleanup.sh"

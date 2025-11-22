@@ -17,7 +17,7 @@ MOD_VER="$(grep_prop version "$MOD_PROP") ($(grep_prop versionCode "$MOD_PROP"))
 MOD_INTRO="A bloatware vanishing act on the system."
 
 POST_D="/data/adb/post-fs-data.d/"
-CLEANUP_SH="bloat_veil_cleanup.sh"
+CLEANUP_SH="cleanup_bloat_veil.sh"
 CLEANUP_PATH="${POST_D}/${CLEANUP_SH}"
 
 extract() {

@@ -394,7 +394,7 @@ module_status_update() {
 module_cleanup_schedule() {
 
     POST_D="/data/adb/post-fs-data.d/"
-    CLEANUP_SH="bloat_veil_cleanup.sh"
+    CLEANUP_SH="cleanup_bloat_veil.sh"
     CLEANUP_PATH="${POST_D}/${CLEANUP_SH}"
 
     if [ ! -f "$CLEANUP_PATH" ]; then

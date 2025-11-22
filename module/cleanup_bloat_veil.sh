@@ -6,7 +6,7 @@ CONFIG_DIR="/data/adb/bloat_veil"
 FLAG_BRICKED="$CONFIG_DIR/bricked"
 
 POST_D="/data/adb/post-fs-data.d/"
-CLEANUP_SH="bloat_veil_cleanup.sh"
+CLEANUP_SH="cleanup_bloat_veil.sh"
 CLEANUP_PATH="${POST_D}/${CLEANUP_SH}"
 
 MOD_DIR="/data/adb/modules/bloat_veil"

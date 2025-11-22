@@ -116,7 +116,7 @@ preparation() {
 
     if [ ! -f "$TARGET_LIST" ]; then
         eco "Target list does not exist"
-        DESCRIPTION="Target list file does not exist! ❌ ｜ Root: ${ROOT_SOL_DETAIL} 🔮 ｜ $MOD_INTRO"
+        DESCRIPTION="[❌Target list does not exist! 🔮${ROOT_SOL_DETAIL}] $MOD_INTRO"
         update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
         exit 1
     fi
@@ -362,31 +362,21 @@ module_status_update() {
     fi
 
     if [ $vanished_apps_count -gt 0 ]; then
-        if [ $apps_not_found_count -eq 0 ]; then
-            DESCRIPTION="Vanished: ${vanished_apps_count} ✅"
-        else
-            DESCRIPTION="Vanished: ${vanished_apps_count} ✅ ｜ Not found: ${apps_not_found_count} ❌"
-        fi
+        DESCRIPTION="✅${vanished_apps_count}/${total_apps_count} App(s) vanished"
+    elif [ $duplicated_apps_count -gt 0 ]; then
+        DESCRIPTION="✅${duplicated_apps_count}/${total_apps_count} App(s) vanished"
+    elif [ $total_apps_count -gt 0 ]; then
+        DESCRIPTION="❌0/${total_apps_count} App(s) found"
+        no_effect=true
     else
-        if [ $total_apps_count -gt 0 ]; then
-            if [ $duplicated_apps_count -gt 0 ]; then
-                DESCRIPTION="Vanished: ${duplicated_apps_count} ✅"
-            else
-                DESCRIPTION="Not found: ${total_apps_count} ❌"
-                no_effect=true
-            fi
-        else
-            DESCRIPTION="No valid items found in target list! ❌"
-            no_effect=true
-        fi
+        DESCRIPTION="❌No valid entries in ${TARGET_LIST}!"
+        no_effect=true
     fi
 
-    DESCRIPTION="${DESCRIPTION} ｜ In total: ${total_apps_count} 📋"
-
     if [ "$no_effect" = "false" ]; then
-        DESCRIPTION="${DESCRIPTION} ｜ Mode: ${hide_mode_desc}${desc_last_worked} 🤖 ｜ Root: ${ROOT_SOL_DETAIL} 🔮 ｜ ${MOD_INTRO}"
+        DESCRIPTION="[${DESCRIPTION}, 🤖Mode: ${hide_mode_desc}${desc_last_worked}, 🔮Root: ${ROOT_SOL_DETAIL}] ${MOD_INTRO}"
     else
-        DESCRIPTION="${DESCRIPTION} ｜ Root: ${ROOT_SOL_DETAIL} 🔮 ｜ ${MOD_INTRO}"
+        DESCRIPTION="[${DESCRIPTION}, 🔮Root: ${ROOT_SOL_DETAIL}] ${MOD_INTRO}"
     fi
 
     if [ -f "$MODULE_PROP" ]; then

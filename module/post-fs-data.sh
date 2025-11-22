@@ -24,7 +24,7 @@ MOD_INTRO="A bloatware vanishing act on the system."
 
 MN_SUPPORT=false
 MR_SUPPORT=false
-MIRROR_DIR="$MODDIR/system"
+MIRROR_DIR="$MODDIR/mirror"
 
 unbrick() {
     if [ "$brick_rescue" = false ]; then
@@ -81,9 +81,7 @@ preparation() {
 
     eco "Some preparation"
 
-    if [ "$MIRROR_DIR" != "/" ] && [ "$MIRROR_DIR" != "/system" ]; then
-        rm -rf "$MIRROR_DIR" && eco "Remove old mirror dir"
-    fi
+    rm -rf "$MIRROR_DIR" && eco "Remove old mirror dir"
 
     if [ "$DETECT_KSU" = true ] || [ "$DETECT_APATCH" = true ]; then
         eco "Make Node: supported"

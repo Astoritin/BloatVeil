@@ -116,7 +116,7 @@ preparation() {
 
     if [ ! -f "$TARGET_LIST" ]; then
         eco "Target list does not exist"
-        DESCRIPTION="Target list file does not exist ❌ | ${ROOT_SOL_DETAIL} 🔮 | $MOD_INTRO"
+        DESCRIPTION="Target list file does not exist ❌ ❙ ${ROOT_SOL_DETAIL} 🤖 ❙ $MOD_INTRO"
         update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
         exit 1
     fi
@@ -320,14 +320,14 @@ bloat_veil() {
 }
 
 module_status_update() {
-
     mb_call=false
-
+    
     apps_not_found_count=$((total_apps_count - vanished_apps_count - duplicated_apps_count))
+    
     ecol
     eco "Vanished: ${vanished_apps_count} App(s)"
     eco "Mount Bind: ${mb_count} App(s)"
-    eco "Magisk Replace: ${mr_count} App(s)"
+    eco "Magisk Replace: ${mr_count} App(s)" 
     eco "Make Node: ${mn_count} App(s)"
     ecol
     eco "Duplicate: ${duplicated_apps_count} App(s)"
@@ -336,46 +336,63 @@ module_status_update() {
     eco "In total: ${total_apps_count} App(s)"
     ecol
 
-    [ $mb_count -gt 0 ] && hide_mode_desc="Mount Bind" && mb_call=true
-    [ $mr_count -gt 0 ] && hide_mode_desc="Magisk Replace"
-    [ $mn_count -gt 0 ] && hide_mode_desc="Make Node"
-
+    hide_mode_desc=""
     if [ $mb_count -gt 0 ] && [ $mn_count -gt 0 ]; then
-        hide_mode_desc="Mount Bind(${mb_count}), Make Node(${mn_count})"
-    elif [ $mr_count -ne 0 ] && [ $mn_count -ne 0 ]; then
-        hide_mode_desc="Magisk Replace(${mr_count}), Make Node(${mn_count})"
+        hide_mode_desc="Mount Bind(${mb_count}) + Make Node(${mn_count})"
+        mb_call=true
+    elif [ $mr_count -gt 0 ] && [ $mn_count -gt 0 ]; then
+        hide_mode_desc="Magisk Replace(${mr_count}) + Make Node(${mn_count})"
+    elif [ $mb_count -gt 0 ]; then
+        hide_mode_desc="Mount Bind"
+        mb_call=true
+    elif [ $mr_count -gt 0 ]; then
+        hide_mode_desc="Magisk Replace"
+    elif [ $mn_count -gt 0 ]; then
+        hide_mode_desc="Make Node"
+    else
+        hide_mode_desc="None"
     fi
 
     desc_last_worked=""
     no_effect=false
-    [ "$rescue_from_last_worked_target_list" = true ] && desc_last_worked=" (last worked)"
+    DESCRIPTION=""
+    
+    if [ "$rescue_from_last_worked_target_list" = "true" ]; then
+        desc_last_worked=" (last worked)"
+    fi
 
-    if [ -f "$MODULE_PROP" ]; then
-        if [ $vanished_apps_count -gt 0 ]; then
-            if [ $apps_not_found_count -eq 0 ]; then
-                DESCRIPTION="${vanished_apps_count} App(s) vanished ✨"
-            else
-                DESCRIPTION="${vanished_apps_count} App(s) vanished ✨ | ${apps_not_found_count} App(s) not found ❎ | ${total_apps_count} App(s) in total 📋"
-            fi
+    if [ $vanished_apps_count -gt 0 ]; then
+        if [ $apps_not_found_count -eq 0 ]; then
+            DESCRIPTION="Vanished: ${vanished_apps_count} ✅"
         else
-            if [ $total_apps_count -gt 0 ]; then
-                if [ $duplicated_apps_count -gt 0 ]; then
-                    DESCRIPTION="${duplicated_apps_count} App(s) vanished ✨"
-                else
-                    DESCRIPTION="Standby ⏳ | ${total_apps_count} App(s) not found ❎"
-                    no_effect=true
-                fi
+            DESCRIPTION="Vanished: ${vanished_apps_count} ✅ ❙ Not found: ${apps_not_found_count} ❌"
+        fi
+    else
+        if [ $total_apps_count -gt 0 ]; then
+            if [ $duplicated_apps_count -gt 0 ]; then
+                DESCRIPTION="Vanished: ${duplicated_apps_count} ✅"
             else
-                DESCRIPTION="No valid items found in target list ❌"
+                DESCRIPTION="Not found: ${total_apps_count} ❌"
                 no_effect=true
             fi
+        else
+            DESCRIPTION="No valid items found in target list ❌"
+            no_effect=true
         fi
-        [ "$no_effect" = false ] && DESCRIPTION="${DESCRIPTION} | ${hide_mode_desc}${desc_last_worked} 🤖 | ${ROOT_SOL_DETAIL} 🔮 | $MOD_INTRO"
-        [ "$no_effect" = true ] && DESCRIPTION="${DESCRIPTION} | ${ROOT_SOL_DETAIL} 🔮 | $MOD_INTRO"
+    fi
+
+    DESCRIPTION="${DESCRIPTION} ❙ In total: ${total_apps_count} 📋"
+
+    if [ "$no_effect" = "false" ]; then
+        DESCRIPTION="${DESCRIPTION} ❙ ${hide_mode_desc}${desc_last_worked} ⚙️ ❙ ${ROOT_SOL_DETAIL} 🤖 ❙ ${MOD_INTRO}"
+    else
+        DESCRIPTION="${DESCRIPTION} ❙ ${ROOT_SOL_DETAIL} 🤖 ❙ ${MOD_INTRO}"
+    fi
+
+    if [ -f "$MODULE_PROP" ]; then
         update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
         update_config_var "mb_call" "$CONFIG_FILE" "$mb_call"
     fi
-
 }
 
 module_cleanup_schedule() {

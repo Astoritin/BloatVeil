@@ -362,9 +362,17 @@ module_status_update() {
     fi
 
     if [ $vanished_apps_count -gt 0 ]; then
-        DESCRIPTION="✅${vanished_apps_count}/${total_apps_count} App(s) vanished"
+        if [ $apps_not_found_count -gt 0 ]; then
+            DESCRIPTION="✅${vanished_apps_count}/${total_apps_count} App(s) vanished"
+        else
+            DESCRIPTION="✅${vanished_apps_count} App(s) vanished"
+        fi
     elif [ $duplicated_apps_count -gt 0 ]; then
-        DESCRIPTION="✅${duplicated_apps_count}/${total_apps_count} App(s) vanished"
+        if [ $apps_not_found_count -gt 0 ]; then
+            DESCRIPTION="🔄${duplicated_apps_count}/${total_apps_count} App(s) already vanished"
+        else
+            DESCRIPTION="🔄${duplicated_apps_count} App(s) already vanished"
+        fi
     elif [ $total_apps_count -gt 0 ]; then
         DESCRIPTION="❌0/${total_apps_count} App(s) found"
         no_effect=true

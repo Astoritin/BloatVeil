@@ -399,7 +399,7 @@ module_status_update() {
     elif [ $mr_count -gt 0 ]; then
         hide_mode_desc="Magisk Replace"
     elif [ $me_count -gt 0 ]; then
-        hide_mode_desc="Make Emptyfile"
+        hide_mode_desc="Mount Emptyfile"
     elif [ $mn_count -gt 0 ]; then
         hide_mode_desc="Make Node"
     else

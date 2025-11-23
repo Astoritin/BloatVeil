@@ -190,7 +190,7 @@ link_mount_bind() {
     return $result_mount_bind
 }
 
-create_empty_file() {
+mirror_make_emptyfile() {
 
     unfinished_path=$1
 
@@ -299,7 +299,7 @@ bloat_veil() {
                     "MB")   link_mount_bind "$MIRROR_DIR" "$app_path";;
                     "MR")   mirror_magisk_replace "$app_path";;
                     "MN")   mirror_make_node "$app_path";;
-                    "ME")   create_empty_file "$app_path";;
+                    "ME")   mirror_make_emptyfile "$app_path";;
                 esac
                 app_process_result=$?
                 eco "Processing APP $app_name ($app_process_result)"
@@ -335,7 +335,7 @@ bloat_veil() {
                         break
                     fi
                 elif [ "$hide_mode" = "ME" ]; then
-                    create_empty_file "$app_path"
+                    mirror_make_emptyfile "$app_path"
                     file_process_result=$?
                     eco "Processing APP $app_name ($file_process_result)"
                     if [ $file_process_result -eq 0 ]; then
@@ -376,7 +376,7 @@ module_status_update() {
     eco "Mount Bind: ${mb_count} App(s)"
     eco "Magisk Replace: ${mr_count} App(s)" 
     eco "Make Node: ${mn_count} App(s)"
-    eco "Make Empty: ${me_count} App(s)"
+    eco "Make Emptyfile: ${me_count} App(s)"
     ecol
     eco "Duplicate: ${duplicated_apps_count} App(s)"
     eco "Not found: ${apps_not_found_count} App(s)"
@@ -388,8 +388,13 @@ module_status_update() {
     if [ $mb_count -gt 0 ] && [ $mn_count -gt 0 ]; then
         hide_mode_desc="Mount Bind(${mb_count}) + Make Node(${mn_count})"
         mb_call=true
+    elif [ $mb_count -gt 0 ] && [ $me_count -gt 0 ]; then
+        hide_mode_desc="Mount Bind(${mb_count}) + Make Emptyfile(${me_count})"
+        mb_call=true
     elif [ $mr_count -gt 0 ] && [ $mn_count -gt 0 ]; then
         hide_mode_desc="Magisk Replace(${mr_count}) + Make Node(${mn_count})"
+    elif [ $mr_count -gt 0 ] && [ $me_count -gt 0 ]; then
+        hide_mode_desc="Magisk Replace(${mr_count}) + Make Emptyfile(${me_count})"    
     elif [ $mb_count -gt 0 ]; then
         hide_mode_desc="Mount Bind"
         mb_call=true
@@ -397,6 +402,8 @@ module_status_update() {
         hide_mode_desc="Magisk Replace"
     elif [ $mn_count -gt 0 ]; then
         hide_mode_desc="Make Node"
+    elif [ $me_count -gt 0 ]; then
+        hide_mode_desc="Make Emptyfile"
     else
         hide_mode_desc="None"
     fi

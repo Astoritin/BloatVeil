@@ -194,9 +194,7 @@ mirror_mount_empty_file() {
 
     empty_path=$1
 
-    if [ -z "$empty_path" ] || [ ! -d "$empty_path" ]; then
-        return 5
-    fi
+    [ -z "$empty_path" ] && return 5
 
     for file in "${empty_path}"/*; do
         eco "Checking file: $file"
@@ -204,7 +202,7 @@ mirror_mount_empty_file() {
         [ -f "$file" ] || continue
 
         case $file in
-            *.apk)  mirror_empty_filename=$(basename "$file")
+            *.apk|*.apex|*.capex)  mirror_empty_filename=$(basename "$file")
                     eco "mirror_empty_filename: $mirror_empty_filename"
                     mirror_empty_path="$MODDIR/${empty_path}"
                     eco "mirror_empty_path: $mirror_empty_path"

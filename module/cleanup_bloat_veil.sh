@@ -3,6 +3,9 @@
 DESCRIPTION="A bloatware vanishing act on the system."
 
 CONFIG_DIR="/data/adb/bloat_veil"
+LOG_DIR="$CONFIG_DIR/logs"
+TARGET_LIST_BVA="$LOG_DIR/targets_bva.txt"
+
 FLAG_BRICKED="$CONFIG_DIR/bricked"
 
 POST_D="/data/adb/post-fs-data.d/"
@@ -22,4 +25,5 @@ if [ ! -f "$FLAG_BRICKED" ]; then
     fi
 fi
 
+rm -f "${TARGET_LIST_BVA}"
 rm -f "${CLEANUP_PATH}"

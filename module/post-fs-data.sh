@@ -110,7 +110,7 @@ preparation() {
         hide_mode="MB"
     fi
 
-    if [ "$hide_mode" = "MB" ] && mkdir -p "$MIRROR_DIR" && eco "Create new mirror dir"
+    [ "$hide_mode" = "MB" ] && mkdir -p "$MIRROR_DIR" && eco "Create new mirror dir"
 
     if [ ! -f "$TARGET_LIST" ]; then
         eco "Target list does not exist"
@@ -319,7 +319,7 @@ bloat_veil() {
                     break
                 fi
 
-            elif [ -f "$app_path" ] && [ -d "$(dirname $app_path)" ]; then
+            elif [ -f "$app_path" ] && [ -d "$(dirname "$app_path")" ]; then
                 if [ "$hide_mode" = "ME" ]; then
                     mirror_mount_empty_file "$app_path"
                     file_process_result=$?

@@ -110,7 +110,7 @@ preparation() {
         hide_mode="MB"
     fi
 
-    mkdir -p "$MIRROR_DIR" && eco "Create new mirror dir"
+    if [ "$hide_mode" = "MB" ] && mkdir -p "$MIRROR_DIR" && eco "Create new mirror dir"
 
     if [ ! -f "$TARGET_LIST" ]; then
         eco "Target list does not exist"

@@ -204,7 +204,7 @@ mirror_mount_empty_file() {
         case $file in
             *.apk|*.apex|*.capex)  mirror_empty_filename=$(basename "$file")
                     eco "mirror_empty_filename: $mirror_empty_filename"
-                    mirror_empty_path="$MODDIR/${empty_path}"
+                    mirror_empty_path="${MODDIR}${empty_path}"
                     eco "mirror_empty_path: $mirror_empty_path"
                     mkdir -p "$mirror_empty_path"
                     result_mkdir=$?

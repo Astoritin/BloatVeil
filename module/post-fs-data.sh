@@ -196,27 +196,44 @@ mirror_mount_empty_file() {
 
     [ -z "$empty_path" ] && return 5
 
-    for file in "${empty_path}"/*; do
-        eco "Checking file: $file"
+    if [ -d "$empty_path" ]; then
+        for file in "${empty_path}"/*; do
+            eco "Checking file: $file"
 
-        [ -f "$file" ] || continue
+            [ -f "$file" ] || continue
 
-        case $file in
-            *.apk|*.apex|*.capex)  mirror_empty_filename=$(basename "$file")
-                    eco "mirror_empty_filename: $mirror_empty_filename"
-                    mirror_empty_path="${MODDIR}${empty_path}"
-                    eco "mirror_empty_path: $mirror_empty_path"
-                    mkdir -p "$mirror_empty_path"
-                    result_mkdir=$?
-                    eco "mkdir -p $mirror_empty_path ($result_mkdir)"
-                    touch "${mirror_empty_path}/${mirror_empty_filename}"
-                    result_touch=$?
-                    eco "touch ${mirror_empty_path}/${mirror_empty_filename} ($result_touch)"
-                ;;
-            *)  eco "Skipped $file"
-                ;;
-        esac
-    done
+            case $file in
+                *.apk|*.apex|*.capex)  mirror_empty_filename=$(basename "$file")
+                        eco "mirror_empty_filename: $mirror_empty_filename"
+                        mirror_empty_path="${MODDIR}${empty_path}"
+                        eco "mirror_empty_path: $mirror_empty_path"
+                        mkdir -p "$mirror_empty_path"
+                        result_mkdir=$?
+                        eco "mkdir -p $mirror_empty_path ($result_mkdir)"
+                        touch "${mirror_empty_path}/${mirror_empty_filename}"
+                        result_touch=$?
+                        eco "touch ${mirror_empty_path}/${mirror_empty_filename} ($result_touch)"
+                    ;;
+                *)  eco "Skipped $file"
+                    ;;
+            esac
+        done
+    elif [ -f "$empty_path" ]; then
+        mirror_empty_filename=$(basename "$empty_path")
+        eco "mirror_empty_filename: $mirror_empty_filename"
+        mirror_empty_dirname=$(dirname "$empty_path")
+        mirror_empty_path="${MODDIR}${mirror_empty_dirname}"
+        mkdir -p "$mirror_empty_path"
+        result_mkdir=$?
+        eco "mkdir -p $mirror_empty_path ($result_mkdir)"
+        touch "${mirror_empty_path}/${mirror_empty_filename}"
+        result_touch=$?
+        eco "touch ${mirror_empty_path}/${mirror_empty_filename} ($result_touch)"        
+        eco "mirror_empty_path: $mirror_empty_path"
+    else
+        eco "$empty_path is not a directory or file!"
+        return 6
+    fi
 
 }
 

@@ -190,6 +190,38 @@ link_mount_bind() {
     return $result_mount_bind
 }
 
+create_empty_file() {
+
+    unfinished_path=$1
+
+    if [ -z "$unfinished_path" ] || [ ! -d "$unfinished_path" ]; then
+        return 5
+    fi
+
+    for file in "${unfinished_path}"/*; do
+        eco "Checking file: $file"
+
+        [ -f "$file" ] || continue
+
+        case $file in
+            *.apk)  mirror_empty_filename=$(basename "$file")
+                    eco "mirror_empty_filename: $mirror_empty_filename"
+                    mirror_empty_path="$MODDIR/${unfinished_path}"
+                    eco "mirror_empty_path: $mirror_empty_path"
+                    mkdir -p "$mirror_empty_path"
+                    result_mkdir=$?
+                    eco "mkdir -p $mirror_empty_path ($result_mkdir)"
+                    touch "${mirror_empty_path}/${mirror_empty_filename}"
+                    result_touch=$?
+                    eco "touch ${mirror_empty_path}/${mirror_empty_filename} ($result_touch)"
+                ;;
+            *)  eco "Skipped $file"
+                ;;
+        esac
+    done
+
+}
+
 bloat_veil() {
 
     ecol
@@ -203,6 +235,7 @@ bloat_veil() {
     mb_count=0
     mr_count=0
     mn_count=0
+    me_count=0
 
     [ -f "$TARGET_LIST_BVA" ] && rm -f "$TARGET_LIST_BVA" && eco "Remove old temporary file"
 	touch "$TARGET_LIST_BVA" && eco "Created empty temporary file"
@@ -266,6 +299,7 @@ bloat_veil() {
                     "MB")   link_mount_bind "$MIRROR_DIR" "$app_path";;
                     "MR")   mirror_magisk_replace "$app_path";;
                     "MN")   mirror_make_node "$app_path";;
+                    "ME")   create_empty_file "$app_path";;
                 esac
                 app_process_result=$?
                 eco "Processing APP $app_name ($app_process_result)"
@@ -274,6 +308,7 @@ bloat_veil() {
                     "MB")   mb_count=$((mb_count + 1));;
                     "MR")   mr_count=$((mr_count + 1));;
                     "MN")   mn_count=$((mn_count + 1));;
+                    "ME")   me_count=$((me_count + 1));;
                     esac
                     if check_duplicate_items "$app_path" "$TARGET_LIST_BVA"; then
                         echo "$app_path" >> "$TARGET_LIST_BVA"
@@ -291,6 +326,20 @@ bloat_veil() {
                     eco "Processing APP $app_name ($file_process_result)"
                     if [ $file_process_result -eq 0 ]; then
                         mn_count=$((mn_count + 1))
+                        if check_duplicate_items "$app_path" "$TARGET_LIST_BVA"; then
+                            echo "$app_path" >> "$TARGET_LIST_BVA"
+                            vanished_apps_count=$((vanished_apps_count + 1))
+                        else
+                            duplicated_apps_count=$((duplicated_apps_count + 1))
+                        fi
+                        break
+                    fi
+                elif [ "$hide_mode" = "ME" ]; then
+                    create_empty_file "$app_path"
+                    file_process_result=$?
+                    eco "Processing APP $app_name ($file_process_result)"
+                    if [ $file_process_result -eq 0 ]; then
+                        me_count=$((me_count + 1))
                         if check_duplicate_items "$app_path" "$TARGET_LIST_BVA"; then
                             echo "$app_path" >> "$TARGET_LIST_BVA"
                             vanished_apps_count=$((vanished_apps_count + 1))
@@ -327,6 +376,7 @@ module_status_update() {
     eco "Mount Bind: ${mb_count} App(s)"
     eco "Magisk Replace: ${mr_count} App(s)" 
     eco "Make Node: ${mn_count} App(s)"
+    eco "Make Empty: ${me_count} App(s)"
     ecol
     eco "Duplicate: ${duplicated_apps_count} App(s)"
     eco "Not found: ${apps_not_found_count} App(s)"

@@ -1,6 +1,3 @@
-#!/system/bin/sh
-MODDIR=${0%/*}
-
 is_magisk() {
 
     if ! command -v magisk >/dev/null 2>&1; then

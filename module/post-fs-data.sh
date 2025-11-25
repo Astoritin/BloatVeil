@@ -114,7 +114,7 @@ preparation() {
 
     if [ ! -f "$TARGET_LIST" ]; then
         eco "Target list does not exist"
-        DESCRIPTION="[❌Target list does not exist! Root:✅${ROOT_SOL_DETAIL}] $MOD_INTRO"
+        DESCRIPTION="[❌Target list does not exist! Root: ✅${ROOT_SOL_DETAIL}] $MOD_INTRO"
         update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
         exit 1
     fi
@@ -452,9 +452,9 @@ module_status_update() {
     fi
 
     if [ "$no_effect" = "false" ]; then
-        DESCRIPTION="[${DESCRIPTION}, Mode:✅${hide_mode_desc}${desc_last_worked}, Root:✅${ROOT_SOL_DETAIL}] ${MOD_INTRO}"
+        DESCRIPTION="[${DESCRIPTION}, ✅${hide_mode_desc}${desc_last_worked} mode, Root: ✅${ROOT_SOL_DETAIL}] ${MOD_INTRO}"
     else
-        DESCRIPTION="[${DESCRIPTION}, Root:✅${ROOT_SOL_DETAIL}] ${MOD_INTRO}"
+        DESCRIPTION="[${DESCRIPTION}, Root: ✅${ROOT_SOL_DETAIL}] ${MOD_INTRO}"
     fi
 
     if [ -f "$MODULE_PROP" ]; then

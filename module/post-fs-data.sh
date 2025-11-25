@@ -114,7 +114,7 @@ preparation() {
 
     if [ ! -f "$TARGET_LIST" ]; then
         eco "Target list does not exist"
-        DESCRIPTION="[❌Target list does not exist! ${ROOT_SOL_DETAIL}] $MOD_INTRO"
+        DESCRIPTION="[❌Target list does not exist! Root:✅${ROOT_SOL_DETAIL}] $MOD_INTRO"
         update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
         exit 1
     fi
@@ -401,13 +401,13 @@ module_status_update() {
 
     hide_mode_desc=""
     if [ $mb_count -gt 0 ] && [ $me_count -gt 0 ]; then
-        hide_mode_desc="Mount Bind(${mb_count}), Mount EmptyFile(${me_count})"
+        hide_mode_desc="Mount Bind(${mb_count}), Mount Empty(${me_count})"
         mb_call=true
     elif [ $mb_count -gt 0 ] && [ $mn_count -gt 0 ]; then
         hide_mode_desc="Mount Bind(${mb_count}), Make Node(${mn_count})"
         mb_call=true
     elif [ $mr_count -gt 0 ] && [ $me_count -gt 0 ]; then
-        hide_mode_desc="Magisk Replace(${mr_count}), Mount EmptyFile(${me_count})"   
+        hide_mode_desc="Magisk Replace(${mr_count}), Mount Empty(${me_count})"   
     elif [ $mr_count -gt 0 ] && [ $mn_count -gt 0 ]; then
         hide_mode_desc="Magisk Replace(${mr_count}), Make Node(${mn_count})" 
     elif [ $mb_count -gt 0 ]; then
@@ -416,11 +416,11 @@ module_status_update() {
     elif [ $mr_count -gt 0 ]; then
         hide_mode_desc="Magisk Replace"
     elif [ $me_count -gt 0 ]; then
-        hide_mode_desc="Mount Emptyfile"
+        hide_mode_desc="Mount Empty"
     elif [ $mn_count -gt 0 ]; then
         hide_mode_desc="Make Node"
     else
-        hide_mode_desc="None"
+        hide_mode_desc="?"
     fi
 
     desc_last_worked=""
@@ -439,9 +439,9 @@ module_status_update() {
         fi
     elif [ $duplicated_apps_count -gt 0 ]; then
         if [ $apps_not_found_count -gt 0 ]; then
-            DESCRIPTION="🔄${duplicated_apps_count}/${total_apps_count} App(s) already vanished"
+            DESCRIPTION="✅${duplicated_apps_count}/${total_apps_count} App(s) already vanished"
         else
-            DESCRIPTION="🔄${duplicated_apps_count} App(s) already vanished"
+            DESCRIPTION="✅${duplicated_apps_count} App(s) already vanished"
         fi
     elif [ $total_apps_count -gt 0 ]; then
         DESCRIPTION="❌0/${total_apps_count} App(s) found"
@@ -452,9 +452,9 @@ module_status_update() {
     fi
 
     if [ "$no_effect" = "false" ]; then
-        DESCRIPTION="[${DESCRIPTION}, Mode: ${hide_mode_desc}${desc_last_worked}, Root: ${ROOT_SOL_DETAIL}] ${MOD_INTRO}"
+        DESCRIPTION="[${DESCRIPTION}, Mode:✅${hide_mode_desc}${desc_last_worked}, Root:✅${ROOT_SOL_DETAIL}] ${MOD_INTRO}"
     else
-        DESCRIPTION="[${DESCRIPTION}, Root: ${ROOT_SOL_DETAIL}] ${MOD_INTRO}"
+        DESCRIPTION="[${DESCRIPTION}, Root:✅${ROOT_SOL_DETAIL}] ${MOD_INTRO}"
     fi
 
     if [ -f "$MODULE_PROP" ]; then

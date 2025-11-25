@@ -67,7 +67,7 @@ while [ "$(getprop sys.boot_completed)" != "1" ]; do
             eco "Disable $MOD_NAME"
             touch "$MODDIR/disable"
         fi
-        DESCRIPTION="[❌Triggered brick rescue! Root:${ROOT_SOL_DETAIL}] $MOD_INTRO"
+        DESCRIPTION="[❌Triggered brick rescue! Root:✅${ROOT_SOL_DETAIL}] $MOD_INTRO"
         update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
         eco "Request system for sync"
 		sync

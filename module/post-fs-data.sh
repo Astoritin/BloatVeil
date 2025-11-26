@@ -25,6 +25,7 @@ MOD_INTRO="A bloatware vanishing act on the system."
 MN_SUPPORT=false
 MR_SUPPORT=false
 MIRROR_DIR="$MODDIR/mirror"
+MIRROR_SYSTEM_DIR="$MODDIR/system"
 
 unbrick() {
     if [ "$brick_rescue" = false ]; then
@@ -81,7 +82,8 @@ preparation() {
 
     eco "Some preparation"
 
-    rm -rf "$MIRROR_DIR" && eco "Remove old mirror dir"
+    [ -d "$MIRROR_DIR" ] && rm -rf "$MIRROR_DIR" && eco "Remove old mirror dir"
+    [ -d "$MIRROR_SYSTEM_DIR" ] && rm -rf "$MIRROR_SYSTEM_DIR" && eco "Remove old mirror dir"    
 
     if [ "$DETECT_KSU" = true ] || [ "$DETECT_APATCH" = true ]; then
         eco "Make Node: supported"
@@ -198,40 +200,33 @@ mirror_mount_empty_file() {
 
     if [ -d "$empty_path" ]; then
         for file in "${empty_path}"/*; do
-            eco "Checking file: $file"
-
             [ -f "$file" ] || continue
-
             case $file in
                 *.apk|*.apex|*.capex)  mirror_empty_filename=$(basename "$file")
-                        eco "mirror_empty_filename: $mirror_empty_filename"
                         mirror_empty_path="${MODDIR}${empty_path}"
-                        eco "mirror_empty_path: $mirror_empty_path"
                         mkdir -p "$mirror_empty_path"
                         result_mkdir=$?
-                        eco "mkdir -p $mirror_empty_path ($result_mkdir)"
                         touch "${mirror_empty_path}/${mirror_empty_filename}"
                         result_touch=$?
-                        eco "touch ${mirror_empty_path}/${mirror_empty_filename} ($result_touch)"
+                        [ $result_mkdir -eq 0 ] && [ $result_touch -eq 0 ] && return 0
+                        [ $result_mkdir -eq 0 ] && return 1
+                        [ $result_touch -eq 0 ] && return 2
                     ;;
-                *)  eco "Skipped $file"
-                    ;;
+                *)  ;;
             esac
         done
     elif [ -f "$empty_path" ]; then
         mirror_empty_filename=$(basename "$empty_path")
-        eco "mirror_empty_filename: $mirror_empty_filename"
         mirror_empty_dirname=$(dirname "$empty_path")
         mirror_empty_path="${MODDIR}${mirror_empty_dirname}"
         mkdir -p "$mirror_empty_path"
         result_mkdir=$?
-        eco "mkdir -p $mirror_empty_path ($result_mkdir)"
         touch "${mirror_empty_path}/${mirror_empty_filename}"
         result_touch=$?
-        eco "touch ${mirror_empty_path}/${mirror_empty_filename} ($result_touch)"        
-        eco "mirror_empty_path: $mirror_empty_path"
+        [ $result_mkdir -eq 0 ] && [ $result_touch -eq 0 ] && return 0
+        [ $result_mkdir -eq 0 ] && return 1
+        [ $result_touch -eq 0 ] && return 2
     else
-        eco "$empty_path is not a directory or file!"
         return 6
     fi
 
@@ -416,11 +411,11 @@ module_status_update() {
     elif [ $mr_count -gt 0 ]; then
         hide_mode_desc="Magisk Replace"
     elif [ $me_count -gt 0 ]; then
-        hide_mode_desc="Mount Empty"
+        hide_mode_desc="Mount Empty File"
     elif [ $mn_count -gt 0 ]; then
         hide_mode_desc="Make Node"
     else
-        hide_mode_desc="?"
+        hide_mode_desc="N/A"
     fi
 
     desc_last_worked=""

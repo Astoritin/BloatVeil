@@ -428,26 +428,26 @@ module_status_update() {
 
     if [ $vanished_apps_count -gt 0 ]; then
         if [ $apps_not_found_count -gt 0 ]; then
-            DESCRIPTION="✅${vanished_apps_count}/${total_apps_count} App(s) vanished"
+            DESCRIPTION="Vanished: ✅${vanished_apps_count}/${total_apps_count} App(s)"
         else
-            DESCRIPTION="✅${vanished_apps_count} App(s) vanished"
+            DESCRIPTION="Vanished: ✅${vanished_apps_count} App(s)"
         fi
     elif [ $duplicated_apps_count -gt 0 ]; then
         if [ $apps_not_found_count -gt 0 ]; then
-            DESCRIPTION="✅${duplicated_apps_count}/${total_apps_count} App(s) already vanished"
+            DESCRIPTION="Vanished already: ✅${duplicated_apps_count}/${total_apps_count} App(s)"
         else
-            DESCRIPTION="✅${duplicated_apps_count} App(s) already vanished"
+            DESCRIPTION="Vanished already: ✅${duplicated_apps_count} App(s)"
         fi
     elif [ $total_apps_count -gt 0 ]; then
-        DESCRIPTION="❌0/${total_apps_count} App(s) found"
+        DESCRIPTION="Found: ❎0/${total_apps_count} App(s)"
         no_effect=true
     else
         DESCRIPTION="❌No valid entries in ${TARGET_LIST}!"
         no_effect=true
     fi
-
+l
     if [ "$no_effect" = "false" ]; then
-        DESCRIPTION="[${DESCRIPTION}, ✅${hide_mode_desc}${desc_last_worked} mode, Root: ✅${ROOT_SOL_DETAIL}] ${MOD_INTRO}"
+        DESCRIPTION="[${DESCRIPTION}, Mode: ✅${hide_mode_desc}${desc_last_worked}, Root: ✅${ROOT_SOL_DETAIL}] ${MOD_INTRO}"
     else
         DESCRIPTION="[${DESCRIPTION}, Root: ✅${ROOT_SOL_DETAIL}] ${MOD_INTRO}"
     fi

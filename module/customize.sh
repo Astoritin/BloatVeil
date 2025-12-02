@@ -4,10 +4,10 @@ SKIPUNZIP=1
 CONFIG_DIR="/data/adb/bloat_veil"
 
 CONFIG_FILE="$CONFIG_DIR/settings.conf"
-TEMPLATE_DIR="$CONFIG_DIR/template"
-
 TARGET_LIST="$CONFIG_DIR/targets.txt"
-TEMPLATE_FILE="$TEMPLATE_DIR/targets_tm.txt"
+
+LAST_WORKED_DIR="$CONFIG_DIR/last_worked"
+TEMPLATE_FILE="$LAST_WORKED_DIR/targets_tm.txt"
 
 LOG_DIR="$CONFIG_DIR/logs"
 
@@ -65,9 +65,7 @@ show_system_info() {
 
 ui_print "- Setting up $MOD_NAME"
 ui_print "- Version: $MOD_VER"
-init_dir "$TEMPLATE_DIR" "$LOG_DIR" "$POST_D"
-[ ! -d "$TEMPLATE_DIR" ] && mkdir -p "$TEMPLATE_DIR"
-[ ! -d "$LOG_DIR" ] && mkdir -p "$LOG_DIR"
+init_dir "$LAST_WORKED_DIR" "$LOG_DIR" "$POST_D"
 show_system_info
 install_env_check
 ui_print "- Installing from $ROOT_SOL app"

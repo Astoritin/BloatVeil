@@ -6,19 +6,16 @@ MODDIR=${0%/*}
 CONFIG_DIR="/data/adb/bloat_veil"
 
 CONFIG_FILE="$CONFIG_DIR/settings.conf"
-TEMPLATE_DIR="$CONFIG_DIR/template"
-
 TARGET_LIST="$CONFIG_DIR/targets.txt"
-TEMPLATE_FILE="$TEMPLATE_DIR/targets_tm.txt"
+
+LAST_WORKED_DIR="$CONFIG_DIR/last_worked"
+TARGET_LIST_LW="$LAST_WORKED_DIR/targets_lw.txt"
 
 FLAG_BRICKED="$CONFIG_DIR/bricked"
 
 LOG_DIR="$CONFIG_DIR/logs"
 LOG_FILE="$LOG_DIR/BloatVeil_4_$(date +"%Y%m%dT%H%M%S").txt"
 TARGET_LIST_BVA="$LOG_DIR/targets_bva.txt"
-
-LAST_WORKED_DIR="$CONFIG_DIR/last_worked"
-TARGET_LIST_LW="$LAST_WORKED_DIR/targets_lw.txt"
 
 MOD_INTRO="A bloatware vanishing act on the system."
 
@@ -86,8 +83,9 @@ while [ "$(getprop sys.boot_completed)" != "1" ]; do
         update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
         eco "Request system for sync"
 		sync
-		eco "setprop sys.powerctl reboot"
         setprop sys.powerctl reboot
+        result_set_prop=$?
+        eco "setprop sys.powerctl reboot ($result_set_prop)"
         sleep 5
         eco "Failed to reboot system, exiting"
         exit 1
@@ -153,7 +151,6 @@ fi
 
 if [ "$last_worked_target_list" = true ]; then
     eco "Backup last worked target list"
-    [ ! -d "$LAST_WORKED_DIR" ] && mkdir -p "$LAST_WORKED_DIR"
     if [ "$auto_update_target_list" = true ]; then
         cp "$TARGET_LIST_BVA" "$TARGET_LIST_LW"
     elif [ "$auto_update_target_list" = false ]; then

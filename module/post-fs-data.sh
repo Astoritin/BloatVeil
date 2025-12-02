@@ -15,7 +15,7 @@ TEMPLATE_FILE="$LAST_WORKED_DIR/targets_tm.txt"
 FLAG_BRICKED="$CONFIG_DIR/bricked"
 
 LOG_DIR="$CONFIG_DIR/logs"
-LOG_FILE="$LOG_DIR/BloatVeil_2_$(date +"%Y%m%dT%H%M%S").txt"
+LOG_FILE="$LOG_DIR/logs_2.txt"
 TARGET_LIST_BVA="$LOG_DIR/targets_bva.txt"
 
 MOD_INTRO="A bloatware vanishing act on the system."
@@ -114,7 +114,7 @@ preparation() {
 
     if [ ! -f "$TARGET_LIST" ]; then
         eco "Target list does not exist"
-        DESCRIPTION="[❌ Target list does not exist! ✅ ${ROOT_SOL_DETAIL}] $MOD_INTRO"
+        DESCRIPTION="[❌Target list does not exist! ✅Root: ${ROOT_SOL_DETAIL}] $MOD_INTRO"
         update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
         exit 1
     fi
@@ -369,9 +369,8 @@ bloat_veil() {
     done < "$TARGET_LIST"
 
     clean_duplicate_items "$TARGET_LIST_BVA" && eco "Clean duplicate items"
-	cat "$TEMPLATE_FILE" > "${TEMPLATE_FILE}.tmp" && \
-	cat "$TARGET_LIST_BVA" >> "${TEMPLATE_FILE}.tmp" && \
-	mv "${TEMPLATE_FILE}.tmp" "$TARGET_LIST_BVA"
+    cat "$TEMPLATE_FILE" "$TARGET_LIST_BVA" > "${TEMPLATE_FILE}.tmp" && mv "${TEMPLATE_FILE}.tmp" "$TARGET_LIST_BVA"
+
 }
 
 module_status_update() {
@@ -400,7 +399,7 @@ module_status_update() {
         hide_mode_desc="Mount Bind(${mb_count}), Make Node(${mn_count})"
         mb_call=true
     elif [ $mr_count -gt 0 ] && [ $me_count -gt 0 ]; then
-        hide_mode_desc="Magisk Replace(${mr_count}), Mount Empty(${me_count})"   
+        hide_mode_desc="Magisk Replace(${mr_count}), Mount Empty File(${me_count})"   
     elif [ $mr_count -gt 0 ] && [ $mn_count -gt 0 ]; then
         hide_mode_desc="Magisk Replace(${mr_count}), Make Node(${mn_count})" 
     elif [ $mb_count -gt 0 ]; then
@@ -426,28 +425,28 @@ module_status_update() {
 
     if [ $vanished_apps_count -gt 0 ]; then
         if [ $apps_not_found_count -gt 0 ]; then
-            DESCRIPTION="✅ ${vanished_apps_count}/${total_apps_count} App(s) vanished"
+            DESCRIPTION="✅Vanished: ${vanished_apps_count}/${total_apps_count} App(s)"
         else
-            DESCRIPTION="✅ ${vanished_apps_count} App(s) vanished"
+            DESCRIPTION="✅Vanished: ${vanished_apps_count} App(s)"
         fi
     elif [ $duplicated_apps_count -gt 0 ]; then
         if [ $apps_not_found_count -gt 0 ]; then
-            DESCRIPTION="✅ ${duplicated_apps_count}/${total_apps_count} App(s) vanished already"
+            DESCRIPTION="✅Vanished already: ${duplicated_apps_count}/${total_apps_count} App(s)"
         else
-            DESCRIPTION="✅ ${duplicated_apps_count} App(s) vanished already"
+            DESCRIPTION="✅Vanished already: ${duplicated_apps_count} App(s)"
         fi
     elif [ $total_apps_count -gt 0 ]; then
-        DESCRIPTION="❎ 0/${total_apps_count} App(s) found"
+        DESCRIPTION="❎Vanished: 0/${total_apps_count} App(s)"
         no_effect=true
     else
-        DESCRIPTION="❌ No valid entries in ${TARGET_LIST}!"
+        DESCRIPTION="❌No valid entries in ${TARGET_LIST}!"
         no_effect=true
     fi
 l
     if [ "$no_effect" = "false" ]; then
-        DESCRIPTION="[${DESCRIPTION}, ✅ ${hide_mode_desc}${desc_last_worked} mode, ✅ ${ROOT_SOL_DETAIL}] ${MOD_INTRO}"
+        DESCRIPTION="[${DESCRIPTION}, ✅Mode: ${hide_mode_desc}${desc_last_worked}, ✅Root: ${ROOT_SOL_DETAIL}] ${MOD_INTRO}"
     else
-        DESCRIPTION="[${DESCRIPTION}, ✅ ${ROOT_SOL_DETAIL}] ${MOD_INTRO}"
+        DESCRIPTION="[${DESCRIPTION}, ✅Root: ${ROOT_SOL_DETAIL}] ${MOD_INTRO}"
     fi
 
     if [ -f "$MODULE_PROP" ]; then

@@ -14,7 +14,8 @@ TARGET_LIST_LW="$LAST_WORKED_DIR/targets_lw.txt"
 FLAG_BRICKED="$CONFIG_DIR/bricked"
 
 LOG_DIR="$CONFIG_DIR/logs"
-LOG_FILE="$LOG_DIR/BloatVeil_4_$(date +"%Y%m%dT%H%M%S").txt"
+LOG_FILE="$LOG_DIR/bloat_veil_$(date +"%Y%m%dT%H%M%S").txt"
+LOG_FILE_2="$LOG_DIR/logs_2.txt"
 TARGET_LIST_BVA="$LOG_DIR/targets_bva.txt"
 
 MOD_INTRO="A bloatware vanishing act on the system."
@@ -79,7 +80,7 @@ while [ "$(getprop sys.boot_completed)" != "1" ]; do
             eco "Disable $MOD_NAME"
             touch "$MODDIR/disable"
         fi
-        DESCRIPTION="[❌ Triggered brick rescue! ✅ ${ROOT_SOL_DETAIL}] $MOD_INTRO"
+        DESCRIPTION="[❌Triggered brick rescue! ✅Root: ${ROOT_SOL_DETAIL}] $MOD_INTRO"
         update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
         eco "Request system for sync"
 		sync
@@ -162,6 +163,10 @@ if [ "$auto_update_target_list" = true ]; then
     cp -p "$TARGET_LIST_BVA" "$TARGET_LIST"
 fi
 rm -f "$TARGET_LIST_BVA" && eco "Remove old temporary file"
+
+cat "$LOG_FILE_2" "$LOG_FILE" > "${LOG_FILE}.tmp" && mv "${LOG_FILE}.tmp" "$LOG_FILE"
+rm -f "$LOG_FILE_2" && eco "Remove log file in stage 2"
+
 remove_config_var "mb_call" "$CONFIG_FILE"
 ecol
 eco "All done!"

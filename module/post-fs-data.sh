@@ -25,6 +25,8 @@ MR_SUPPORT=false
 MIRROR_DIR="$MODDIR/mirror"
 MIRROR_SYSTEM_DIR="$MODDIR/system"
 
+[ -f "$LOG_FILE" ] && rm -f "$LOG_FILE"
+
 unbrick() {
     if [ "$brick_rescue" = false ]; then
         eco "Skip brick rescue"

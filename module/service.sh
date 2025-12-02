@@ -18,11 +18,12 @@ LOG_FILE="$LOG_DIR/bloat_veil_$(date +"%Y%m%dT%H%M%S").txt"
 LOG_FILE_2="$LOG_DIR/logs_2.txt"
 TARGET_LIST_BVA="$LOG_DIR/targets_bva.txt"
 
+MODULE_PROP="$MODDIR/module.prop"
 MOD_INTRO="A bloatware vanishing act on the system."
 
 config_loader() {
 
-    eco "Loading config"
+    eco "Loading config for late_start service mode"
 
     brick_rescue=$(get_config_var "brick_rescue" "$CONFIG_FILE") || brick_rescue=true
     brick_timeout=$(get_config_var "brick_timeout" "$CONFIG_FILE") || brick_timeout=120
@@ -54,8 +55,7 @@ module_cleanup_schedule() {
 
 module_cleanup_schedule
 clean_dir_if_reach_max "$LOG_DIR"
-module_intro
-show_system_info
+install_env_check
 ecol
 config_loader
 
@@ -165,7 +165,7 @@ fi
 rm -f "$TARGET_LIST_BVA" && eco "Remove old temporary file"
 
 cat "$LOG_FILE_2" "$LOG_FILE" > "${LOG_FILE}.tmp" && mv "${LOG_FILE}.tmp" "$LOG_FILE"
-rm -f "$LOG_FILE_2" && eco "Remove log file in stage 2"
+rm -f "$LOG_FILE_2"
 
 remove_config_var "mb_call" "$CONFIG_FILE"
 ecol

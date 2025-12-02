@@ -65,7 +65,7 @@ unbrick() {
 
 config_loader() {
 
-    eco "Loading config"
+    eco "Loading config for post-fs-data mode"
     brick_rescue=$(get_config_var "brick_rescue" "$CONFIG_FILE") || brick_rescue=true
     disable_module_as_brick=$(get_config_var "disable_module_as_brick" "$CONFIG_FILE") || disable_module_as_brick=true
     last_worked_target_list=$(get_config_var "last_worked_target_list" "$CONFIG_FILE") || last_worked_target_list=true

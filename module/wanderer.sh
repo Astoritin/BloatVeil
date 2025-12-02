@@ -89,12 +89,12 @@ clean_dir_if_reach_max() {
     fi
 }
 
-eco() { echo "# $1" >> "$LOG_FILE" 2>/dev/null; }
+eco() { echo "$1" >> "$LOG_FILE" 2>/dev/null; }
 
 ecol() {
 
     length=64
-    symbol=#
+    symbol=-
 
     line=$(printf "%-${length}s" | tr ' ' "$symbol")
     echo "$line" >> "$LOG_FILE" 2>/dev/null

@@ -389,7 +389,6 @@ module_status_update() {
     eco "Not found: ${apps_not_found_count} App(s)"
     ecol
     eco "In total: ${total_apps_count} App(s)"
-    ecol
 
     hide_mode_desc=""
     if [ $mb_count -gt 0 ] && [ $me_count -gt 0 ]; then
@@ -463,4 +462,3 @@ config_loader
 unbrick
 preparation && bloat_veil
 module_status_update
-eco "All done!"

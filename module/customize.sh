@@ -69,6 +69,7 @@ init_dir "$LAST_WORKED_DIR" "$LOG_DIR" "$POST_D"
 show_system_info
 install_env_check
 ui_print "- Installing from $ROOT_SOL app"
+ui_print "- Root: $ROOT_SOL_DETAIL"
 extract "customize.sh" "$TMPDIR"
 extract "module.prop"
 extract "wanderer.sh"
@@ -83,7 +84,7 @@ extract "targets.txt" "$TMPDIR"
 cat "$TMPDIR/targets.txt" > "$TEMPLATE_FILE"
 [ ! -f "$TARGET_LIST" ] && cat "$TMPDIR/targets.txt" > "$TARGET_LIST"
 [ ! -f "$CONFIG_FILE" ] && extract "settings.conf" "$CONFIG_DIR"
-DESCRIPTION="[⚠️Check $TARGET_LIST carefully before reboot! ✅Root: ${ROOT_SOL_DETAIL}] $MOD_INTRO"
+DESCRIPTION="${MOD_INTRO} ⚠️Check $TARGET_LIST carefully before reboot! ✅Root: ${ROOT_SOL_DETAIL}"
 update_config_var "description" "$MODPATH/module.prop" "$DESCRIPTION"
 ui_print "- Setting permission"
 set_perm_recursive "$MODPATH" 0 0 0755 0644

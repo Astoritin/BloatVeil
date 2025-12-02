@@ -116,7 +116,7 @@ preparation() {
 
     if [ ! -f "$TARGET_LIST" ]; then
         eco "Target list does not exist"
-        DESCRIPTION="[❌Target list does not exist! ✅Root:${ROOT_SOL_DETAIL}] $MOD_INTRO"
+        DESCRIPTION="[❌ Target list does not exist! ✅ ${ROOT_SOL_DETAIL}] $MOD_INTRO"
         update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
         exit 1
     fi
@@ -428,48 +428,34 @@ module_status_update() {
 
     if [ $vanished_apps_count -gt 0 ]; then
         if [ $apps_not_found_count -gt 0 ]; then
-            DESCRIPTION="✅Vanished:${vanished_apps_count}/${total_apps_count} App(s)"
+            DESCRIPTION="✅ ${vanished_apps_count}/${total_apps_count} App(s) vanished"
         else
-            DESCRIPTION="✅Vanished:${vanished_apps_count} App(s)"
+            DESCRIPTION="✅ ${vanished_apps_count} App(s) vanished"
         fi
     elif [ $duplicated_apps_count -gt 0 ]; then
         if [ $apps_not_found_count -gt 0 ]; then
-            DESCRIPTION="✅Vanished already:${duplicated_apps_count}/${total_apps_count} App(s)"
+            DESCRIPTION="✅ ${duplicated_apps_count}/${total_apps_count} App(s) vanished already"
         else
-            DESCRIPTION="✅Vanished already:${duplicated_apps_count} App(s)"
+            DESCRIPTION="✅ ${duplicated_apps_count} App(s) vanished already"
         fi
     elif [ $total_apps_count -gt 0 ]; then
-        DESCRIPTION="❌Found:0/${total_apps_count} App(s)"
+        DESCRIPTION="❎ 0/${total_apps_count} App(s) found"
         no_effect=true
     else
-        DESCRIPTION="❌No valid entries in ${TARGET_LIST}!"
+        DESCRIPTION="❌ No valid entries in ${TARGET_LIST}!"
         no_effect=true
     fi
 l
     if [ "$no_effect" = "false" ]; then
-        DESCRIPTION="[${DESCRIPTION}, ✅Mode:${hide_mode_desc}${desc_last_worked}, ✅Root:${ROOT_SOL_DETAIL}] ${MOD_INTRO}"
+        DESCRIPTION="[${DESCRIPTION}, ✅ ${hide_mode_desc}${desc_last_worked} mode, ✅ ${ROOT_SOL_DETAIL}] ${MOD_INTRO}"
     else
-        DESCRIPTION="[${DESCRIPTION}, ✅Root:${ROOT_SOL_DETAIL}] ${MOD_INTRO}"
+        DESCRIPTION="[${DESCRIPTION}, ✅ ${ROOT_SOL_DETAIL}] ${MOD_INTRO}"
     fi
 
     if [ -f "$MODULE_PROP" ]; then
         update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
         update_config_var "mb_call" "$CONFIG_FILE" "$mb_call"
     fi
-}
-
-module_cleanup_schedule() {
-
-    POST_D="/data/adb/post-fs-data.d/"
-    CLEANUP_SH="cleanup_bloat_veil.sh"
-    CLEANUP_PATH="${POST_D}/${CLEANUP_SH}"
-
-    if [ ! -f "$CLEANUP_PATH" ]; then
-        mkdir -p "$POST_D"
-        cat "$MODDIR/${CLEANUP_SH}" > "$CLEANUP_PATH"
-        chmod +x "$CLEANUP_PATH"
-    fi
-
 }
 
 init_dir "$TEMPLATE_DIR" "$LOG_DIR"
@@ -480,5 +466,4 @@ config_loader
 unbrick
 preparation && bloat_veil
 module_status_update
-module_cleanup_schedule
 eco "All done!"

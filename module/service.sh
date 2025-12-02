@@ -40,6 +40,21 @@ config_loader() {
 
 }
 
+module_cleanup_schedule() {
+
+    POST_D="/data/adb/post-fs-data.d/"
+    CLEANUP_SH="cleanup_bloat_veil.sh"
+    CLEANUP_PATH="${POST_D}/${CLEANUP_SH}"
+
+    if [ ! -f "$CLEANUP_PATH" ]; then
+        mkdir -p "$POST_D"
+        cat "$MODDIR/${CLEANUP_SH}" > "$CLEANUP_PATH"
+        chmod +x "$CLEANUP_PATH"
+    fi
+
+}
+
+module_cleanup_schedule
 clean_dir_if_reach_max "$LOG_DIR"
 module_intro
 show_system_info
@@ -67,7 +82,7 @@ while [ "$(getprop sys.boot_completed)" != "1" ]; do
             eco "Disable $MOD_NAME"
             touch "$MODDIR/disable"
         fi
-        DESCRIPTION="[❌Triggered brick rescue! ✅Root:${ROOT_SOL_DETAIL}] $MOD_INTRO"
+        DESCRIPTION="[❌ Triggered brick rescue! ✅ ${ROOT_SOL_DETAIL}] $MOD_INTRO"
         update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
         eco "Request system for sync"
 		sync

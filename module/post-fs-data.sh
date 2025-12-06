@@ -22,6 +22,9 @@ MOD_INTRO="A bloatware vanishing act on the system."
 
 MN_SUPPORT=false
 MR_SUPPORT=false
+MIN_VER_MAGISK_SUPPORT_MAKE_NODE_MODE=28102
+MIN_VER_KERNELSU_SUPPORT_MAGISK_REPLACE_MODE=
+
 MIRROR_DIR="$MODDIR/mirror"
 MIRROR_SYSTEM_DIR="$MODDIR/system"
 
@@ -88,10 +91,18 @@ preparation() {
     if [ "$DETECT_KSU" = true ] || [ "$DETECT_APATCH" = true ]; then
         eco "Make Node: supported"
         MN_SUPPORT=true
-        MR_SUPPORT=false
-        [ "$hide_mode" = "MR" ] && hide_mode="MB"
+        if [ "$KSU_KERNEL_VER_CODE" -ge "$MIN_VER_KERNELSU_SUPPORT_MAGISK_REPLACE_MODE" ]; then
+            eco "Magisk Replace: supported (with proper metamodule)"
+            eco "Users need to judge manually whether their metamodule supports"
+            eco "Magisk Replace or not, $MOD_NAME will always take it as true"
+            eco "if KernelSU version newer than $MIN_VER_KERNELSU_SUPPORT_MAGISK_REPLACE_MODE"
+            MR_SUPPORT=true
+        else
+            MR_SUPPORT=false
+            [ "$hide_mode" = "MR" ] && hide_mode="MB"
+        fi
     elif [ "$DETECT_MAGISK" = true ]; then
-        if [ $MAGISK_V_VER_CODE -ge 28102 ]; then
+        if [ $MAGISK_V_VER_CODE -ge "$MIN_VER_MAGISK_SUPPORT_MAKE_NODE_MODE" ]; then
             eco "Make Node: supported"
             MN_SUPPORT=true
         else

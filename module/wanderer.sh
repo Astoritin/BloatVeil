@@ -114,76 +114,24 @@ get_config_var() {
     key=$1
     config_file=$2
 
-    if [ -z "$key" ] || [ -z "$config_file" ]; then
-        return 1
-    elif [ ! -f "$config_file" ]; then
-        return 2
+    [ -z "$key" ] || [ -z "$config_file" ] && return 1
+    [ ! -f "$config_file" ] && return 2
+
+    if value=$(awk -v key="$key" '
+        $0 ~ "^[[:space:]]*" key "=" {
+            sub("^[[:space:]]*" key "=", "")
+            print $0
+            exit 0
+        }
+    ' "$config_file" 2>/dev/null); then
+
+        value=$(echo "$value" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+        if [ -n "$value" ]; then
+            echo "$value"
+            return 0
+        fi
     fi
-    
-    value=$(awk -v key="$key" '
-        BEGIN {
-            key_regex = "^" key "="
-            found = 0
-            in_quote = 0
-            value = ""
-        }
-        $0 ~ key_regex && !found {
-            sub(key_regex, "")
-            remaining = $0
-
-            sub(/^[[:space:]]*/, "", remaining)
-
-            if (remaining ~ /^"/) {
-                in_quote = 1
-                remaining = substr(remaining, 2)
-
-                if (match(remaining, /"([[:space:]]*)$/)) {
-                    value = substr(remaining, 1, RSTART - 1)
-                    in_quote = 0
-                } else {
-                    value = remaining
-                    while ((getline remaining) > 0) {
-                        if (match(remaining, /"([[:space:]]*)$/)) {
-                            line_part = substr(remaining, 1, RSTART - 1)
-                            value = value "\n" line_part
-                            in_quote = 0
-                            break
-                        } else {
-                            value = value "\n" remaining
-                        }
-                    }
-                    if (in_quote) exit 1
-                }
-                found = 1
-            } else {
-                gsub(/^[[:space:]]+|[[:space:]]+$/, "", remaining)
-                value = remaining
-                found = 1
-            }
-            if (found) exit 0
-        }
-        END {
-            if (!found) exit 1
-            gsub(/[[:space:]]+$/, "", value)
-            print value
-        }
-    ' "$config_file")
-
-    awk_exit_state=$?
-    case $awk_exit_state in
-        1)  return 5 ;;
-        0)  ;;
-        *)  return 6 ;;
-    esac
-
-    value=$(echo "$value" | dos2unix | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | sed 's/'\''/'\\\\'\'''\''/g' | sed 's/[$;&|<>`"()]/\\&/g')
-
-    if [ -n "$value" ]; then
-        echo "$value"
-        return 0
-    else
-        return 1
-    fi
+    return 5
 }
 
 update_config_var() {

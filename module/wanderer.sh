@@ -101,15 +101,6 @@ ecol() {
 
 }
 
-grep_config_var() {
-    regex="s/^$1=//p"
-    config_file="$2"
-
-    [ -z "$config_file" ] && config_file="/system/build.prop"
-    cat "$config_file" 2>/dev/null | dos2unix | sed -n "$regex" | head -n 1
-
-}
-
 get_config_var() {
     key=$1
     config_file=$2

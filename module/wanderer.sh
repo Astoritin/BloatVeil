@@ -244,9 +244,9 @@ show_system_info() {
 module_intro() {
 
     MODULE_PROP="$MODDIR/module.prop"
-    MOD_NAME="$(grep_config_var "name" "$MODULE_PROP")"
-    MOD_AUTHOR="$(grep_config_var "author" "$MODULE_PROP")"
-    MOD_VER="$(grep_config_var "version" "$MODULE_PROP") ($(grep_config_var "versionCode" "$MODULE_PROP"))"
+    MOD_NAME="$(get_config_var "name" "$MODULE_PROP")"
+    MOD_AUTHOR="$(get_config_var "author" "$MODULE_PROP")"
+    MOD_VER="$(get_config_var "version" "$MODULE_PROP") ($(get_config_var "versionCode" "$MODULE_PROP"))"
 
     install_env_check
     ecol

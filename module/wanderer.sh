@@ -8,9 +8,6 @@ is_magisk() {
     MAGISK_V_VER_CODE="$(magisk -V)"
     case "$MAGISK_V_VER_NAME" in
         *"-alpha"*) MAGISK_BRANCH_NAME="Alpha" ;;
-        *"-lite"*)  MAGISK_BRANCH_NAME="Magisk Lite" ;;
-        *"-kitsune"*) MAGISK_BRANCH_NAME="Kitsune Mask" ;;
-        *"-delta"*) MAGISK_BRANCH_NAME="Magisk Delta" ;;
         *) MAGISK_BRANCH_NAME="Magisk" ;;
     esac
     DETECT_MAGISK="true"

@@ -48,7 +48,7 @@ install_env_check() {
 
     if [ "$DETECT_KSU" = "true" ]; then
         ROOT_SOL="KernelSU"
-        ROOT_SOL_DETAIL="KernelSU (kernel:$KSU_KERNEL_VER_CODE, ksud:$KSU_VER_CODE)"
+        ROOT_SOL_DETAIL="KernelSU ($KSU_KERNEL_VER_CODE)"
     elif [ "$DETECT_APATCH" = "true" ]; then
         ROOT_SOL="APatch"
         ROOT_SOL_DETAIL="APatch ($APATCH_VER_CODE)"

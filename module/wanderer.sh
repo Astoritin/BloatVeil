@@ -35,7 +35,6 @@ is_apatch() {
 
 install_env_check() {
 
-    MAGISK_BRANCH_NAME="Official"
     ROOT_SOL="Magisk"
     ROOT_SOL_COUNT=0
 

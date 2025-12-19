@@ -22,7 +22,7 @@ MOD_INTRO="A bloatware vanishing act on the system."
 
 MN_SUPPORT=false
 MR_SUPPORT=false
-MIN_VER_MAGISK_SUPPORT_MAKE_NODE_MODE=28102
+MIN_VER_MAGISK_SUPPORT_MAKENODE=28102
 MIN_VER_KERNELSU_SUPPORT_MOUNTING=22098
 
 MIRROR_DIR="$MODDIR/mirror"
@@ -104,7 +104,7 @@ preparation() {
             [ "$hide_mode" = "MR" ] && hide_mode="MB"
         fi
     elif [ "$DETECT_MAGISK" = true ]; then
-        if [ $MAGISK_V_VER_CODE -ge "$MIN_VER_MAGISK_SUPPORT_MAKE_NODE_MODE" ]; then
+        if [ $MAGISK_V_VER_CODE -ge "$MIN_VER_MAGISK_SUPPORT_MAKENODE" ]; then
             eco "Make Node: supported"
             MN_SUPPORT=true
         else

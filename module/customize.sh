@@ -20,6 +20,8 @@ POST_D="/data/adb/post-fs-data.d/"
 CLEANUP_SH="cleanup_bloat_veil.sh"
 CLEANUP_PATH="${POST_D}/${CLEANUP_SH}"
 
+MIN_VER_KERNELSU_SUPPORT_MOUNTING=22098
+
 extract() {
     file=$1
     dir=$2
@@ -52,6 +54,21 @@ extract() {
     fi
 }
 
+metamodule_required() {
+
+    if [ "$KSU_KERNEL_VER_CODE" -ge "$MIN_VER_KERNELSU_SUPPORT_MOUNTING" ]; then
+        ui_print "- Current KernelSU version requires metamodule"
+        ui_print "- to mount file(s) for /system"
+        ui_print "- Scanning metamodule"
+        if ! checkout_metamodule; then
+            ui_print "You haven't installed any metamodule!"
+            ui_print "Only Mount Bind mode is available"
+        fi
+    fi
+
+}
+
+
 extract "wanderer.sh" "$TMPDIR" >/dev/null 2>&1
 . "$TMPDIR/wanderer.sh"
 
@@ -66,6 +83,7 @@ show_system_info() {
 install_env_check
 ui_print "- Installing from $ROOT_SOL app"
 ui_print "- Root: $ROOT_SOL_DETAIL"
+[ "$DETECT_KSU" = true ] && metamodule_required
 ui_print "- Setting up $MOD_NAME"
 ui_print "- Version: $MOD_VER"
 init_dir "$LAST_WORKED_DIR" "$LOG_DIR" "$POST_D"
@@ -89,3 +107,4 @@ update_config_var "description" "$MODPATH/module.prop" "$DESCRIPTION"
 ui_print "- Setting permission"
 set_perm_recursive "$MODPATH" 0 0 0755 0644
 ui_print "- Welcome to $MOD_NAME!"
+checkout_metamodule

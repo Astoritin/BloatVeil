@@ -100,77 +100,49 @@ ecol() {
 get_config_var() {
     key=$1
     config_file=$2
+    [ -n "$key" ] && [ -f "$config_file" ] || return 1
 
-    if [ -z "$key" ] || [ -z "$config_file" ]; then
-        return 1
-    elif [ ! -f "$config_file" ]; then
-        return 2
-    fi
-    
-    value=$(awk -v key="$key" '
+    awk -v key="$key" '
         BEGIN {
             key_regex = "^" key "="
-            found = 0
-            in_quote = 0
-            value = ""
+            found = 0; in_quote = 0; val = ""
         }
-        $0 ~ key_regex && !found {
+        !found && $0 ~ key_regex {
             sub(key_regex, "")
-            remaining = $0
-
-            sub(/^[[:space:]]*/, "", remaining)
-
-            if (remaining ~ /^"/) {
+            sub(/^[[:space:]]*/, "")
+            if (sub(/^"/, "")) {
                 in_quote = 1
-                remaining = substr(remaining, 2)
-
-                if (match(remaining, /"([[:space:]]*)$/)) {
-                    value = substr(remaining, 1, RSTART - 1)
+                if (sub(/"[[:space:]]*$/, "")) {
+                    val = $0
                     in_quote = 0
                 } else {
-                    value = remaining
-                    while ((getline remaining) > 0) {
-                        if (match(remaining, /"([[:space:]]*)$/)) {
-                            line_part = substr(remaining, 1, RSTART - 1)
-                            value = value "\n" line_part
+                    val = $0
+                    while ((getline line) > 0) {
+                        if (sub(/"[[:space:]]*$/, "", line)) {
+                            val = val "\n" line
                             in_quote = 0
                             break
                         } else {
-                            value = value "\n" remaining
+                            val = val "\n" line
                         }
                     }
                     if (in_quote) exit 1
                 }
                 found = 1
             } else {
-                gsub(/^[[:space:]]+|[[:space:]]+$/, "", remaining)
-                value = remaining
+                val = $0
+                sub(/[[:space:]]+$/, "", val)
                 found = 1
             }
             if (found) exit 0
         }
         END {
             if (!found) exit 1
-            gsub(/[[:space:]]+$/, "", value)
-            print value
+            print val
         }
-    ' "$config_file")
+    ' "$config_file" | tr -d '\r'
 
-    awk_exit_state=$?
-    case $awk_exit_state in
-        1)  return 5 ;;
-        0)  ;;
-        *)  return 6 ;;
-    esac
-
-    value=$(echo "$value" | dos2unix | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | sed 's/'\''/'\\\\'\'''\''/g' | sed 's/[$;&|<>`"()]/\\&/g')
-
-    if [ -n "$value" ]; then
-        echo "$value"
-        return 0
-    else
-        return 1
-    fi
+    [ $? -eq 0 ] || return 1
 }
 
 update_config_var() {
@@ -252,6 +224,27 @@ module_intro() {
     eco "Root: $ROOT_SOL_DETAIL"
     ecol
 
+}
+
+checkout_metamodule() {
+    modules_dir="/data/adb/modules"
+    modules_update_dir="/data/adb/modules_update"
+
+    for moddir in "$modules_dir" "$modules_update_dir"; do
+        [ -d "$moddir" ] || continue
+        for current_module_prop in "$moddir"/*/module.prop; do
+            [ -e "$current_module_prop" ] || continue
+            current_module_name=${prop#"$d/"}
+            current_module_name=${current_module_name%/module.prop}
+            echo "- Checking module: $current_module_name"
+            is_metamodule=$(get_config_var "metamodule" "$current_module_prop")
+            case "$is_metamodule" in
+                1|true ) return 0 ;;
+                *) echo "- $current_module_name is not a metamodule" ;;
+            esac
+        done
+    done
+    return 1
 }
 
 file_compare() {

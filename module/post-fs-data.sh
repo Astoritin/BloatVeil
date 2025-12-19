@@ -91,15 +91,21 @@ preparation() {
     if [ "$DETECT_KSU" = true ] || [ "$DETECT_APATCH" = true ]; then
         eco "Make Node: supported"
         MN_SUPPORT=true
-        if [ "$KSU_KERNEL_VER_CODE" -ge "$MIN_VER_KERNELSU_SUPPORT_MOUNTING" ]; then
+        if [ "$KSU_KERNEL_VER_CODE" -ge "$MIN_VER_KERNELSU_SUPPORT_MOUNTING" ] && checkout_metamodule; then
+            eco "Current metamodule: ${current_module_name} ${current_module_ver_name} (${current_module_ver_code})"
+            eco " "
             eco "Magisk Replace: supported (with proper metamodule)"
             eco "Make Node: supported (with proper metamodule)"
             eco "Make Empty File: supported (with proper metamodule)"
+            eco " "
             eco "Users need to judge manually whether their metamodule supports"
             eco "these modes or not, $MOD_NAME will always take it as true"
             eco "if KernelSU version newer than $MIN_VER_KERNELSU_SUPPORT_MOUNTING"
             MR_SUPPORT=true
         else
+            eco "No metamodule found or KernelSU version"
+            eco "doesn't require metamodule for mounting!"
+            eco "Revert to Mount Bind mode"
             MR_SUPPORT=false
             [ "$hide_mode" = "MR" ] && hide_mode="MB"
         fi

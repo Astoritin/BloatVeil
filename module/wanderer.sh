@@ -232,16 +232,18 @@ checkout_metamodule() {
 
     for moddir in "$modules_dir" "$modules_update_dir"; do
         [ -d "$moddir" ] || continue
-        for current_module_prop in "$moddir"/*/module.prop; do
+        for current_module_dir in "$moddir"/*; do
+            current_module_prop="$current_module_dir/module.prop"
             [ -e "$current_module_prop" ] || continue
-            current_module_name=${prop#"$d/"}
-            current_module_name=${current_module_name%/module.prop}
-            echo "- Checking module: $current_module_name"
+
             is_metamodule=$(get_config_var "metamodule" "$current_module_prop")
+            current_module_name=$(get_config_var "name" "$current_module_prop")
+            current_module_ver_name=$(get_config_var "version" "$current_module_prop")
+            current_module_ver_code=$(get_config_var "versionCode" "$current_module_prop")
             case "$is_metamodule" in
-                1|true ) return 0 ;;
-                *) echo "- $current_module_name is not a metamodule" ;;
+                1|true ) [ ! -f "$current_module_dir/disable" ] && [ ! -f "$current_module_dir/remove" ] && return 0;;
             esac
+
         done
     done
     return 1

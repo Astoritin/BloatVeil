@@ -58,11 +58,13 @@ metamodule_required() {
 
     if [ "$KSU_KERNEL_VER_CODE" -ge "$MIN_VER_KERNELSU_SUPPORT_MOUNTING" ]; then
         ui_print "- Current KernelSU version requires metamodule"
-        ui_print "- to mount file(s) for /system"
+        ui_print "- for mounting file(s) for /system"
         ui_print "- Scanning metamodule"
         if ! checkout_metamodule; then
-            ui_print "You haven't installed any metamodule!"
-            ui_print "Only Mount Bind mode is available"
+            ui_print "- You haven't installed any metamodule!"
+            ui_print "- Only Mount Bind mode is available"
+        else
+            ui_print "- Current metamodule: ${current_module_name} ${current_module_ver_name} (${current_module_ver_code})"
         fi
     fi
 
@@ -107,4 +109,3 @@ update_config_var "description" "$MODPATH/module.prop" "$DESCRIPTION"
 ui_print "- Setting permission"
 set_perm_recursive "$MODPATH" 0 0 0755 0644
 ui_print "- Welcome to $MOD_NAME!"
-checkout_metamodule

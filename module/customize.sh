@@ -90,8 +90,8 @@ install_env_check
 show_system_info
 init_dir "$LAST_WORKED_DIR" "$LOG_DIR" "$POST_D"
 unzip -o "$ZIPFILE" "META-INF/com/google/android/*" -d "$TMPDIR" >/dev/null 2>&1
-[ -f "$TMPDIR/META-INF/com/google/android/update-binary.sha256" ] && extract "META-INF/com/google/android/update-binary" "$TMPDIR" && UPDATE_ONLINE=false
-[ -f "$TMPDIR/META-INF/com/google/android/updater-script.sha256" ] && extract "META-INF/com/google/android/updater-script" "$TMPDIR" && UPDATE_ONLINE=false
+[ -f "$TMPDIR/META-INF/com/google/android/update-binary.sha256" ] && extract "META-INF/com/google/android/update-binary" "$TMPDIR" >/dev/null 2>&1 && UPDATE_ONLINE=false
+[ -f "$TMPDIR/META-INF/com/google/android/updater-script.sha256" ] && extract "META-INF/com/google/android/updater-script" "$TMPDIR" >/dev/null 2>&1 && UPDATE_ONLINE=false
 if [ "$UPDATE_ONLINE" = true ]; then
     ui_print "- Downloading from $ROOT_SOL app"
 else

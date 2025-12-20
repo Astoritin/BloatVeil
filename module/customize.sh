@@ -22,6 +22,8 @@ CLEANUP_PATH="${POST_D}/${CLEANUP_SH}"
 
 MIN_VER_KERNELSU_SUPPORT_MOUNTING=22098
 
+update_online=false
+
 extract() {
     file=$1
     dir=$2
@@ -62,7 +64,7 @@ metamodule_required() {
         ui_print "- Scanning metamodule"
         if ! checkout_metamodule; then
             ui_print "- You haven't installed any metamodule!"
-            ui_print "- Only Mount Bind mode is available"
+            ui_print "- Only Mount Bind mode is available on KernelSU"
         else
             ui_print "- Current metamodule: ${current_module_name} ${current_module_ver_name} (${current_module_ver_code})"
         fi
@@ -90,6 +92,11 @@ ui_print "- Setting up $MOD_NAME"
 ui_print "- Version: $MOD_VER"
 init_dir "$LAST_WORKED_DIR" "$LOG_DIR" "$POST_D"
 show_system_info
+unzip -o "$ZIPFILE" "META-INF/com/google/android/*" -d "$TMPDIR" >/dev/null 2>&1
+[ -f "$TMPDIR/META-INF/com/google/android/update-binary.sha256" ] && extract "META-INF/com/google/android/update-binary" "$TMPDIR" && update_online=false
+[ -f "$TMPDIR/META-INF/com/google/android/updater-script.sha256" ] && extract "META-INF/com/google/android/updater-script" "$TMPDIR" && update_online=false
+[ "$update_online" = true ] && ui_print "- Updating online"
+[ "$update_online" = false ] && ui_print "- Updating offline"
 extract "customize.sh" "$TMPDIR"
 extract "module.prop"
 extract "wanderer.sh"

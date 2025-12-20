@@ -401,14 +401,10 @@ module_status_update() {
     
     ecol
     eco "Vanished: ${vanished_apps_count} App(s)"
-    eco "Mount Bind: ${mb_count} App(s)"
-    eco "Magisk Replace: ${mr_count} App(s)" 
-    eco "Make Node: ${mn_count} App(s)"
-    eco "Mount Empty File: ${me_count} App(s)"
+    eco "Mount Bind: ${mb_count} App(s) | Magisk Replace: ${mr_count} App(s)" 
+    eco "Make Node: ${mn_count} App(s) | Mount Empty File: ${me_count} App(s)"
     ecol
-    eco "Duplicate: ${duplicated_apps_count} App(s)"
-    eco "Not found: ${apps_not_found_count} App(s)"
-    ecol
+    eco "Duplicate: ${duplicated_apps_count} App(s) | Not found: ${apps_not_found_count} App(s)"
     eco "In total: ${total_apps_count} App(s)"
 
     hide_mode_desc=""

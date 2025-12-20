@@ -58,7 +58,7 @@ metamodule_required() {
 
     if [ "$KSU_KERNEL_VER_CODE" -ge "$MIN_VER_KERNELSU_SUPPORT_MOUNTING" ]; then
         ui_print "- Current KernelSU version requires metamodule"
-        ui_print "- for mounting file(s) for /system"
+        ui_print "- for mounting file(s) on /system"
         ui_print "- Scanning metamodule"
         if ! checkout_metamodule; then
             ui_print "- You haven't installed any metamodule!"

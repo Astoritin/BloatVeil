@@ -1,5 +1,5 @@
 #################################################################################################
-# BloatVeil Configuration File
+# Bloat Veil Configuration File
 #################################################################################################
 # Hash symbol # indicates comment lines (ignored during processing)
 #################################################################################################
@@ -15,7 +15,7 @@
 # - Full directory paths (e.g. /system/product/app/SogouInput)
 # - Apps located in apex/capex files (e.g. /system/apex/com.android.healthfitness.apex)
 # ! Note: For apex/capex files, you must specify the full path
-# ! because BloatVeil will NOT scan /system/apex directory automatically
+# ! because Bloat Veil will NOT scan /system/apex directory automatically
 #################################################################################################
 # Full configuration examples
 #################################################################################################

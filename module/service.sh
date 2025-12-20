@@ -141,8 +141,7 @@ if [ "$mb_call" = true ] && [ "$mb_umount_bind" = true ]; then
             fi
         done < "$TARGET_LIST_BVA"
         ecol
-        eco "Unmounted: $UMOUNT_APPS_COUNT App(s)"
-        eco "In total: $TOTAL_APPS_COUNT App(s)"
+        eco "Unmounted: $UMOUNT_APPS_COUNT App(s) | In total: $TOTAL_APPS_COUNT App(s)"
         ecol
     fi
 else

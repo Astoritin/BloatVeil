@@ -78,9 +78,9 @@ extract "wanderer.sh" "$TMPDIR" >/dev/null 2>&1
 
 show_system_info() {
 
-    ui_print "- Device: $(getprop ro.product.brand) $(getprop ro.product.model) ($(getprop ro.product.device))"
-    ui_print "- Kernel: $(uname -r)"
     ui_print "- Android $(getprop ro.build.version.release) (API $(getprop ro.build.version.sdk)), $(getprop ro.product.cpu.abi | cut -d '-' -f1)"
+    ui_print "- Kernel: $(uname -r)"
+    ui_print "- Device: $(getprop ro.product.brand) $(getprop ro.product.model) ($(getprop ro.product.device))"    
 
 }
 
@@ -89,7 +89,6 @@ install_env_check
 ui_print "- Setting up $MOD_NAME"
 ui_print "- Version: $MOD_VER"
 init_dir "$LAST_WORKED_DIR" "$LOG_DIR" "$POST_D"
-show_system_info
 unzip -o "$ZIPFILE" "META-INF/com/google/android/*" -d "$TMPDIR" >/dev/null 2>&1
 [ -f "$TMPDIR/META-INF/com/google/android/update-binary.sha256" ] && extract "META-INF/com/google/android/update-binary" "$TMPDIR" && UPDATE_ONLINE=false
 [ -f "$TMPDIR/META-INF/com/google/android/updater-script.sha256" ] && extract "META-INF/com/google/android/updater-script" "$TMPDIR" && UPDATE_ONLINE=false
@@ -99,6 +98,7 @@ else
     ui_print "- Installing from $ROOT_SOL app"
 fi
 ui_print "- Root: $ROOT_SOL_DETAIL"
+show_system_info
 extract "customize.sh" "$TMPDIR"
 extract "module.prop"
 extract "wanderer.sh"

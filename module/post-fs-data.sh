@@ -400,12 +400,8 @@ module_status_update() {
     apps_not_found_count=$((total_apps_count - vanished_apps_count - duplicated_apps_count))
     
     ecol
-    eco "Vanished: ${vanished_apps_count} App(s)"
-    eco "Mount Bind: ${mb_count} App(s) | Magisk Replace: ${mr_count} App(s)" 
-    eco "Make Node: ${mn_count} App(s) | Mount Empty File: ${me_count} App(s)"
-    ecol
-    eco "Duplicate: ${duplicated_apps_count} App(s) | Not found: ${apps_not_found_count} App(s)"
-    eco "In total: ${total_apps_count} App(s)"
+    eco "Vanished: ${vanished_apps_count} App(s) (MB: ${mb_count}, MR: ${mr_count}, MN: ${mn_count}, ME: ${me_count})"
+    eco "Duplicate: ${duplicated_apps_count} App(s), not found: ${apps_not_found_count} App(s), in total: ${total_apps_count} App(s)"
 
     hide_mode_desc=""
     if [ $mb_count -gt 0 ] && [ $me_count -gt 0 ]; then

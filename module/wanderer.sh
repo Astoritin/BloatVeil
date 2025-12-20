@@ -203,8 +203,8 @@ print_var() {
 
 show_system_info() {
 
-    eco "Device: $(getprop ro.product.brand) $(getprop ro.product.model) ($(getprop ro.product.device))"
-    eco "OS: Android $(getprop ro.build.version.release) (API $(getprop ro.build.version.sdk)), $(getprop ro.product.cpu.abi | cut -d '-' -f1)"
+    eco "$(getprop ro.product.brand) $(getprop ro.product.model) ($(getprop ro.product.device))"
+    eco "Android $(getprop ro.build.version.release) (API $(getprop ro.build.version.sdk)), $(getprop ro.product.cpu.abi | cut -d '-' -f1)"
     eco "Kernel: $(uname -r)"
 
 }

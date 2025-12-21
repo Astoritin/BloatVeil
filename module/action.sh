@@ -4,7 +4,6 @@ MODDIR=${0%/*}
 CONFIG_DIR="/data/adb/bloat_veil"
 
 MOD_INTRO="A bloatware vanishing act on the system."
-SEPARATE_LINE="***************************************"
 
 ROOT_FILE_MANAGERS="
 com.speedsoftware.rootexplorer/com.speedsoftware.rootexplorer.RootExplorer
@@ -21,20 +20,20 @@ nextapp.fx/nextapp.fx.ui.ExplorerActivity
 me.zhanghai.android.files/me.zhanghai.android.files.filelist.FileListActivity
 "
 
-echo "$SEPARATE_LINE"
-echo "  BloatVeil"
-echo "  By Astoritin"
-echo "$SEPARATE_LINE"
-echo "  $MOD_INTRO"
-echo "$SEPARATE_LINE"
-echo "  If nothing happened after a while"
-echo "  that means no any available root file explorer"
-echo "  is found on your device"
-echo "  Anyway, you can open config dir with"
-echo "  the root file manager you preferred manually"
-echo "$SEPARATE_LINE"
-echo "- Opening config dir"
-echo "$SEPARATE_LINE"
+echo " "
+echo " Bloat Veil"
+echo " By Astoritin"
+echo " "
+echo " $MOD_INTRO"
+echo " "
+echo " If nothing happened after a while"
+echo " that means no any available root file explorer"
+echo " is found on your device"
+echo " Anyway, you can open config dir with"
+echo " the root file manager you preferred manually"
+echo " "
+echo " Opening config dir"
+echo " "
 sleep 1
 
 IFS=$'\n'
@@ -46,14 +45,14 @@ for fm in $ROOT_FILE_MANAGERS; do
     if pm path "$PKG" >/dev/null 2>&1; then
         am start -n "$fm" "file://$CONFIG_DIR"
         result_action="$?"
-        echo "- Launching $PKG ($result_action)"
+        echo " Launching $PKG ($result_action)"
         if [ $result_action -eq 0 ]; then
-            echo "$SEPARATE_LINE"
+            echo " "
             sleep 1
             return 0
         fi
     else
-        echo "- $PKG is not installed"
+        echo " $PKG is not installed"
     fi
 
 done

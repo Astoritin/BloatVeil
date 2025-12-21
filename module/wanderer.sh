@@ -86,6 +86,7 @@ clean_dir_if_reach_max() {
 }
 
 eco() { echo "$1" >> "$LOG_FILE" 2>/dev/null; }
+ecoe() { echo " " >> "$LOG_FILE" 2>/dev/null; }
 
 ecol() {
 
@@ -164,9 +165,6 @@ update_config_var() {
         [ -n "$(tail -c1 "$file_path")" ] && echo >> "$file_path"
         printf '%s=%s\n' "$key_name" "$expected_value" >> "$file_path"
     fi
-
-    result_update_value=$?
-    return "$result_update_value"
 }
 
 remove_config_var() {
@@ -180,7 +178,6 @@ remove_config_var() {
     fi
 
     sed -i "/^${key_name}=/d" "$file_path"
-    return "$?"
 }
 
 query_var() {
@@ -217,12 +214,12 @@ module_intro() {
     MOD_VER="$(get_config_var "version" "$MODULE_PROP") ($(get_config_var "versionCode" "$MODULE_PROP"))"
 
     install_env_check
-    ecol
+    ecoe
     eco "$MOD_NAME"
     eco "By $MOD_AUTHOR"
     eco "Version: $MOD_VER"
     eco "Root: $ROOT_SOL_DETAIL"
-    ecol
+    ecoe
 
 }
 
@@ -261,11 +258,9 @@ file_compare() {
     
     [ "$hash_file_a" = "$hash_file_b" ] && return 0
     [ "$hash_file_a" != "$hash_file_b" ] && return 1
-
 }
 
 check_duplicate_items() {
-
     itemd=$1
     filed=$2
 
@@ -277,7 +272,6 @@ check_duplicate_items() {
 }
 
 clean_duplicate_items() {
-
     filed=$1
 
     [ -z "$filed" ] && return 1
@@ -285,6 +279,4 @@ clean_duplicate_items() {
 
     awk '!seen[$0]++' "$filed" > "${filed}.tmp"
     mv "${filed}.tmp" "$filed"
-    return 0
-
 }

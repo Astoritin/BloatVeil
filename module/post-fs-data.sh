@@ -48,7 +48,7 @@ unbrick() {
             if [ -f "$TARGET_LIST_LW" ]; then
 				eco "Last worked: exists"
                 cp "$TARGET_LIST_LW" "$TARGET_LIST" && eco "Last worked: switched"
-                rm -f "$MODDIR/disable" && eco "${MOD_NAME}: enabled"
+                rm -f "$MODDIR/disable" && eco "$MOD_NAME: enabled"
                 rm -f "$FLAG_BRICKED" && eco "Brick state: reset"
                 rescue_from_last_worked_target_list=true
                 return 0
@@ -239,7 +239,6 @@ create_empty_file() {
     [ $result_mkdir -eq 0 ] && [ $result_touch -eq 0 ] && return 0
     [ $result_mkdir -eq 0 ] && return 1
     [ $result_touch -eq 0 ] && return 2
-
 }
 
 mirror_mount_empty_file() {
@@ -272,13 +271,12 @@ mirror_mount_empty_file() {
     else
         return 6
     fi
-
 }
 
 bloat_veil() {
 
     ecoe
-    eco "Start tricking"
+    eco "Starting $MOD_NAME"
     ecoe
 
     total_apps_count=0
@@ -290,8 +288,8 @@ bloat_veil() {
     mn_count=0
     me_count=0
 
-    [ -f "$TARGET_LIST_BVA" ] && rm -f "$TARGET_LIST_BVA" && eco "Remove old temporary file"
-	touch "$TARGET_LIST_BVA" && eco "Created empty temporary file"
+    [ -f "$TARGET_LIST_BVA" ] && rm -f "$TARGET_LIST_BVA" && eco "Old temp file: removed"
+	touch "$TARGET_LIST_BVA" && eco "Empty temp file: created"
 
     while IFS= read -r line || [ -n "$line" ]; do
         line=$(echo "$line" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
@@ -315,13 +313,13 @@ bloat_veil() {
             first_char=$(printf '%s' "$line" | cut -c1)
             if [ "$first_char" = "/" ]; then
                 app_path="$package"
-				eco "Checking custom path: $app_path"
+				eco "Custom path: $app_path"
                 case "$app_path" in
                     /apex*|/system/apex*)
                         case "$app_path" in
                             *.apex|*.capex) ;;
                             *)  if [ "${app_path#/apex}" != "$app_path" ]; then
-                                    eco "Redirect to /system$app_path"
+                                    eco "Redirected to: /system$app_path"
                                     app_path="/system$app_path"
                                 fi
                                 app_path=$(echo "$app_path" | sed -n 's|^/system/apex/\([^/]*\).*|/system/apex/\1|p')
@@ -336,17 +334,18 @@ bloat_veil() {
                         esac
                         ;;
                     /app*|/product*|/priv-app*|/system_ext*|/vendor*|/data-app*)
-                        eco "Redirect to /system$app_path"
+                        eco "Redirected to: /system$app_path"
                         app_path="/system$app_path";;
                     /system*)   [ "$app_path" = "/system" ] && break;;
                     *)  break;;
                 esac
             else
-				eco "Checking standard path: $path/$package"
+				eco "Standard path: $path/$package"
                 app_path="$path/$package"
             fi
 
             app_name="$(basename "$app_path")"
+            eco "Processing APP: $app_name"
             if [ -d "$app_path" ]; then
                 case "$hide_mode" in
                     "MB")   link_mount_bind "$MIRROR_DIR" "$app_path";;
@@ -355,7 +354,6 @@ bloat_veil() {
                     "MN")   mirror_make_node "$app_path";;
                 esac
                 app_process_result=$?
-                eco "Processing APP $app_name ($app_process_result)"
                 if [ $app_process_result -eq 0 ]; then
                     case "$hide_mode" in
                     "MB")   mb_count=$((mb_count + 1));;
@@ -376,7 +374,6 @@ bloat_veil() {
                 if [ "$hide_mode" = "ME" ]; then
                     mirror_mount_empty_file "$app_path"
                     file_process_result=$?
-                    eco "Processing APP $app_name ($file_process_result)"
                     if [ $file_process_result -eq 0 ]; then
                         me_count=$((me_count + 1))
                         if check_duplicate_items "$app_path" "$TARGET_LIST_BVA"; then
@@ -390,7 +387,6 @@ bloat_veil() {
                 elif [ "$hide_mode" = "MN" ] || [ "$MN_SUPPORT" = true ]; then
                     mirror_make_node "$app_path"
                     file_process_result=$?
-                    eco "Processing APP $app_name ($file_process_result)"
                     if [ $file_process_result -eq 0 ]; then
                         mn_count=$((mn_count + 1))
                         if check_duplicate_items "$app_path" "$TARGET_LIST_BVA"; then
@@ -404,10 +400,10 @@ bloat_veil() {
                 fi
             else
                 if [ "$first_char" = "/" ]; then
-                    eco "Custom path $app_path does not exist"
+                    eco "Custom path $app_path: -"
                     break
                 else
-                    eco "Standard path $app_path does not exist"
+                    eco "Standard path $app_path: -"
                 fi
             fi
         done
@@ -424,8 +420,16 @@ module_status_update() {
     apps_not_found_count=$((total_apps_count - vanished_apps_count - duplicated_apps_count))
     
     ecoe
-    eco "Vanished: ${vanished_apps_count} App(s) (MB: ${mb_count}, MR: ${mr_count}, MN: ${mn_count}, ME: ${me_count})"
-    eco "Duplicate: ${duplicated_apps_count} App(s), not found: ${apps_not_found_count} App(s), in total: ${total_apps_count} App(s)"
+    eco "Vanished: ${vanished_apps_count} App(s)"
+    ecoe
+    eco "Mount Bind: ${mb_count} App(s)"
+    eco "Magisk Replace: ${mr_count} App(s)"
+    eco "Make Node: ${mn_count} App(s)"
+    eco "Make Empty File: ${me_count} App(s)"
+    ecoe
+    eco "Duplicate: ${duplicated_apps_count} App(s)"
+    eco "Not found: ${apps_not_found_count} App(s)"
+    eco "In total: ${total_apps_count} App(s)"
 
     hide_mode_desc=""
     if [ $mb_count -gt 0 ] && [ $me_count -gt 0 ]; then

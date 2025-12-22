@@ -21,19 +21,19 @@ me.zhanghai.android.files/me.zhanghai.android.files.filelist.FileListActivity
 "
 
 echo " "
-echo " Bloat Veil"
-echo " By Astoritin"
+echo " BloatVeil
+ By Astoritin"
 echo " "
 echo " $MOD_INTRO"
 echo " "
-echo " If nothing happened after a while"
-echo " that means no any available root file explorer"
-echo " is found on your device"
-echo " Anyway, you can open config dir with"
-echo " the root file manager you preferred manually"
-echo " "
-echo " Opening config dir"
-echo " "
+echo " If nothing happened after a while
+ that means no any available root file explorer
+ is found on your device
+ Anyway, you can open config dir with
+ the root file manager you preferred manually
+ 
+ Opening config dir
+ "
 sleep 1
 
 IFS=$'\n'

@@ -214,7 +214,6 @@ module_intro() {
     MOD_VER="$(get_config_var "version" "$MODULE_PROP") ($(get_config_var "versionCode" "$MODULE_PROP"))"
 
     install_env_check
-    ecoe
     eco "$MOD_NAME"
     eco "By $MOD_AUTHOR"
     eco "Version: $MOD_VER"

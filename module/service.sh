@@ -19,12 +19,12 @@ LOG_FILE_2="$LOG_DIR/logs_2.txt"
 TARGET_LIST_BVA="$LOG_DIR/targets_bva.txt"
 
 MODULE_PROP="$MODDIR/module.prop"
+MOD_NAME="$(get_config_var "name" "$MODULE_PROP")"
 MOD_INTRO="A bloatware vanishing act on the system."
 
 config_loader() {
 
-    eco "Loading config for late_start service stage"
-
+    eco "Stage: late_start service"
     brick_rescue=$(get_config_var "brick_rescue" "$CONFIG_FILE") || brick_rescue=true
     brick_timeout=$(get_config_var "brick_timeout" "$CONFIG_FILE") || brick_timeout=120
     disable_module_as_brick=$(get_config_var "disable_module_as_brick" "$CONFIG_FILE") || disable_module_as_brick=true
@@ -60,8 +60,8 @@ ecoe
 config_loader
 
 if [ "$brick_rescue" = true ] && [ -f "$FLAG_BRICKED" ]; then
-    eco "Flag bricked: exists"
-	eco "Processing: skipped"
+    eco "Flag bricked: exists
+    $MOD_NAME: skipped"
     exit 1
 fi
 
@@ -93,7 +93,9 @@ while [ "$(getprop sys.boot_completed)" != "1" ]; do
     sleep 1
 done
 
-eco "Boot complete! Countdown: ${brick_timeout}s"
+eco "Boot complete!
+Countdown: ${brick_timeout}s"
+
 rm -f "$FLAG_BRICKED"
 
 if [ "$mb_call" = true ] && [ "$mb_umount_bind" = true ]; then
@@ -101,7 +103,6 @@ if [ "$mb_call" = true ] && [ "$mb_umount_bind" = true ]; then
     if [ ! -f "$TARGET_LIST_BVA" ]; then
         eco "$TARGET_LIST_BVA: -"
     else
-        eco "Processing bind points"
         TOTAL_APPS_COUNT=0
         UMOUNT_APPS_COUNT=0
         while IFS= read -r line || [ -n "$line" ]; do
@@ -124,7 +125,7 @@ if [ "$mb_call" = true ] && [ "$mb_umount_bind" = true ]; then
 
             case "$package" in
                 *.apex|*.capex)
-                    eco "Skip $package"
+                    eco "$package: skipped"
                     continue
                     ;;
             esac
@@ -142,7 +143,7 @@ if [ "$mb_call" = true ] && [ "$mb_umount_bind" = true ]; then
         ecoe
     fi
 else
-    [ "$mb_call" = false ] && eco "Mount Bind App(s): -"
+    [ "$mb_call" = false ] && eco "Mount Bind: -"
     [ "$mb_umount_bind" = false ] && eco "Umount: disabled"
 fi
 
@@ -154,13 +155,10 @@ if [ "$last_worked_target_list" = true ]; then
     fi
 fi
 if [ "$auto_update_target_list" = true ]; then
-    eco "Updating target list"
-    cp -p "$TARGET_LIST_BVA" "$TARGET_LIST"
+    cp -p "$TARGET_LIST_BVA" "$TARGET_LIST" && eco "Target list: updated"
 fi
 rm -f "$TARGET_LIST_BVA" && eco "Old temporary file: removed"
 
 cat "$LOG_FILE_2" "$LOG_FILE" > "${LOG_FILE}.tmp" && mv "${LOG_FILE}.tmp" "$LOG_FILE"
 rm -f "$LOG_FILE_2"
-
 remove_config_var "mb_call" "$CONFIG_FILE"
-ecoe

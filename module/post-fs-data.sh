@@ -68,7 +68,7 @@ unbrick() {
 
 config_loader() {
 
-    eco "Loading config for post-fs-data stage"
+    eco "Stage: post-fs-data"
     brick_rescue=$(get_config_var "brick_rescue" "$CONFIG_FILE") || brick_rescue=true
     disable_module_as_brick=$(get_config_var "disable_module_as_brick" "$CONFIG_FILE") || disable_module_as_brick=true
     last_worked_target_list=$(get_config_var "last_worked_target_list" "$CONFIG_FILE") || last_worked_target_list=true
@@ -80,8 +80,6 @@ config_loader() {
 }
 
 preparation() {
-
-    eco "Some preparation"
 
     [ -d "$MIRROR_DIR" ] && rm -rf "$MIRROR_DIR" && eco "Old mirror dir: removed"
     [ -d "$MIRROR_SYSTEM_DIR" ] && rm -rf "$MIRROR_SYSTEM_DIR" && eco "Old system dir: removed"    
@@ -251,7 +249,7 @@ mirror_mount_empty_file() {
 
     if [ -e "$empty_path" ]; then
         if [ -d "$empty_path" ]; then
-            eco "$empty_path type: dir"
+            eco "Dir: $empty_path"
             for file in "${empty_path}"/*; do
                 [ -f "$file" ] || continue
                 case $file in
@@ -262,7 +260,7 @@ mirror_mount_empty_file() {
                 esac
             done
         elif [ -f "$empty_path" ]; then
-            eco "$empty_path type: file"
+            eco "File: $empty_path"
             mirror_empty_filename=$(basename "$empty_path")
             mirror_empty_dirname=$(dirname "$empty_path")
             mirror_empty_path="${MODDIR}${mirror_empty_dirname}"
@@ -276,7 +274,7 @@ mirror_mount_empty_file() {
 bloat_veil() {
 
     ecoe
-    eco "Starting $MOD_NAME"
+    eco "$MOD_NAME: processing"
     ecoe
 
     total_apps_count=0
@@ -345,7 +343,7 @@ bloat_veil() {
             fi
 
             app_name="$(basename "$app_path")"
-            eco "Processing APP: $app_name"
+            eco "Processing: $app_name"
             if [ -d "$app_path" ]; then
                 case "$hide_mode" in
                     "MB")   link_mount_bind "$MIRROR_DIR" "$app_path";;
@@ -407,6 +405,7 @@ bloat_veil() {
                 fi
             fi
         done
+        ecoe
     done < "$TARGET_LIST"
 
     clean_duplicate_items "$TARGET_LIST_BVA"
@@ -419,17 +418,16 @@ module_status_update() {
     
     apps_not_found_count=$((total_apps_count - vanished_apps_count - duplicated_apps_count))
     
-    ecoe
     eco "Vanished: ${vanished_apps_count} App(s)"
     ecoe
-    eco "Mount Bind: ${mb_count} App(s)"
-    eco "Magisk Replace: ${mr_count} App(s)"
-    eco "Make Node: ${mn_count} App(s)"
-    eco "Make Empty File: ${me_count} App(s)"
+    eco "Mount Bind: ${mb_count} App(s)
+    Magisk Replace: ${mr_count} App(s)
+    Make Node: ${mn_count} App(s)
+    Make Empty File: ${me_count} App(s)"
     ecoe
-    eco "Duplicate: ${duplicated_apps_count} App(s)"
-    eco "Not found: ${apps_not_found_count} App(s)"
-    eco "In total: ${total_apps_count} App(s)"
+    eco "Duplicate: ${duplicated_apps_count} App(s)
+    Not found: ${apps_not_found_count} App(s)
+    In total: ${total_apps_count} App(s)"
 
     hide_mode_desc=""
     if [ $mb_count -gt 0 ] && [ $me_count -gt 0 ]; then

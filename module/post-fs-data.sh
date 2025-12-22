@@ -369,7 +369,7 @@ bloat_veil() {
                 fi
 
             elif [ -f "$app_path" ] && [ -d "$(dirname "$app_path")" ]; then
-                if [ "$hide_mode" = "ME" ]; then
+                if [ "$hide_mode" = "ME" ] || [ "$ME_SUPPORT" = true ]; then
                     mirror_mount_empty_file "$app_path"
                     file_process_result=$?
                     if [ $file_process_result -eq 0 ]; then
@@ -418,16 +418,17 @@ module_status_update() {
     
     apps_not_found_count=$((total_apps_count - vanished_apps_count - duplicated_apps_count))
     
-    eco "Vanished: ${vanished_apps_count} App(s)"
-    ecoe
-    eco "Mount Bind: ${mb_count} App(s)
-    Magisk Replace: ${mr_count} App(s)
-    Make Node: ${mn_count} App(s)
-    Make Empty File: ${me_count} App(s)"
-    ecoe
-    eco "Duplicate: ${duplicated_apps_count} App(s)
-    Not found: ${apps_not_found_count} App(s)
-    In total: ${total_apps_count} App(s)"
+    eco "Vanished: ${vanished_apps_count} App(s)
+
+Mount Bind: ${mb_count} App(s)
+Magisk Replace: ${mr_count} App(s)
+Make Node: ${mn_count} App(s)
+Make Empty File: ${me_count} App(s)
+
+Duplicate: ${duplicated_apps_count} App(s)
+Not found: ${apps_not_found_count} App(s)
+
+In total: ${total_apps_count} App(s)"
 
     hide_mode_desc=""
     if [ $mb_count -gt 0 ] && [ $me_count -gt 0 ]; then

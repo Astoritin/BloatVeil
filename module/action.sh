@@ -43,7 +43,7 @@ for fm in $ROOT_FILE_MANAGERS; do
     PKG=${fm%/*}
 
     if pm path "$PKG" >/dev/null 2>&1; then
-        am start -n "$fm" "file://$CONFIG_DIR"
+        am start -n "$fm" "file://$CONFIG_DIR" >/dev/null 2>&1
         result_action="$?"
         echo " Launching $PKG ($result_action)"
         if [ $result_action -eq 0 ]; then

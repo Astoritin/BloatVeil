@@ -24,7 +24,7 @@ MOD_INTRO="A bloatware vanishing act on the system."
 
 config_loader() {
 
-    eco "Stage: late_start service"
+    eco "Loading config for late_start service stage"
     brick_rescue=$(get_config_var "brick_rescue" "$CONFIG_FILE") || brick_rescue=true
     brick_timeout=$(get_config_var "brick_timeout" "$CONFIG_FILE") || brick_timeout=120
     disable_module_as_brick=$(get_config_var "disable_module_as_brick" "$CONFIG_FILE") || disable_module_as_brick=true
@@ -155,9 +155,9 @@ if [ "$last_worked_target_list" = true ]; then
     fi
 fi
 if [ "$auto_update_target_list" = true ]; then
-    cp -p "$TARGET_LIST_BVA" "$TARGET_LIST" && eco "Target list: updated"
+    cp -p "$TARGET_LIST_BVA" "$TARGET_LIST"
 fi
-rm -f "$TARGET_LIST_BVA" && eco "Old temporary file: removed"
+rm -f "$TARGET_LIST_BVA"
 
 cat "$LOG_FILE_2" "$LOG_FILE" > "${LOG_FILE}.tmp" && mv "${LOG_FILE}.tmp" "$LOG_FILE"
 rm -f "$LOG_FILE_2"

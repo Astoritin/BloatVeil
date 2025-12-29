@@ -68,7 +68,7 @@ unbrick() {
 
 config_loader() {
 
-    eco "Stage: post-fs-data"
+    eco "Loading config for post-fs-data stage"
     brick_rescue=$(get_config_var "brick_rescue" "$CONFIG_FILE") || brick_rescue=true
     disable_module_as_brick=$(get_config_var "disable_module_as_brick" "$CONFIG_FILE") || disable_module_as_brick=true
     last_worked_target_list=$(get_config_var "last_worked_target_list" "$CONFIG_FILE") || last_worked_target_list=true
@@ -405,7 +405,6 @@ bloat_veil() {
                 fi
             fi
         done
-        ecoe
     done < "$TARGET_LIST"
 
     clean_duplicate_items "$TARGET_LIST_BVA"
@@ -427,7 +426,6 @@ Make Empty File: ${me_count} App(s)
 
 Duplicate: ${duplicated_apps_count} App(s)
 Not found: ${apps_not_found_count} App(s)
-
 In total: ${total_apps_count} App(s)"
 
     hide_mode_desc=""

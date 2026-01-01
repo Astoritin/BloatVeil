@@ -4,3 +4,4 @@ version=1.0
 versionCode=1
 author=Astoritin
 description=A bloatware vanishing act on the system.
+updateJson=https://raw.githubusercontent.com/Astoritin/BloatVeil/main/upgrade/update.json

@@ -16,8 +16,11 @@ BloatVeil, 一个针对系统的预装软件们的消失戏法（预装软件，
    
 ***KernelSU/APatch : You may need to flash [MetaModule](https://kernelsu.org/guide/metamodule.html) before flashing BloatVeil***   
 ***对于 KernelSU/APatch: 在刷入 BloatVeil 前你可能需要刷入[元模块](https://kernelsu.org/zh_CN/guide/metamodule.html)***   
+   
 ## Help Documents / 帮助文档
-**See [here](https://github.com/Astoritin/BloatVeil/wiki)** / **参阅 [此处](https://github.com/Astoritin/BloatVeil/wiki)**
+- **[Instructions](https://github.com/Astoritin/BloatVeil/wiki/How-to-use-BloatVeil)** / **[使用教程](https://github.com/Astoritin/BloatVeil/wiki/How-to-use-BloatVeil)**
+- **[Bug report](https://github.com/Astoritin/BloatVeil/wiki/Unbrick-&-Bug-report)** / **[问题反馈](https://github.com/Astoritin/BloatVeil/wiki/Unbrick-&-Bug-report)**
+- **[Q&A](https://github.com/Astoritin/BloatVeil/wiki/Questions-&-Answers)** / **[问与答](https://github.com/Astoritin/BloatVeil/wiki/Questions-&-Answers)**
 
 ## Credits / 鸣谢
 - [Magisk](https://github.com/topjohnwu/Magisk) - the foundation which makes everything possible

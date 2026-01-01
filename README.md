@@ -13,7 +13,8 @@ A bloatware vanishing act on the system / 预装软件，于系统启动时悄�
 - [KernelSU](https://github.com/tiann/KernelSU)
 - [APatch](https://github.com/bmax121/APatch)   
    
-*For KernelSU/APatch, you may need to flash [MetaModule](https://kernelsu.org/guide/metamodule.html) before flashing BloatVeil / 对 KernelSU/APatch, 在刷入 BloatVeil 前你可能需要刷入[元模块](https://kernelsu.org/zh_CN/guide/metamodule.html)*
+*For KernelSU/APatch, you may need to flash [MetaModule](https://kernelsu.org/guide/metamodule.html) before flashing BloatVeil*   
+*对 KernelSU/APatch, 在刷入 BloatVeil 前你可能需要刷入[元模块](https://kernelsu.org/zh_CN/guide/metamodule.html)*
 ## Steps / 步骤
 - Flash BloatVeil, the steps is just like how do you flash other Magisk modules.
 - Use [App Manager](https://github.com/MuntashirAkon/AppManager) to search for the pre-installed app names you want to "remove".
@@ -31,4 +32,14 @@ _For example, I need to uninstall XiaoAi Voice Assistant, so I will get the dire
 - 打开配置文件 `/data/adb/bloat_veil/targets.txt` 并粘贴这些目录名，**一行一个**
 - 保存 `targets.txt` 的改动并重新启动你的设备以观察结果   
    
-_例如：我需要卸载小爱同学，那么我会通过 AppManager 查看小爱同学所在的文件夹，得知其名字是 VoiceAssistAndroidT，然后将 VoiceAssistAndroidT 复制到 target.conf ，回车并保存更改后重启设备。_
+_例如：我需要卸载小爱同学，那么我会通过 AppManager 查看小爱同学所在的文件夹，得知其名字是 VoiceAssistAndroidT，然后将 VoiceAssistAndroidT 复制到 targets.txt ，回车并保存更改后重启设备。_
+## Notes / 注意
+1. `targets.txt` supports commenting out entire lines with the "#" symbol. BloatVeil will ignore commented lines and empty lines.
+2. BloatVeil supports custom paths, for example: `/system/app/MiVideo`. In this case, BloatVeil will directly process the custom path without scanning other system directories.
+3. To save the time and reduce the cost of resources, now BloatVeil will update the items of `targets.txt` into the system path bloatwares located in automatically in each time booting. You can read the chapter `Config File` to know.
+4. If the resource directory starts with `/data`, it means the app was installed as first booting after the initial of ROM setup. You can uninstall it manually and should NOT add it to `targets.txt`, as BloatVeil's processing will not affect such apps.
+***
+1. `targets.txt` 支持"#"号注释整行和项目旁存在注释，BloatVeil 不会处理被注释掉的行和空行。
+2. BloatVeil 支持自定义路径，例如：`/system/app/MiVideo`。此时 BloatVeil 会直接处理该自定义路径而不会再扫描其他系统文件夹。
+3. 为了节省时间和减少资源消耗，现在`targets.txt`会随着每次系统启动自动更新为预装APP对应的系统目录，你可以查阅“配置文件”部分进行了解。
+4. 若你看到的资源目录以 `/data` 开头，则说明该APP是安装完ROM后的第一次初始化安装上的，实质上属于用户应用，只是内置于ROM的刷机包的特定目录。这类应用可以自行卸载，并且只有恢复出厂设置时才可能重新被自动安装，请不要加入到 `targets.txt` 中，因为BloatVeil的处理也不会对这类软件生效。

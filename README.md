@@ -9,19 +9,10 @@ BloatVeil, 一个针对系统的预装软件们的消失戏法（预装软件，
 - 一个不修改系统分区的前提下“移除”预装软件的 Magisk 模块。
 - 在系统启动时，BloatVeil 将指定预装软件“掩盖在面纱下”，这样系统就不会加载它们。
 - *预装软件并没有被删除，它们只是在系统扫描时中“不在扫描清单里了”。*   
-## Supported Root Solution / 支持的 Root 方案
-- [Magisk](https://github.com/topjohnwu/Magisk) (Recommend!/推荐!)
-- [KernelSU](https://github.com/tiann/KernelSU)
-- [APatch](https://github.com/bmax121/APatch)   
-   
-***KernelSU/APatch : You may need to flash [MetaModule](https://kernelsu.org/guide/metamodule.html) before flashing BloatVeil***   
-***对于 KernelSU/APatch: 在刷入 BloatVeil 前你可能需要刷入[元模块](https://kernelsu.org/zh_CN/guide/metamodule.html)***   
-   
 ## Help Documents / 帮助文档
-- **[Instructions](https://github.com/Astoritin/BloatVeil/wiki/How-to-use-BloatVeil)** / **[使用教程](https://github.com/Astoritin/BloatVeil/wiki/How-to-use-BloatVeil)**
-- **[Bug report](https://github.com/Astoritin/BloatVeil/wiki/Unbrick-&-Bug-report)** / **[问题反馈](https://github.com/Astoritin/BloatVeil/wiki/Unbrick-&-Bug-report)**
-- **[Q&A](https://github.com/Astoritin/BloatVeil/wiki/Questions-&-Answers)** / **[问与答](https://github.com/Astoritin/BloatVeil/wiki/Questions-&-Answers)**
-
+- **[Instructions - 使用教程](https://github.com/Astoritin/BloatVeil/wiki/How-to-use-BloatVeil)**
+- **[Bug report - 问题反馈](https://github.com/Astoritin/BloatVeil/wiki/Unbrick-&-Bug-report)**
+- **[Q&A - 问与答](https://github.com/Astoritin/BloatVeil/wiki/Questions-&-Answers)**
 ## Credits / 鸣谢
 - [Magisk](https://github.com/topjohnwu/Magisk) - the foundation which makes everything possible
 - [Zygisk Next](https://github.com/Dr-TSNG/ZygiskNext) - the implementation of function extract and root solution check

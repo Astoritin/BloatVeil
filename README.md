@@ -4,7 +4,7 @@ A bloatware vanishing act on the system / 预装软件，于系统启动时悄�
 - A Magisk module for "removing" pre-installed APP(s) systemlessly.
 - BloatVeil hides targeted pre-installed APP(s) during boot so system skips loading them.
 - No pre-installed APP(s) are deleted: they just stay out of sight as booting system.
----
+***
 - 一个不修改系统分区的前提下“移除”预装软件的 Magisk 模块。
 - 在系统启动时，BloatVeil 将指定预装软件“掩盖在面纱下”，这样系统就不会加载它们。
 - 预装软件并没有被删除，只是让它们在系统扫描时“消失”。
@@ -23,7 +23,7 @@ A bloatware vanishing act on the system / 预装软件，于系统启动时悄�
 - Save the changes to `targets.txt` and reboot your device to observe the results.   
    
 _For example, I need to uninstall XiaoAi Voice Assistant, so I will get the directory XiaoAi Voice Assistant located in by AppManager and soon get its name `VoiceAssistAndroidT`, then copy `VoiceAssistAndroidT` and add it into `targets.txt` , save the changes and reboot my device._
----
+***
 - 刷入 BloatVeil ，步骤跟你刷入其他 Magisk 模块的操作一样
 - 打开 [App Manager](https://github.com/MuntashirAkon/AppManager) 以查找你想“移除”的预装软件名称
 - 打开应用详情页面并复制其来源目录

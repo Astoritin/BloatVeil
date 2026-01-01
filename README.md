@@ -13,7 +13,7 @@ A bloatware vanishing act on the system / 预装软件，于系统启动时悄�
 - [KernelSU](https://github.com/tiann/KernelSU)
 - [APatch](https://github.com/bmax121/APatch)   
    
-For KernelSU/APatch, you may need to flash [MetaModule](https://kernelsu.org/guide/metamodule.html) before flashing BloatVeil / 对 KernelSU/APatch, 在刷入 BloatVeil 前你可能需要刷入[元模块](https://kernelsu.org/zh_CN/guide/metamodule.html)
+*For KernelSU/APatch, you may need to flash [MetaModule](https://kernelsu.org/guide/metamodule.html) before flashing BloatVeil / 对 KernelSU/APatch, 在刷入 BloatVeil 前你可能需要刷入[元模块](https://kernelsu.org/zh_CN/guide/metamodule.html)*
 ## Steps / 步骤
 - Flash BloatVeil, the steps is just like how do you flash other Magisk modules.
 - Use [App Manager](https://github.com/MuntashirAkon/AppManager) to search for the pre-installed app names you want to "remove".
@@ -21,12 +21,14 @@ For KernelSU/APatch, you may need to flash [MetaModule](https://kernelsu.org/gui
 > Use Root Explorer, MT Manager or MiXplorer to manually locate and copy the directory names of pre-installed apps under `/system` is okay too.
 - Open the file `/data/adb/bloat_veil/targets.txt` and paste the bloatwares directories, **one per line**.
 - Save the changes to `targets.txt` and reboot your device to observe the results.   
-> For example, I need to uninstall XiaoAi Voice Assistant, so I will get the directory XiaoAi Voice Assistant located in by AppManager and soon get its name `VoiceAssistAndroidT`, then copy `VoiceAssistAndroidT` and add it into `targets.txt` , save the changes and reboot my device.
+   
+_For example, I need to uninstall XiaoAi Voice Assistant, so I will get the directory XiaoAi Voice Assistant located in by AppManager and soon get its name `VoiceAssistAndroidT`, then copy `VoiceAssistAndroidT` and add it into `targets.txt` , save the changes and reboot my device._
 ---
 - 刷入 BloatVeil ，步骤跟你刷入其他 Magisk 模块的操作一样
 - 打开 [App Manager](https://github.com/MuntashirAkon/AppManager) 以查找你想“移除”的预装软件名称
 - 打开应用详情页面并复制其来源目录
 > 你也可以通过 Root Explorer, MT管理器 或 MiXplorer 自行定位和复制位于 `/system` 下预装软件的目录名
 - 打开配置文件 `/data/adb/bloat_veil/targets.txt` 并粘贴这些目录名，**一行一个**
-- 保存 `targets.txt` 的改动并重新启动你的设备以观察结果
-> 例如：我需要卸载小爱同学，那么我会通过 AppManager 查看小爱同学所在的文件夹，得知其名字是 VoiceAssistAndroidT，然后将 VoiceAssistAndroidT 复制到 target.conf ，回车并保存更改后重启设备。
+- 保存 `targets.txt` 的改动并重新启动你的设备以观察结果   
+   
+_例如：我需要卸载小爱同学，那么我会通过 AppManager 查看小爱同学所在的文件夹，得知其名字是 VoiceAssistAndroidT，然后将 VoiceAssistAndroidT 复制到 target.conf ，回车并保存更改后重启设备。_

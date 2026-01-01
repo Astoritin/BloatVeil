@@ -1,6 +1,5 @@
 # BloatVeil
-BloatVeil, a bloatware vanishing act on the system   
-BloatVeil, 一个针对系统的预装软件们的消失戏法（预装软件，于系统启动时悄然隐去）   
+BloatVeil, a bloatware vanishing act on the system / BloatVeil, 一个针对系统的预装软件们的消失戏法（预装软件，于系统启动时悄然隐去）   
 ## What is "BloatVeil"? / 什么是 “预装软件面纱”？
 - A Magisk module for "removing" pre-installed APP(s) systemlessly.
 - BloatVeil hides targeted pre-installed APP(s) during boot so system skips loading them.

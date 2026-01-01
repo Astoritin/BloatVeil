@@ -18,7 +18,7 @@ LOG_DIR="$CONFIG_DIR/logs"
 LOG_FILE="$LOG_DIR/logs_2.txt"
 TARGET_LIST_BVA="$LOG_DIR/targets_bva.txt"
 
-MOD_INTRO="A bloatware vanishing act on the system."
+MOD_DESC="A bloatware vanishing act on the system."
 
 MN_SUPPORT=false
 MR_SUPPORT=false
@@ -44,7 +44,7 @@ unbrick() {
             eco "Last worked vs current: identical"
             rm -f "$TARGET_LIST_LW" && eco "Last worked: removed"
         fi
-        if [ "$disable_module_as_brick" = false ] && [ "$last_worked_target_list" = true ]; then
+        if [ "$brick_and_disable" = false ] && [ "$last_worked_target_list" = true ]; then
             if [ -f "$TARGET_LIST_LW" ]; then
 				eco "Last worked: exists"
                 cp "$TARGET_LIST_LW" "$TARGET_LIST" && eco "Last worked: switched"
@@ -54,7 +54,7 @@ unbrick() {
                 return 0
             fi
         fi
-        if [ "$disable_module_as_brick" = true ] && [ ! -f "$MODDIR/disable" ]; then
+        if [ "$brick_and_disable" = true ] && [ ! -f "$MODDIR/disable" ]; then
             eco "Mark disable: -"
             rm -f "$FLAG_BRICKED" && eco "Flag bricked: removed"
             return 0
@@ -69,13 +69,13 @@ unbrick() {
 config_loader() {
 
     eco "Loading config for post-fs-data stage"
-    brick_rescue=$(get_config_var "brick_rescue" "$CONFIG_FILE") || brick_rescue=true
-    disable_module_as_brick=$(get_config_var "disable_module_as_brick" "$CONFIG_FILE") || disable_module_as_brick=true
-    last_worked_target_list=$(get_config_var "last_worked_target_list" "$CONFIG_FILE") || last_worked_target_list=true
-    hide_mode=$(get_config_var "hide_mode" "$CONFIG_FILE") || hide_mode=MB
-    system_app_paths=$(get_config_var "system_app_paths" "$CONFIG_FILE") || system_app_paths="/system/app /system/preload /system/product/app /system/product/data-app /system/product/priv-app /system/product/overlay /system/priv-app /system/system_ext/app /system/system_ext/priv-app /system/vendor/app /system/vendor/priv-app /system/vendor/overlay"
+    brick_rescue=$(get_key_value "brick_rescue" "$CONFIG_FILE") || brick_rescue=true
+    brick_and_disable=$(get_key_value "brick_and_disable" "$CONFIG_FILE") || brick_and_disable=true
+    last_worked_target_list=$(get_key_value "last_worked_target_list" "$CONFIG_FILE") || last_worked_target_list=true
+    hide_mode=$(get_key_value "hide_mode" "$CONFIG_FILE") || hide_mode=MB
+    system_app_paths="/system/app /system/preload /system/product/app /system/product/data-app /system/product/priv-app /system/product/overlay /system/priv-app /system/system_ext/app /system/system_ext/priv-app /system/vendor/app /system/vendor/priv-app /system/vendor/overlay"
     ecoe
-    print_var "brick_rescue" "disable_module_as_brick" "last_worked_target_list" "hide_mode" "system_app_paths"
+    print_var "brick_rescue" "brick_and_disable" "last_worked_target_list" "hide_mode" "system_app_paths"
     ecoe
 }
 
@@ -138,8 +138,8 @@ preparation() {
 
     if [ ! -f "$TARGET_LIST" ]; then
         eco "Target list: -"
-        DESCRIPTION="[❌Target list does not exist! ✅${ROOT_SOL_DETAIL}] ${MOD_INTRO}"
-        update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
+        DESCRIPTION="[❌Target list does not exist! ✅${ROOT_SOL_DETAIL}] ${MOD_DESC}"
+        update_key_value "description" "$MODULE_PROP" "$DESCRIPTION"
         exit 1
     fi
 }
@@ -481,14 +481,14 @@ In total: ${total_apps_count} App(s)"
     fi
 l
     if [ "$no_effect" = "false" ]; then
-        DESCRIPTION="[${process_status} vanished, ✅${hide_mode_desc}${desc_last_worked}, ✅${ROOT_SOL_DETAIL}] ${MOD_INTRO}"
+        DESCRIPTION="[${process_status} vanished, ✅${hide_mode_desc}${desc_last_worked}, ✅${ROOT_SOL_DETAIL}] ${MOD_DESC}"
     else
-        DESCRIPTION="[${process_status} vanished, ✅${ROOT_SOL_DETAIL}] ${MOD_INTRO}"
+        DESCRIPTION="[${process_status} vanished, ✅${ROOT_SOL_DETAIL}] ${MOD_DESC}"
     fi
 
     if [ -f "$MODULE_PROP" ]; then
-        update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
-        update_config_var "mb_call" "$CONFIG_FILE" "$mb_call"
+        update_key_value "description" "$MODULE_PROP" "$DESCRIPTION"
+        update_key_value "mb_call" "$CONFIG_FILE" "$mb_call"
     fi
 }
 

@@ -19,22 +19,22 @@ LOG_FILE_2="$LOG_DIR/logs_2.txt"
 TARGET_LIST_BVA="$LOG_DIR/targets_bva.txt"
 
 MODULE_PROP="$MODDIR/module.prop"
-MOD_NAME="$(get_config_var "name" "$MODULE_PROP")"
-MOD_INTRO="A bloatware vanishing act on the system."
+MOD_NAME="$(get_key_value "name" "$MODULE_PROP")"
+MOD_DESC="A bloatware vanishing act on the system."
 
 config_loader() {
 
     eco "Loading config for late_start service stage"
-    brick_rescue=$(get_config_var "brick_rescue" "$CONFIG_FILE") || brick_rescue=true
-    brick_timeout=$(get_config_var "brick_timeout" "$CONFIG_FILE") || brick_timeout=120
-    disable_module_as_brick=$(get_config_var "disable_module_as_brick" "$CONFIG_FILE") || disable_module_as_brick=true
-    last_worked_target_list=$(get_config_var "last_worked_target_list" "$CONFIG_FILE") || last_worked_target_list=true
-    hide_mode=$(get_config_var "hide_mode" "$CONFIG_FILE") || hide_mode=MB
-    mb_umount_bind=$(get_config_var "mb_umount_bind" "$CONFIG_FILE") || mb_umount_bind=true
-    auto_update_target_list=$(get_config_var "auto_update_target_list" "$CONFIG_FILE") || auto_update_target_list=true
-    mb_call=$(get_config_var "mb_call" "$CONFIG_FILE") || mb_call=false
+    brick_rescue=$(get_key_value "brick_rescue" "$CONFIG_FILE") || brick_rescue=true
+    brick_timeout=$(get_key_value "brick_timeout" "$CONFIG_FILE") || brick_timeout=120
+    brick_and_disable=$(get_key_value "brick_and_disable" "$CONFIG_FILE") || brick_and_disable=true
+    last_worked_target_list=$(get_key_value "last_worked_target_list" "$CONFIG_FILE") || last_worked_target_list=true
+    hide_mode=$(get_key_value "hide_mode" "$CONFIG_FILE") || hide_mode=MB
+    mb_umount_bind=$(get_key_value "mb_umount_bind" "$CONFIG_FILE") || mb_umount_bind=true
+    auto_update_target_list=$(get_key_value "auto_update_target_list" "$CONFIG_FILE") || auto_update_target_list=true
+    mb_call=$(get_key_value "mb_call" "$CONFIG_FILE") || mb_call=false
     ecoe
-    print_var "brick_rescue" "brick_timeout" "disable_module_as_brick" "last_worked_target_list" "hide_mode" "mb_umount_bind" "auto_update_target_list" "mb_call"
+    print_var "brick_rescue" "brick_timeout" "brick_and_disable" "last_worked_target_list" "hide_mode" "mb_umount_bind" "auto_update_target_list" "mb_call"
     ecoe
 
 }
@@ -75,12 +75,12 @@ while [ "$(getprop sys.boot_completed)" != "1" ]; do
             eco "Unbrick: skipped"
             exit 1
         fi
-        if [ "$disable_module_as_brick" = true ]; then
+        if [ "$brick_and_disable" = true ]; then
             eco "$MOD_NAME: disabled"
             touch "$MODDIR/disable"
         fi
-        DESCRIPTION="[❌Triggered brick rescue! ✅${ROOT_SOL_DETAIL}] $MOD_INTRO"
-        update_config_var "description" "$MODULE_PROP" "$DESCRIPTION"
+        DESCRIPTION="[❌Triggered brick rescue! ✅${ROOT_SOL_DETAIL}] $MOD_DESC"
+        update_key_value "description" "$MODULE_PROP" "$DESCRIPTION"
 		sync
         setprop sys.powerctl reboot
         result_set_prop=$?

@@ -98,86 +98,53 @@ ecol() {
 
 }
 
-get_config_var() {
-    key=$1
-    config_file=$2
-    [ -n "$key" ] && [ -f "$config_file" ] || return 1
+get_key_value() {
+    local key=$1
+    local conf=$2
+    [ -n "$key" ] && [ -f "$conf" ] || return 1
 
     awk -v key="$key" '
-        BEGIN {
-            key_regex = "^" key "="
-            found = 0; in_quote = 0; val = ""
-        }
-        !found && $0 ~ key_regex {
+        BEGIN { key_regex = "^" key "[[:space:]]*=" }
+        $0 ~ key_regex {
             sub(key_regex, "")
             sub(/^[[:space:]]*/, "")
             if (sub(/^"/, "")) {
-                in_quote = 1
-                if (sub(/"[[:space:]]*$/, "")) {
-                    val = $0
-                    in_quote = 0
-                } else {
-                    val = $0
-                    while ((getline line) > 0) {
-                        if (sub(/"[[:space:]]*$/, "", line)) {
-                            val = val "\n" line
-                            in_quote = 0
-                            break
-                        } else {
-                            val = val "\n" line
-                        }
-                    }
-                    if (in_quote) exit 1
-                }
-                found = 1
+                if (!sub(/"[[:space:]]*$/, "")) exit 1
             } else {
-                val = $0
-                sub(/[[:space:]]+$/, "", val)
-                found = 1
+                sub(/[[:space:]]+$/, "")
             }
-            if (found) exit 0
+            print
+            exit 0
         }
-        END {
-            if (!found) exit 1
-            print val
-        }
-    ' "$config_file" | tr -d '\r'
+        END { exit 1 }
+    ' "$conf" | tr -d '\r'
 
     [ $? -eq 0 ] || return 1
 }
 
-update_config_var() {
-    key_name="$1"
-    file_path="$2"
-    expected_value="$3"
-    append_mode="${4:-false}"
+update_key_value() {
+    local key="$1"
+    local conf="$2"
+    local expected="$3"
+    local append="${4:-false}"
 
-    if [ -z "$key_name" ] || [ -z "$expected_value" ] || [ -z "$file_path" ]; then
-        return 1
-    elif [ ! -f "$file_path" ]; then
-        return 2
-    fi
+    [ -z "$key" ] || [ -z "$expected" ] || [ -z "$conf" ] || [ ! -f "$conf" ] && return 1
 
-    if grep -q "^${key_name}=" "$file_path"; then
-        [ "$append_mode" = true ] && return 0
-        sed -i "/^${key_name}=/c\\${key_name}=${expected_value}" "$file_path"
+    if grep -q "^${key}=" "$conf"; then
+        [ "$append" = true ] && return 0
+        sed -i "/^${key}=/c\\${key}=${expected}" "$conf"
     else
-        [ -n "$(tail -c1 "$file_path")" ] && echo >> "$file_path"
-        printf '%s=%s\n' "$key_name" "$expected_value" >> "$file_path"
+        [ -n "$(tail -c1 "$conf")" ] && echo >> "$conf"
+        printf '%s=%s\n' "$key" "$expected" >> "$conf"
     fi
 }
 
 remove_config_var() {
-    key_name="$1"
-    file_path="$2"
+    local key="$1"
+    local conf="$2"
 
-    if [ -z "$key_name" ] || [ -z "$file_path" ]; then
-        return 1
-    elif [ ! -f "$file_path" ]; then
-        return 2
-    fi
-
-    sed -i "/^${key_name}=/d" "$file_path"
+    [ -z "$key" ] || [ -z "$conf" ] || [ ! -f "$conf" ] && return 1
+    sed -i "/^${key}=/d" "$conf"
 }
 
 query_var() {
@@ -209,9 +176,9 @@ show_system_info() {
 module_intro() {
 
     MODULE_PROP="$MODDIR/module.prop"
-    MOD_NAME="$(get_config_var "name" "$MODULE_PROP")"
-    MOD_AUTHOR="$(get_config_var "author" "$MODULE_PROP")"
-    MOD_VER="$(get_config_var "version" "$MODULE_PROP") ($(get_config_var "versionCode" "$MODULE_PROP"))"
+    MOD_NAME="$(get_key_value "name" "$MODULE_PROP")"
+    MOD_AUTHOR="$(get_key_value "author" "$MODULE_PROP")"
+    MOD_VER="$(get_key_value "version" "$MODULE_PROP") ($(get_key_value "versionCode" "$MODULE_PROP"))"
 
     install_env_check
     eco "$MOD_NAME"
@@ -232,10 +199,10 @@ checkout_metamodule() {
             current_module_prop="$current_module_dir/module.prop"
             [ -e "$current_module_prop" ] || continue
 
-            is_metamodule=$(get_config_var "metamodule" "$current_module_prop")
-            current_module_name=$(get_config_var "name" "$current_module_prop")
-            current_module_ver_name=$(get_config_var "version" "$current_module_prop")
-            current_module_ver_code=$(get_config_var "versionCode" "$current_module_prop")
+            is_metamodule=$(get_key_value "metamodule" "$current_module_prop")
+            current_module_name=$(get_key_value "name" "$current_module_prop")
+            current_module_ver_name=$(get_key_value "version" "$current_module_prop")
+            current_module_ver_code=$(get_key_value "versionCode" "$current_module_prop")
             case "$is_metamodule" in
                 1|true ) [ ! -f "$current_module_dir/disable" ] && [ ! -f "$current_module_dir/remove" ] && return 0;;
             esac

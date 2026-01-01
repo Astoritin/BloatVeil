@@ -11,7 +11,8 @@ A bloatware vanishing act on the system / 预装软件，于系统启动时悄�
 ## Supported Root Solution / 支持的 Root 方案
 - [Magisk](https://github.com/topjohnwu/Magisk) (Recommend!/推荐!)
 - [KernelSU](https://github.com/tiann/KernelSU)
-- [APatch](https://github.com/bmax121/APatch) 
+- [APatch](https://github.com/bmax121/APatch)   
+   
 For KernelSU/APatch, you may need to flash [MetaModule](https://kernelsu.org/guide/metamodule.html) before flashing BloatVeil / 对 KernelSU/APatch, 在刷入 BloatVeil 前你可能需要刷入[元模块](https://kernelsu.org/zh_CN/guide/metamodule.html)
 ## Steps / 步骤
 - Flash BloatVeil, the steps is just like how do you flash other Magisk modules.

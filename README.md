@@ -6,6 +6,7 @@ A bloatware vanishing act on the system / 预装软件，于系统启动时悄�
 - BloatVeil hides targeted pre-installed APP(s) during boot so system skips loading them.
 - No pre-installed APP(s) are deleted: they just stay out of sight as booting system.
    
+
 - 一个不修改系统分区的前提下“移除”预装软件的 Magisk 模块。
 - 在系统启动时，BloatVeil 将指定预装软件“掩盖在面纱下”，这样系统就不会加载它们。
 - 预装软件并没有被删除，只是让它们在系统扫描时“消失”。
@@ -15,6 +16,7 @@ A bloatware vanishing act on the system / 预装软件，于系统启动时悄�
 - [KernelSU](https://github.com/tiann/KernelSU)
 - [APatch](https://github.com/bmax121/APatch)   
    
+
 - For KernelSU/APatch, you may need to flash [MetaModule](https://kernelsu.org/guide/metamodule.html) before flashing BloatVeil
 - 对 KernelSU/APatch, 在刷入 BloatVeil 前你可能需要刷入[元模块](https://kernelsu.org/zh_CN/guide/metamodule.html)
 
@@ -27,6 +29,7 @@ A bloatware vanishing act on the system / 预装软件，于系统启动时悄�
 - Open the file `/data/adb/bloat_veil/targets.txt` and paste the bloatwares directories, **one per line**.
 - Save the changes to `targets.txt` and reboot your device to observe the results.
    
+   
 > For example, I need to uninstall XiaoAi Voice Assistant, so I will get the directory XiaoAi Voice Assistant located in by AppManager and soon get its name `VoiceAssistAndroidT`, then copy `VoiceAssistAndroidT` and add it into `targets.txt` , save the changes and reboot my device.
    
 - 刷入 BloatVeil ，步骤跟你刷入其他 Magisk 模块的操作一样
@@ -35,3 +38,5 @@ A bloatware vanishing act on the system / 预装软件，于系统启动时悄�
 > 你也可以通过 Root Explorer, MT管理器 或 MiXplorer 自行定位和复制位于 `/system` 下预装软件的目录名
 - 打开配置文件 `/data/adb/bloat_veil/targets.txt` 并粘贴这些目录名，**一行一个**
 - 保存 `targets.txt` 的改动并重新启动你的设备以观察结果
+   
+> 例如：我需要卸载小爱同学，那么我会通过 AppManager 查看小爱同学所在的文件夹，得知其名字是 VoiceAssistAndroidT，然后将 VoiceAssistAndroidT 复制到 target.conf ，回车并保存更改后重启设备。

@@ -9,9 +9,10 @@ A bloatware vanishing act on the system / 预装软件，于系统启动时悄�
 - 在系统启动时，BloatVeil 将指定预装软件“掩盖在面纱下”，这样系统就不会加载它们。
 - 预装软件并没有被删除，只是让它们在系统扫描时“消失”。
 ## Supported Root Solution / 支持的 Root 方案
-[Magisk](https://github.com/topjohnwu/Magisk) / [KernelSU](https://github.com/tiann/KernelSU) / [APatch](https://github.com/bmax121/APatch) 
-- For KernelSU/APatch, you may need to flash [MetaModule](https://kernelsu.org/guide/metamodule.html) before flashing BloatVeil
-- 对 KernelSU/APatch, 在刷入 BloatVeil 前你可能需要刷入[元模块](https://kernelsu.org/zh_CN/guide/metamodule.html)
+- [Magisk](https://github.com/topjohnwu/Magisk) (Recommend!/推荐!)
+- [KernelSU](https://github.com/tiann/KernelSU)
+- [APatch](https://github.com/bmax121/APatch) 
+For KernelSU/APatch, you may need to flash [MetaModule](https://kernelsu.org/guide/metamodule.html) before flashing BloatVeil / 对 KernelSU/APatch, 在刷入 BloatVeil 前你可能需要刷入[元模块](https://kernelsu.org/zh_CN/guide/metamodule.html)
 ## Steps / 步骤
 - Flash BloatVeil, the steps is just like how do you flash other Magisk modules.
 - Use [App Manager](https://github.com/MuntashirAkon/AppManager) to search for the pre-installed app names you want to "remove".

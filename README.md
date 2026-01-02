@@ -7,7 +7,7 @@ BloatVeil, a bloatware vanishing act on the system / BloatVeil, 一个针对系�
 ***
 - 一个不修改系统分区的前提下“移除”预装软件的 Magisk 模块。
 - 在系统启动时，BloatVeil 将指定预装软件“掩盖在面纱下”，这样系统就不会加载它们。
-- *预装软件并没有被删除，它们只是在系统扫描时中“不在扫描清单里了”。*   
+- *预装软件并没有被删除，它们只是在系统启动时“消失了”。*   
 ## Help Documents / 帮助文档
 - **[Instructions - 使用教程](https://github.com/Astoritin/BloatVeil/wiki/How-to-use-BloatVeil)**
 - **[Bug report - 问题反馈](https://github.com/Astoritin/BloatVeil/wiki/Unbrick-&-Bug-report)**

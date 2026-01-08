@@ -115,6 +115,6 @@ cat "$TMPDIR/targets.txt" > "$TEMPLATE_FILE"
 [ ! -f "$CONFIG_FILE" ] && extract "settings.conf" "$CONFIG_DIR"
 DESCRIPTION="[⚠️Check $TARGET_LIST carefully before reboot! ✅${ROOT_SOL_DETAIL}] ${MOD_DESC}"
 update_config_var "description" "$MODPATH/module.prop" "$DESCRIPTION"
-ui_print "- Setting permission"
+ui_print "- Setting permissions"
 set_perm_recursive "$MODPATH" 0 0 0755 0644
 ui_print "- Welcome to $MOD_NAME!"

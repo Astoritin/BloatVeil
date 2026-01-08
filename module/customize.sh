@@ -9,8 +9,6 @@ TARGET_LIST="$CONFIG_DIR/targets.txt"
 LAST_WORKED_DIR="$CONFIG_DIR/last_worked"
 TEMPLATE_FILE="$LAST_WORKED_DIR/targets_tm.txt"
 
-LOG_DIR="$CONFIG_DIR/logs"
-
 MOD_PROP="${TMPDIR}/module.prop"
 MOD_NAME="$(grep_prop name "$MOD_PROP")"
 MOD_VER="$(grep_prop version "$MOD_PROP") ($(grep_prop versionCode "$MOD_PROP"))"
@@ -88,7 +86,7 @@ ui_print "- Setting up $MOD_NAME"
 ui_print "- Version: $MOD_VER"
 install_env_check
 show_system_info
-init_dir "$LAST_WORKED_DIR" "$LOG_DIR" "$POST_D"
+init_dir "$LAST_WORKED_DIR" "$POST_D"
 unzip -o "$ZIPFILE" "META-INF/com/google/android/*" -d "$TMPDIR" >/dev/null 2>&1
 [ -f "$TMPDIR/META-INF/com/google/android/update-binary.sha256" ] && extract "META-INF/com/google/android/update-binary" "$TMPDIR" >/dev/null 2>&1 && UPDATE_ONLINE=false
 [ -f "$TMPDIR/META-INF/com/google/android/updater-script.sha256" ] && extract "META-INF/com/google/android/updater-script" "$TMPDIR" >/dev/null 2>&1 && UPDATE_ONLINE=false
@@ -113,8 +111,8 @@ extract "targets.txt" "$TMPDIR"
 cat "$TMPDIR/targets.txt" > "$TEMPLATE_FILE"
 [ ! -f "$TARGET_LIST" ] && cat "$TMPDIR/targets.txt" > "$TARGET_LIST"
 [ ! -f "$CONFIG_FILE" ] && extract "settings.conf" "$CONFIG_DIR"
-DESCRIPTION="[⚠️Check $TARGET_LIST carefully before reboot! ✅${ROOT_SOL_DETAIL}] ${MOD_DESC}"
+DESCRIPTION="[⚠️Check $TARGET_LIST carefully before reboot!] ${MOD_DESC}"
 update_config_var "description" "$MODPATH/module.prop" "$DESCRIPTION"
-ui_print "- Setting permission"
+ui_print "- Setting permissions"
 set_perm_recursive "$MODPATH" 0 0 0755 0644
 ui_print "- Welcome to $MOD_NAME!"

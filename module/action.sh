@@ -26,14 +26,7 @@ echo " BloatVeil
 echo " "
 echo " $MOD_INTRO"
 echo " "
-echo " If nothing happened after a while
- that means no any available root file explorer
- is found on your device
- Anyway, you can open config dir with
- the root file manager you preferred manually
- 
- Opening config dir
- "
+echo " Opening config dir"
 sleep 1
 
 IFS=$'\n'

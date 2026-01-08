@@ -85,19 +85,6 @@ clean_dir_if_reach_max() {
     fi
 }
 
-eco() { echo "$1" >> "$LOG_FILE" 2>/dev/null; }
-ecoe() { echo " " >> "$LOG_FILE" 2>/dev/null; }
-
-ecol() {
-
-    length=64
-    symbol=-
-
-    line=$(printf "%-${length}s" | tr ' ' "$symbol")
-    echo "$line" >> "$LOG_FILE" 2>/dev/null
-
-}
-
 get_key_value() {
     local key=$1
     local conf=$2
@@ -147,45 +134,13 @@ remove_config_var() {
     sed -i "/^${key}=/d" "$conf"
 }
 
-query_var() {
-
-    for var_name in "$@"; do
-        eval printf '%s=%s\\n' "$var_name" \"\$$var_name\"
-    done
-
-}
-
-print_var() {
-
-    [ $# -eq 0 ] && return 1
-
-    query_var "$@" | while IFS= read -r line || [ -n "$line" ]; do
-        eco "$line"
-    done
-
-}
-
-show_system_info() {
-
-    eco "$(getprop ro.product.brand) $(getprop ro.product.model) ($(getprop ro.product.device))"
-    eco "Android $(getprop ro.build.version.release) (API $(getprop ro.build.version.sdk)), $(getprop ro.product.cpu.abi | cut -d '-' -f1)"
-    eco "Kernel: $(uname -r)"
-
-}
-
 module_intro() {
 
     MODULE_PROP="$MODDIR/module.prop"
     MOD_NAME="$(get_key_value "name" "$MODULE_PROP")"
     MOD_AUTHOR="$(get_key_value "author" "$MODULE_PROP")"
     MOD_VER="$(get_key_value "version" "$MODULE_PROP") ($(get_key_value "versionCode" "$MODULE_PROP"))"
-
     install_env_check
-    eco "$MOD_NAME"
-    eco "By $MOD_AUTHOR"
-    eco "Version: $MOD_VER"
-    eco "Root: $ROOT_SOL_DETAIL"
-    ecoe
 
 }
 

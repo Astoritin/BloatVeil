@@ -61,7 +61,7 @@ config_loader
 
 if [ "$brick_rescue" = true ] && [ -f "$FLAG_BRICKED" ]; then
     eco "Flag bricked: exists
-    $MOD_NAME: skipped"
+$MOD_NAME: skipped"
     exit 1
 fi
 

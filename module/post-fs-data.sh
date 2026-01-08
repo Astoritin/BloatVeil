@@ -89,11 +89,6 @@ preparation() {
         MN_SUPPORT=true
         if [ "$KSU_KERNEL_VER_CODE" -ge "$MIN_VER_KERNELSU_SUPPORT_MOUNTING" ] && checkout_metamodule; then
             eco "Current metamodule: ${current_module_name} ${current_module_ver_name} (${current_module_ver_code})"
-            eco " "
-            eco "Magisk Replace: ok (with proper metamodule)"
-            eco "Make Node: ok (with proper metamodule)"
-            eco "Make Empty File: ok (with proper metamodule)"
-            eco " "
             MR_SUPPORT=true
             ME_SUPPORT=true
         else
@@ -249,7 +244,6 @@ mirror_mount_empty_file() {
 
     if [ -e "$empty_path" ]; then
         if [ -d "$empty_path" ]; then
-            eco "Dir: $empty_path"
             for file in "${empty_path}"/*; do
                 [ -f "$file" ] || continue
                 case $file in
@@ -260,7 +254,6 @@ mirror_mount_empty_file() {
                 esac
             done
         elif [ -f "$empty_path" ]; then
-            eco "File: $empty_path"
             mirror_empty_filename=$(basename "$empty_path")
             mirror_empty_dirname=$(dirname "$empty_path")
             mirror_empty_path="${MODDIR}${mirror_empty_dirname}"
@@ -343,7 +336,6 @@ bloat_veil() {
             fi
 
             app_name="$(basename "$app_path")"
-            eco "Processing: $app_name"
             if [ -d "$app_path" ]; then
                 case "$hide_mode" in
                     "MB")   link_mount_bind "$MIRROR_DIR" "$app_path";;

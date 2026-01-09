@@ -1,10 +1,10 @@
 #!/system/bin/sh
 
 update_key_value() {
-    local key="$1"
-    local conf="$2"
-    local expected="$3"
-    local append="${4:-false}"
+    key="$1"
+    conf="$2"
+    expected="$3"
+    append="${4:-false}"
 
     [ -z "$key" ] || [ -z "$expected" ] || [ -z "$conf" ] || [ ! -f "$conf" ] && return 1
 

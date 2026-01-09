@@ -36,8 +36,7 @@ unbrick() {
     if [ -f "$FLAG_BRICKED" ]; then
         if file_compare "$TARGET_LIST_LW" "$TARGET_LIST"; then
             rm -f "$TARGET_LIST_LW"
-        fi
-        if [ "$brick_and_disable" = false ] && [ "$last_worked_target_list" = true ]; then
+        elif [ "$brick_and_disable" = false ] && [ "$last_worked_target_list" = true ]; then
             if [ -f "$TARGET_LIST_LW" ]; then
                 cp "$TARGET_LIST_LW" "$TARGET_LIST"
                 rm -f "$MODDIR/disable"
@@ -49,9 +48,8 @@ unbrick() {
         if [ "$brick_and_disable" = true ] && [ ! -f "$MODDIR/disable" ]; then
             rm -f "$FLAG_BRICKED"
             return 0
-        else
-            exit 1
         fi
+        exit 1
     fi
 
 }
@@ -188,7 +186,7 @@ create_empty_file() {
 mirror_mount_empty_file() {
     local empty_path=$1
 
-    if [ -z "$empty_path" ];
+    if [ -z "$empty_path" ]; then
         return 5
     fi
 
@@ -399,7 +397,7 @@ module_status_update() {
         process_status="❌0/0 App(s)"
         no_effect=true
     fi
-l
+
     if [ "$no_effect" = "false" ]; then
         DESCRIPTION="[${process_status} vanished, ✅${hide_mode_desc}${desc_last_worked}, ✅${ROOT_SOL_DETAIL}] ${MOD_DESC}"
     else

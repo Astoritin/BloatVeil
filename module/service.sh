@@ -30,7 +30,7 @@ config_loader() {
 
 }
 
-module_cleanup_schedule() {
+module_description_cleanup_schedule() {
 
     POST_D="/data/adb/post-fs-data.d/"
     CLEANUP_SH="cleanup_bloat_veil.sh"
@@ -44,7 +44,7 @@ module_cleanup_schedule() {
 
 }
 
-module_cleanup_schedule
+module_description_cleanup_schedule
 config_loader
 
 if [ "$brick_rescue" = true ] && [ -f "$FLAG_BRICKED" ]; then
@@ -110,4 +110,4 @@ if [ "$auto_update_target_list" = true ]; then
     cp -p "$TARGET_LIST_BVA" "$TARGET_LIST"
 fi
 rm -f "$TARGET_LIST_BVA"
-remove_config_var "mb_call" "$CONFIG_FILE"
+remove_key_value "mb_call" "$CONFIG_FILE"

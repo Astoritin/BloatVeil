@@ -86,8 +86,8 @@ clean_dir_if_reach_max() {
 }
 
 get_key_value() {
-    local key=$1
-    local conf=$2
+    key=$1
+    conf=$2
     [ -n "$key" ] && [ -f "$conf" ] || return 1
 
     awk -v key="$key" '
@@ -110,10 +110,10 @@ get_key_value() {
 }
 
 update_key_value() {
-    local key="$1"
-    local conf="$2"
-    local expected="$3"
-    local append="${4:-false}"
+    key="$1"
+    conf="$2"
+    expected="$3"
+    append="${4:-false}"
 
     [ -z "$key" ] || [ -z "$expected" ] || [ -z "$conf" ] || [ ! -f "$conf" ] && return 1
 
@@ -126,9 +126,9 @@ update_key_value() {
     fi
 }
 
-remove_config_var() {
-    local key="$1"
-    local conf="$2"
+remove_key_value() {
+    key="$1"
+    conf="$2"
 
     [ -z "$key" ] || [ -z "$conf" ] || [ ! -f "$conf" ] && return 1
     sed -i "/^${key}=/d" "$conf"

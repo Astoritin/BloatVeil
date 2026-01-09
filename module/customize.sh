@@ -57,8 +57,8 @@ extract() {
 metamodule_required() {
 
     if [ "$KSU_KERNEL_VER_CODE" -ge "$MIN_VER_KERNELSU_SUPPORT_MOUNTING" ]; then
-        ui_print "- Current KernelSU version requires metamodule"
-        ui_print "- for mounting file(s) on /system"
+        ui_print "- Current KernelSU requires"
+        ui_print "- metamodule for mounting"
         ui_print "- Scanning metamodule"
         if ! checkout_metamodule; then
             ui_print "- You haven't installed any metamodule!"
@@ -112,7 +112,7 @@ cat "$TMPDIR/targets.txt" > "$TEMPLATE_FILE"
 [ ! -f "$TARGET_LIST" ] && cat "$TMPDIR/targets.txt" > "$TARGET_LIST"
 [ ! -f "$CONFIG_FILE" ] && extract "settings.conf" "$CONFIG_DIR"
 DESCRIPTION="[⚠️Check $TARGET_LIST carefully before reboot!] ${MOD_DESC}"
-update_config_var "description" "$MODPATH/module.prop" "$DESCRIPTION"
+update_key_value "description" "$MODPATH/module.prop" "$DESCRIPTION"
 ui_print "- Setting permissions"
 set_perm_recursive "$MODPATH" 0 0 0755 0644
 ui_print "- Welcome to $MOD_NAME!"

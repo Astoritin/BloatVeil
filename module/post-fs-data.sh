@@ -36,8 +36,7 @@ unbrick() {
     if [ -f "$FLAG_BRICKED" ]; then
         if file_compare "$TARGET_LIST_LW" "$TARGET_LIST"; then
             rm -f "$TARGET_LIST_LW"
-        fi
-        if [ "$brick_and_disable" = false ] && [ "$last_worked_target_list" = true ]; then
+        elif [ "$brick_and_disable" = false ] && [ "$last_worked_target_list" = true ]; then
             if [ -f "$TARGET_LIST_LW" ]; then
                 cp "$TARGET_LIST_LW" "$TARGET_LIST"
                 rm -f "$MODDIR/disable"
@@ -49,9 +48,8 @@ unbrick() {
         if [ "$brick_and_disable" = true ] && [ ! -f "$MODDIR/disable" ]; then
             rm -f "$FLAG_BRICKED"
             return 0
-        else
-            exit 1
         fi
+        exit 1
     fi
 
 }

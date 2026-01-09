@@ -186,7 +186,7 @@ create_empty_file() {
 mirror_mount_empty_file() {
     local empty_path=$1
 
-    if [ -z "$empty_path" ];
+    if [ -z "$empty_path" ]; then
         return 5
     fi
 
@@ -397,7 +397,7 @@ module_status_update() {
         process_status="❌0/0 App(s)"
         no_effect=true
     fi
-l
+
     if [ "$no_effect" = "false" ]; then
         DESCRIPTION="[${process_status} vanished, ✅${hide_mode_desc}${desc_last_worked}, ✅${ROOT_SOL_DETAIL}] ${MOD_DESC}"
     else

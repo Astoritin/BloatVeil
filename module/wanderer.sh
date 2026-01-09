@@ -73,8 +73,8 @@ init_dir() {
 }
 
 clean_dir_if_reach_max() {
-    dir_to_clean="$1"
-    files_max="$2"
+    local dir_to_clean="$1"
+    local files_max="$2"
     
     [ -z "$dir_to_clean" ] || [ ! -d "$dir_to_clean" ] && return 1
 	[ -z "$files_max" ] && files_max=20
@@ -86,8 +86,8 @@ clean_dir_if_reach_max() {
 }
 
 get_key_value() {
-    key=$1
-    conf=$2
+    local key=$1
+    local conf=$2
     [ -n "$key" ] && [ -f "$conf" ] || return 1
 
     awk -v key="$key" '
@@ -110,10 +110,10 @@ get_key_value() {
 }
 
 update_key_value() {
-    key="$1"
-    conf="$2"
-    expected="$3"
-    append="${4:-false}"
+    local key="$1"
+    local conf="$2"
+    local expected="$3"
+    local append="${4:-false}"
 
     [ -z "$key" ] || [ -z "$expected" ] || [ -z "$conf" ] || [ ! -f "$conf" ] && return 1
 
@@ -126,9 +126,9 @@ update_key_value() {
     fi
 }
 
-remove_key_value() {
-    key="$1"
-    conf="$2"
+remove_config_var() {
+    local key="$1"
+    local conf="$2"
 
     [ -z "$key" ] || [ -z "$conf" ] || [ ! -f "$conf" ] && return 1
     sed -i "/^${key}=/d" "$conf"
@@ -168,8 +168,8 @@ checkout_metamodule() {
 }
 
 file_compare() {
-    file_a="$1"
-    file_b="$2"
+    local file_a="$1"
+    local file_b="$2"
     
     [ -z "$file_a" ] || [ ! -f "$file_a" ] && return 2
     [ -z "$file_b" ] || [ ! -f "$file_b" ] && return 3
@@ -182,8 +182,8 @@ file_compare() {
 }
 
 check_duplicate_items() {
-    itemd=$1
-    filed=$2
+    local itemd=$1
+    local filed=$2
 
     if grep -q "^$itemd$" "$filed"; then
         return 1
@@ -193,7 +193,7 @@ check_duplicate_items() {
 }
 
 clean_duplicate_items() {
-    filed=$1
+    local filed=$1
 
     [ -z "$filed" ] && return 1
     [ ! -f "$filed" ] && return 2

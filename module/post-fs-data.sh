@@ -140,7 +140,7 @@ preparation() {
 }
 
 mirror_make_node() {
-    node_path=$1
+    local node_path=$1
 
     if [ -z "$node_path" ]; then
         eco "node_path: null"
@@ -150,9 +150,9 @@ mirror_make_node() {
         return 6
     fi
 
-    node_path_parent_dir=$(dirname "$node_path")
-    mirror_parent_dir="$MODDIR$node_path_parent_dir"
-    mirror_node_path="$MODDIR$node_path"
+    local node_path_parent_dir=$(dirname "$node_path")
+    local mirror_parent_dir="$MODDIR$node_path_parent_dir"
+    local mirror_node_path="$MODDIR$node_path"
 
     if [ ! -d "$mirror_parent_dir" ]; then
         mkdir -p "$mirror_parent_dir" && eco "$mirror_parent_dir: created"
@@ -160,7 +160,7 @@ mirror_make_node() {
 
     if [ ! -e "$mirror_node_path" ]; then
         mknod "$mirror_node_path" c 0 0
-        result_make_node="$?"
+        local result_make_node="$?"
         eco "mknod $mirror_node_path c 0 0 ($result_make_node)"
         return $result_make_node
     else
@@ -171,7 +171,7 @@ mirror_make_node() {
 }
 
 mirror_magisk_replace() {
-    replace_path=$1
+    local replace_path=$1
 
     if [ -z "$replace_path" ]; then
         eco "replace_path: null"
@@ -181,7 +181,7 @@ mirror_magisk_replace() {
         return 6
     fi
 
-    mirror_app_path="$MODDIR$replace_path"
+    local mirror_app_path="$MODDIR$replace_path"
 
     if [ ! -d "$mirror_app_path" ]; then
         mkdir -p "$mirror_app_path" && eco "$mirror_app_path: created"
@@ -189,7 +189,7 @@ mirror_magisk_replace() {
 
     if [ ! -e "$mirror_app_path/.replace" ]; then
         touch "$mirror_app_path/.replace"
-        result_magisk_replace="$?"
+        local result_magisk_replace="$?"
         eco "touch $mirror_app_path/.replace ($result_magisk_replace)"
         return $result_magisk_replace
     else
@@ -200,8 +200,8 @@ mirror_magisk_replace() {
 }
 
 link_mount_bind() {
-    link_path=$1
-    target_path=$2
+    local link_path=$1
+    local target_path=$2
 
     if [ -z "$link_path" ] || [ -z "$target_path" ]; then
         eco "link_path or target_path: null"
@@ -212,19 +212,19 @@ link_mount_bind() {
     fi
 
     mount -o bind "$link_path" "$target_path"
-    result_mount_bind="$?"
+    local result_mount_bind="$?"
     eco "mount -o bind $link_path $target_path ($result_mount_bind)"
     return $result_mount_bind
 }
 
 create_empty_file() {
-    mirror_empty_path=$1
-    mirror_empty_filename=$2
+    local mirror_empty_path=$1
+    local mirror_empty_filename=$2
 
     mkdir -p "$mirror_empty_path"
-    result_mkdir=$?
+    local result_mkdir=$?
     touch "${mirror_empty_path}/${mirror_empty_filename}"
-    result_touch=$?
+    local result_touch=$?
 
     eco "mkdir -p $mirror_empty_path ($result_mkdir)"
     eco "touch ${mirror_empty_path}/${mirror_empty_filename} ($result_touch)"
@@ -235,7 +235,7 @@ create_empty_file() {
 }
 
 mirror_mount_empty_file() {
-    empty_path=$1
+    local empty_path=$1
 
     if [ -z "$empty_path" ]; then
         eco "empty_path: null"
@@ -247,16 +247,16 @@ mirror_mount_empty_file() {
             for file in "${empty_path}"/*; do
                 [ -f "$file" ] || continue
                 case $file in
-                    *.apk|*.apex|*.capex)  mirror_empty_filename=$(basename "$file")
-                    mirror_empty_path="${MODDIR}${empty_path}"
+                    *.apk|*.apex|*.capex)  local mirror_empty_filename=$(basename "$file")
+                    local mirror_empty_path="${MODDIR}${empty_path}"
                     create_empty_file "$mirror_empty_path" "$mirror_empty_filename"
                     ;;
                 esac
             done
         elif [ -f "$empty_path" ]; then
-            mirror_empty_filename=$(basename "$empty_path")
-            mirror_empty_dirname=$(dirname "$empty_path")
-            mirror_empty_path="${MODDIR}${mirror_empty_dirname}"
+            local mirror_empty_filename=$(basename "$empty_path")
+            local mirror_empty_dirname=$(dirname "$empty_path")
+            local mirror_empty_path="${MODDIR}${mirror_empty_dirname}"
             create_empty_file "$mirror_empty_path" "$mirror_empty_filename"
         fi
     else

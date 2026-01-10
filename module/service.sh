@@ -14,7 +14,7 @@ TARGET_LIST_LW="$LAST_WORKED_DIR/targets_lw.txt"
 FLAG_BRICKED="$CONFIG_DIR/bricked"
 
 LOG_DIR="$CONFIG_DIR/logs"
-LOG_FILE="$LOG_DIR/bloat_veil_$(date +"%Y%m%dT%H%M%S").txt"
+LOG_FILE="$LOG_DIR/bloat_veil_$(date +"%Y_%m_%d_%H_%M_%S").txt"
 LOG_FILE_2="$LOG_DIR/logs_2.txt"
 TARGET_LIST_BVA="$LOG_DIR/targets_bva.txt"
 

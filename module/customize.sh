@@ -15,7 +15,7 @@ MOD_VER="$(grep_prop version "$MOD_PROP") ($(grep_prop versionCode "$MOD_PROP"))
 MOD_DESC="A bloatware vanishing act on the system."
 
 POST_D="/data/adb/post-fs-data.d/"
-CLEANUP_SH="cleanup_bloat_veil.sh"
+CLEANUP_SH="bloat_veil_unbrick.sh"
 CLEANUP_PATH="${POST_D}/${CLEANUP_SH}"
 
 MIN_VER_KERNELSU_SUPPORT_MOUNTING=22098
@@ -109,6 +109,7 @@ extract "action.sh"
 extract "uninstall.sh"
 extract "targets.txt" "$TMPDIR"
 cat "$TMPDIR/targets.txt" > "$TEMPLATE_FILE"
+rm -f "/data/adb/post-fs-data.d/cleanup_bloat_veil.sh" >/dev/null 2>&1
 [ ! -f "$TARGET_LIST" ] && cat "$TMPDIR/targets.txt" > "$TARGET_LIST"
 [ ! -f "$CONFIG_FILE" ] && extract "settings.conf" "$CONFIG_DIR"
 DESCRIPTION="[⚠️Check $TARGET_LIST carefully before reboot!] ${MOD_DESC}"

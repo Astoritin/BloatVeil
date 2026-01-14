@@ -3,6 +3,8 @@ MODDIR=${0%/*}
 
 . "$MODDIR/wanderer.sh"
 
+MOD_DESC="A bloatware vanishing act on the system."
+
 CONFIG_DIR="/data/adb/bloat_veil"
 
 CONFIG_FILE="$CONFIG_DIR/settings.conf"
@@ -10,12 +12,9 @@ TARGET_LIST="$CONFIG_DIR/targets.txt"
 TARGET_LIST_BVA="$CONFIG_DIR/targets_bva.txt"
 
 LAST_WORKED_DIR="$CONFIG_DIR/last_worked"
-TARGET_LIST_LW="$LAST_WORKED_DIR/targets_lw.txt"
 TEMPLATE_FILE="$LAST_WORKED_DIR/targets_tm.txt"
 
 FLAG_BRICKED="$CONFIG_DIR/bricked"
-
-MOD_DESC="A bloatware vanishing act on the system."
 
 MN_SUPPORT=false
 MR_SUPPORT=false
@@ -26,39 +25,15 @@ MIRROR_DIR="$MODDIR/mirror"
 MIRROR_SYSTEM_DIR="$MODDIR/system"
 
 unbrick() {
-
-    if [ "$brick_rescue" = false ]; then
-        return 1
-    fi
-
-    rescue_from_last_worked_target_list=false
-
-    if [ -f "$FLAG_BRICKED" ]; then
-        if file_compare "$TARGET_LIST_LW" "$TARGET_LIST"; then
-            rm -f "$TARGET_LIST_LW"
-        elif [ "$brick_and_disable" = false ] && [ "$last_worked_target_list" = true ]; then
-            if [ -f "$TARGET_LIST_LW" ]; then
-                cp "$TARGET_LIST_LW" "$TARGET_LIST"
-                rm -f "$MODDIR/disable"
-                rm -f "$FLAG_BRICKED"
-                rescue_from_last_worked_target_list=true
-                return 0
-            fi
-        fi
-        if [ "$brick_and_disable" = true ] && [ ! -f "$MODDIR/disable" ]; then
-            rm -f "$FLAG_BRICKED"
-            return 0
-        fi
-        exit 1
-    fi
+    
+    [ "$brick_rescue" != true ] && return 1
+    [ -f "$FLAG_BRICKED" ] && exit 1
 
 }
 
 config_loader() {
 
     brick_rescue=$(get_key_value "brick_rescue" "$CONFIG_FILE") || brick_rescue=true
-    brick_and_disable=$(get_key_value "brick_and_disable" "$CONFIG_FILE") || brick_and_disable=true
-    last_worked_target_list=$(get_key_value "last_worked_target_list" "$CONFIG_FILE") || last_worked_target_list=true
     hide_mode=$(get_key_value "hide_mode" "$CONFIG_FILE") || hide_mode=MB
     system_app_paths="/system/app /system/preload /system/product/app /system/product/data-app /system/product/priv-app /system/product/overlay /system/priv-app /system/system_ext/app /system/system_ext/priv-app /system/vendor/app /system/vendor/priv-app /system/vendor/overlay"
 
@@ -370,13 +345,8 @@ module_status_update() {
         hide_mode_desc="N/A"
     fi
 
-    desc_last_worked=""
     no_effect=false
     process_status=""
-    
-    if [ "$rescue_from_last_worked_target_list" = "true" ]; then
-        desc_last_worked=" (last worked)"
-    fi
 
     if [ $vanished_apps_count -gt 0 ]; then
         if [ $apps_not_found_count -gt 0 ]; then
@@ -399,7 +369,7 @@ module_status_update() {
     fi
 
     if [ "$no_effect" = "false" ]; then
-        DESCRIPTION="[${process_status} vanished, ✅${hide_mode_desc}${desc_last_worked}, ✅${ROOT_SOL_DETAIL}] ${MOD_DESC}"
+        DESCRIPTION="[${process_status} vanished, ✅${hide_mode_desc}, ✅${ROOT_SOL_DETAIL}] ${MOD_DESC}"
     else
         DESCRIPTION="[${process_status} vanished, ✅${ROOT_SOL_DETAIL}] ${MOD_DESC}"
     fi
@@ -411,7 +381,6 @@ module_status_update() {
 }
 
 init_dir "$LAST_WORKED_DIR"
-module_intro
 config_loader
 unbrick
 preparation && bloat_veil

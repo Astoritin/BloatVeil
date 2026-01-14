@@ -3,7 +3,8 @@ MODDIR=${0%/*}
 
 CONFIG_DIR="/data/adb/bloat_veil"
 
-MOD_INTRO="A bloatware vanishing act on the system."
+MOD_DESC="A bloatware vanishing act on the system."
+SEPARATE_LINE="********************************"
 
 ROOT_FILE_MANAGERS="
 com.speedsoftware.rootexplorer/com.speedsoftware.rootexplorer.RootExplorer
@@ -20,13 +21,20 @@ nextapp.fx/nextapp.fx.ui.ExplorerActivity
 me.zhanghai.android.files/me.zhanghai.android.files.filelist.FileListActivity
 "
 
-echo " "
-echo " BloatVeil
- By Astoritin"
-echo " "
-echo " $MOD_INTRO"
-echo " "
-echo " Opening config dir"
+ecol() { echo "$SEPARATE_LINE"; }
+ecoe() { echo " "; }
+
+ecol
+ecoe
+echo "- BloatVeil
+- By Astoritin"
+ecoe
+ecol
+ecoe
+echo "- $MOD_DESC"
+ecoe
+ecol
+echo "- Opening config dir"
 sleep 1
 
 IFS=$'\n'
@@ -38,14 +46,14 @@ for fm in $ROOT_FILE_MANAGERS; do
     if pm path "$PKG" >/dev/null 2>&1; then
         am start -n "$fm" "file://$CONFIG_DIR" >/dev/null 2>&1
         result_action="$?"
-        echo " Launching $PKG ($result_action)"
+        echo "- Launching $PKG ($result_action)"
         if [ $result_action -eq 0 ]; then
-            echo " "
+            ecoe
             sleep 1
             return 0
         fi
     else
-        echo " $PKG is not installed"
+        echo "- $PKG is not installed"
     fi
 
 done

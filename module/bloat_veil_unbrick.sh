@@ -3,9 +3,9 @@
 MODS_DIR="/data/adb/modules"
 [ -n "$(magisk -v | grep lite)" ] && MODS_DIR="/data/adb/lite_modules"
 
-MOD_NAME="bloat_veil"
+MOD_ID="bloat_veil"
 MOD_DESC="A bloatware vanishing act on the system."
-MOD_DIR="$MODS_DIR/$MOD_NAME"
+MOD_DIR="$MODS_DIR/$MOD_ID"
 
 . "$MOD_DIR/wanderer.sh"
 

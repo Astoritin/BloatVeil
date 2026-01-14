@@ -15,7 +15,7 @@ MOD_VER="$(grep_prop version "$MOD_PROP") ($(grep_prop versionCode "$MOD_PROP"))
 MOD_DESC="A bloatware vanishing act on the system."
 
 POST_D="/data/adb/post-fs-data.d/"
-CLEANUP_SH="cleanup_bloat_veil.sh"
+CLEANUP_SH="bloat_veil_unbrick.sh"
 CLEANUP_PATH="${POST_D}/${CLEANUP_SH}"
 
 MIN_VER_KERNELSU_SUPPORT_MOUNTING=22098
@@ -74,24 +74,15 @@ metamodule_required() {
 extract "wanderer.sh" "$TMPDIR" >/dev/null 2>&1
 . "$TMPDIR/wanderer.sh"
 
-show_system_info() {
-
-    ui_print "- $(getprop ro.product.brand) $(getprop ro.product.model) ($(getprop ro.product.device))"
-    ui_print "- Android $(getprop ro.build.version.release) (API $(getprop ro.build.version.sdk)), $(getprop ro.product.cpu.abi | cut -d '-' -f1)"
-    ui_print "- Kernel: $(uname -r)"
-
-}
-
 ui_print "- Setting up $MOD_NAME"
 ui_print "- Version: $MOD_VER"
 install_env_check
-show_system_info
 init_dir "$LAST_WORKED_DIR" "$POST_D"
 unzip -o "$ZIPFILE" "META-INF/com/google/android/*" -d "$TMPDIR" >/dev/null 2>&1
 [ -f "$TMPDIR/META-INF/com/google/android/update-binary.sha256" ] && extract "META-INF/com/google/android/update-binary" "$TMPDIR" >/dev/null 2>&1 && UPDATE_ONLINE=false
 [ -f "$TMPDIR/META-INF/com/google/android/updater-script.sha256" ] && extract "META-INF/com/google/android/updater-script" "$TMPDIR" >/dev/null 2>&1 && UPDATE_ONLINE=false
 if [ "$UPDATE_ONLINE" = true ]; then
-    ui_print "- Downloading from $ROOT_SOL app"
+    ui_print "- Updating from $ROOT_SOL app"
 else
     ui_print "- Installing from $ROOT_SOL app"
 fi
@@ -109,6 +100,7 @@ extract "action.sh"
 extract "uninstall.sh"
 extract "targets.txt" "$TMPDIR"
 cat "$TMPDIR/targets.txt" > "$TEMPLATE_FILE"
+rm -f "/data/adb/post-fs-data.d/cleanup_bloat_veil.sh" >/dev/null 2>&1
 [ ! -f "$TARGET_LIST" ] && cat "$TMPDIR/targets.txt" > "$TARGET_LIST"
 [ ! -f "$CONFIG_FILE" ] && extract "settings.conf" "$CONFIG_DIR"
 DESCRIPTION="[⚠️Check $TARGET_LIST carefully before reboot!] ${MOD_DESC}"

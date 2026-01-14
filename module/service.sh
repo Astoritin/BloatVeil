@@ -3,6 +3,8 @@ MODDIR=${0%/*}
 
 . "$MODDIR/wanderer.sh"
 
+MOD_DESC="A bloatware vanishing act on the system."
+
 CONFIG_DIR="/data/adb/bloat_veil"
 
 CONFIG_FILE="$CONFIG_DIR/settings.conf"
@@ -15,8 +17,6 @@ TARGET_LIST_LW="$LAST_WORKED_DIR/targets_lw.txt"
 FLAG_BRICKED="$CONFIG_DIR/bricked"
 
 MODULE_PROP="$MODDIR/module.prop"
-MOD_NAME="$(get_key_value "name" "$MODULE_PROP")"
-MOD_DESC="A bloatware vanishing act on the system."
 
 config_loader() {
 
@@ -33,7 +33,7 @@ config_loader() {
 module_description_cleanup_schedule() {
 
     POST_D="/data/adb/post-fs-data.d/"
-    CLEANUP_SH="cleanup_bloat_veil.sh"
+    CLEANUP_SH="bloat_veil_unbrick.sh"
     CLEANUP_PATH="${POST_D}/${CLEANUP_SH}"
 
     if [ ! -f "$CLEANUP_PATH" ]; then

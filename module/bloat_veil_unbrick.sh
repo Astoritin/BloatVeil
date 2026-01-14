@@ -19,6 +19,9 @@ TARGET_LIST="$CONFIG_DIR/targets.txt"
 TARGET_LIST_BVA="$CONFIG_DIR/targets_bva.txt"
 TARGET_LIST_LW="$LAST_WORKED_DIR/targets_lw.txt"
 
+MIRROR_DIR="$MOD_DIR/mirror"
+MIRROR_SYSTEM_DIR="$MOD_DIR/system"
+
 config_loader() {
 
     brick_rescue=$(get_key_value "brick_rescue" "$CONFIG_FILE") || brick_rescue=true
@@ -49,6 +52,7 @@ config_loader
 unbrick
 update_key_value "description" "$MOD_DIR/module.prop" "$MOD_DESC"
 
-rm -f "$MOD_DIR/mirror" "$MOD_DIR/system"
+[ -d "$MIRROR_DIR" ] && rm -rf "$MIRROR_DIR"
+[ -d "$MIRROR_SYSTEM_DIR" ] && rm -rf "$MIRROR_SYSTEM_DIR"
 rm -f "$TARGET_LIST_BVA"
 rm -f "/data/adb/post-fs-data.d/bloat_veil_unbrick.sh"

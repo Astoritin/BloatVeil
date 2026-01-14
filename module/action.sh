@@ -4,7 +4,7 @@ MODDIR=${0%/*}
 CONFIG_DIR="/data/adb/bloat_veil"
 
 MOD_DESC="A bloatware vanishing act on the system."
-SEPARATE_LINE="********************************"
+SEPARATE_LINE="--------------------------------"
 
 ROOT_FILE_MANAGERS="
 com.speedsoftware.rootexplorer/com.speedsoftware.rootexplorer.RootExplorer
@@ -22,7 +22,7 @@ me.zhanghai.android.files/me.zhanghai.android.files.filelist.FileListActivity
 "
 
 ecol() { echo "$SEPARATE_LINE"; }
-ecoe() { echo " "; }
+ecoe() { echo "- "; }
 
 ecol
 ecoe
@@ -34,6 +34,7 @@ ecoe
 echo "- $MOD_DESC"
 ecoe
 ecol
+ecoe
 echo "- Opening config dir"
 sleep 1
 
@@ -48,7 +49,7 @@ for fm in $ROOT_FILE_MANAGERS; do
         result_action="$?"
         echo "- Launching $PKG ($result_action)"
         if [ $result_action -eq 0 ]; then
-            ecoe
+            echo "- OK"
             sleep 1
             return 0
         fi

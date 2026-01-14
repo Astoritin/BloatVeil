@@ -17,8 +17,6 @@ nextapp.fx/nextapp.fx.ui.ExplorerActivity
 me.zhanghai.android.files/me.zhanghai.android.files.filelist.FileListActivity
 "
 
-sleep 1
-
 IFS=$'\n'
 
 for rfm in $ROOT_FILE_MANAGERS; do
@@ -28,7 +26,6 @@ for rfm in $ROOT_FILE_MANAGERS; do
     if pm path "$PKG" >/dev/null 2>&1; then
         am start -n "$rfm" "file://$CONFIG_DIR" >/dev/null 2>&1
         if [ "$?" -eq 0 ]; then
-            sleep 1
             return 0
         fi
     fi

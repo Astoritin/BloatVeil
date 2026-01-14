@@ -12,7 +12,7 @@ TEMPLATE_FILE="$LAST_WORKED_DIR/targets_tm.txt"
 MOD_PROP="${TMPDIR}/module.prop"
 MOD_NAME="$(grep_prop name "$MOD_PROP")"
 MOD_VER="$(grep_prop version "$MOD_PROP") ($(grep_prop versionCode "$MOD_PROP"))"
-MOD_DESC="A bloatware vanishing act on the system."
+MOD_DESC="A bloatware vanishing act on system."
 
 POST_D="/data/adb/post-fs-data.d/"
 CLEANUP_SH="bloat_veil_unbrick.sh"

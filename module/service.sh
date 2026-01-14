@@ -3,7 +3,7 @@ MODDIR=${0%/*}
 
 . "$MODDIR/wanderer.sh"
 
-MOD_DESC="A bloatware vanishing act on the system."
+MOD_DESC="A bloatware vanishing act on system."
 
 CONFIG_DIR="/data/adb/bloat_veil"
 

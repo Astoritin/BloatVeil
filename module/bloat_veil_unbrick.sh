@@ -4,7 +4,7 @@ MODS_DIR="/data/adb/modules"
 [ -n "$(magisk -v | grep lite)" ] && MODS_DIR="/data/adb/lite_modules"
 
 MOD_ID="bloat_veil"
-MOD_DESC="A bloatware vanishing act on the system."
+MOD_DESC="A bloatware vanishing act on system."
 MOD_DIR="$MODS_DIR/$MOD_ID"
 
 CONFIG_DIR="/data/adb/bloat_veil"

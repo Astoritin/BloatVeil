@@ -74,24 +74,15 @@ metamodule_required() {
 extract "wanderer.sh" "$TMPDIR" >/dev/null 2>&1
 . "$TMPDIR/wanderer.sh"
 
-show_system_info() {
-
-    ui_print "- $(getprop ro.product.brand) $(getprop ro.product.model) ($(getprop ro.product.device))"
-    ui_print "- Android $(getprop ro.build.version.release) (API $(getprop ro.build.version.sdk)), $(getprop ro.product.cpu.abi | cut -d '-' -f1)"
-    ui_print "- Kernel: $(uname -r)"
-
-}
-
 ui_print "- Setting up $MOD_NAME"
 ui_print "- Version: $MOD_VER"
 install_env_check
-show_system_info
 init_dir "$LAST_WORKED_DIR" "$POST_D"
 unzip -o "$ZIPFILE" "META-INF/com/google/android/*" -d "$TMPDIR" >/dev/null 2>&1
 [ -f "$TMPDIR/META-INF/com/google/android/update-binary.sha256" ] && extract "META-INF/com/google/android/update-binary" "$TMPDIR" >/dev/null 2>&1 && UPDATE_ONLINE=false
 [ -f "$TMPDIR/META-INF/com/google/android/updater-script.sha256" ] && extract "META-INF/com/google/android/updater-script" "$TMPDIR" >/dev/null 2>&1 && UPDATE_ONLINE=false
 if [ "$UPDATE_ONLINE" = true ]; then
-    ui_print "- Downloading from $ROOT_SOL app"
+    ui_print "- Updating from $ROOT_SOL app"
 else
     ui_print "- Installing from $ROOT_SOL app"
 fi

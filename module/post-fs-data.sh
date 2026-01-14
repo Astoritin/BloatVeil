@@ -16,8 +16,6 @@ TEMPLATE_FILE="$LAST_WORKED_DIR/targets_tm.txt"
 
 FLAG_BRICKED="$CONFIG_DIR/bricked"
 
-MODULE_PROP="$MODDIR/module.prop"
-
 MN_SUPPORT=false
 MR_SUPPORT=false
 MIN_VER_MAGISK_SUPPORT_MAKENODE=28102
@@ -383,6 +381,7 @@ module_status_update() {
 }
 
 init_dir "$LAST_WORKED_DIR"
+install_env_check
 config_loader
 unbrick
 preparation && bloat_veil

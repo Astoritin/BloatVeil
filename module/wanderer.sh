@@ -134,16 +134,6 @@ remove_config_var() {
     sed -i "/^${key}=/d" "$conf"
 }
 
-module_intro() {
-
-    MODULE_PROP="$MODDIR/module.prop"
-    MOD_NAME="$(get_key_value "name" "$MODULE_PROP")"
-    MOD_AUTHOR="$(get_key_value "author" "$MODULE_PROP")"
-    MOD_VER="$(get_key_value "version" "$MODULE_PROP") ($(get_key_value "versionCode" "$MODULE_PROP"))"
-    install_env_check
-
-}
-
 checkout_metamodule() {
     modules_dir="/data/adb/modules"
     modules_update_dir="/data/adb/modules_update"

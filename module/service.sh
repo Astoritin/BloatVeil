@@ -17,7 +17,6 @@ TARGET_LIST_LW="$LAST_WORKED_DIR/targets_lw.txt"
 FLAG_BRICKED="$CONFIG_DIR/bricked"
 
 MODULE_PROP="$MODDIR/module.prop"
-MOD_NAME="$(get_key_value "name" "$MODULE_PROP")"
 
 config_loader() {
 

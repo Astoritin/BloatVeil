@@ -134,11 +134,21 @@ remove_config_var() {
     sed -i "/^${key}=/d" "$conf"
 }
 
-checkout_metamodule() {
-    modules_dir="/data/adb/modules"
-    modules_update_dir="/data/adb/modules_update"
+checkout_modules_dir() {
 
-    for moddir in "$modules_dir" "$modules_update_dir"; do
+    current_modules_dir="/data/adb/modules"
+    update_modules_dir="/data/adb/modules_update"
+
+    if magisk -v | grep -q "lite"; then
+        current_modules_dir="/data/adb/lite_modules"
+        update_modules_dir="/data/adb/lite_modules_update"
+    fi
+
+}
+
+checkout_meta_module() {
+
+    for moddir in "$current_modules_dir" "$update_modules_dir"; do
         [ -d "$moddir" ] || continue
         for current_module_dir in "$moddir"/*; do
             current_module_prop="$current_module_dir/module.prop"
@@ -155,6 +165,7 @@ checkout_metamodule() {
         done
     done
     return 1
+
 }
 
 file_compare() {

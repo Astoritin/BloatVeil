@@ -60,7 +60,8 @@ metamodule_required() {
         ui_print "- Current KernelSU requires"
         ui_print "- metamodule for mounting"
         ui_print "- Scanning metamodule"
-        if ! checkout_metamodule; then
+        checkout_modules_dir
+        if ! checkout_meta_module; then
             ui_print "- You haven't installed any metamodule!"
             ui_print "- Only Mount Bind mode is available on KernelSU"
         else

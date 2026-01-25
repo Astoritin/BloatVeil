@@ -48,7 +48,8 @@ preparation() {
 
     if [ "$DETECT_KSU" = true ] || [ "$DETECT_APATCH" = true ]; then
         MN_SUPPORT=true
-        if [ "$KSU_KERNEL_VER_CODE" -ge "$MIN_VER_KERNELSU_SUPPORT_MOUNTING" ] && checkout_metamodule; then
+        checkout_modules_dir
+        if [ "$KSU_KERNEL_VER_CODE" -ge "$MIN_VER_KERNELSU_SUPPORT_MOUNTING" ] && checkout_meta_module; then
             MR_SUPPORT=true
             ME_SUPPORT=true
         else

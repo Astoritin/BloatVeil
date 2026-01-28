@@ -21,8 +21,6 @@ CLEANUP_PATH="${POST_D}/${CLEANUP_SH}"
 MIN_VER_KERNELSU_TRY_METAMODULE=22098
 MIN_VER_APATCH_TRY_METAMODULE=11170
 
-UPDATE_ONLINE=false
-
 extract() {
     file="$1"
     dir="${2:-$MODPATH}"
@@ -59,14 +57,14 @@ extract() {
 
 metamodule_required() {
 
-    if [ "$KSU_KERNEL_VER_CODE" -ge "$MIN_VER_KERNELSU_TRY_METAMODULE" ] || [ "$APATCH_VER_CODE" -ge "$MIN_VER_APATCH_TRY_METAMODULE" ]; then
-        ui_print "- Current Root solution requires"
-        ui_print "- metamodule for mounting"
+    if try_metamodule "$1" "$2" "$3"; then
+        ui_print "- Current $4 requires metamodule"
+        ui_print "- for mounting system files"
         ui_print "- Scanning metamodule"
         checkout_modules_dir
-        if ! checkout_meta_module; then
-            ui_print "- You haven't installed any metamodule!"
-            ui_print "- Only Mount Bind mode is available"
+        if ! scan_metamodule; then
+            ui_print "- You haven't installed metamodule yet!"
+            ui_print "- Only Mount Bind mode is available for $MOD_NAME"
         else
             ui_print "- Current metamodule: ${current_module_name} ${current_module_ver_name} (${current_module_ver_code})"
         fi
@@ -74,7 +72,7 @@ metamodule_required() {
 
 }
 
-
+extract "customize.sh" "$TMPDIR" >/dev/null 2>&1
 extract "wanderer.sh" "$TMPDIR" >/dev/null 2>&1
 . "$TMPDIR/wanderer.sh"
 
@@ -82,17 +80,10 @@ ui_print "- Setting up $MOD_NAME"
 ui_print "- Version: $MOD_VER"
 install_env_check
 init_dir "$LAST_WORKED_DIR" "$POST_D"
-unzip -o "$ZIPFILE" "META-INF/com/google/android/*" -d "$TMPDIR" >/dev/null 2>&1
-[ -f "$TMPDIR/META-INF/com/google/android/update-binary.sha256" ] && extract "META-INF/com/google/android/update-binary" "$TMPDIR" >/dev/null 2>&1 && UPDATE_ONLINE=false
-[ -f "$TMPDIR/META-INF/com/google/android/updater-script.sha256" ] && extract "META-INF/com/google/android/updater-script" "$TMPDIR" >/dev/null 2>&1 && UPDATE_ONLINE=false
-if [ "$UPDATE_ONLINE" = true ]; then
-    ui_print "- Updating from $ROOT_SOL app"
-else
-    ui_print "- Installing from $ROOT_SOL app"
-fi
+ui_print "- Installing from $ROOT_SOL app"
 ui_print "- Root: $ROOT_SOL_DETAIL"
-[ "$DETECT_KSU" = true ] && metamodule_required
-extract "customize.sh" "$TMPDIR"
+[ "$DETECT_KSU" = true ] && metamodule_required "$DETECT_KSU" "$KSU_KERNEL_VER_CODE" "$MIN_VER_KERNELSU_TRY_METAMODULE" "KernelSU"
+[ "$DETECT_APATCH" = true ] && metamodule_required "$DETECT_APATCH" "$APATCH_VER_CODE" "$MIN_VER_APATCH_TRY_METAMODULE" "APatch"
 extract "module.prop"
 extract "wanderer.sh"
 extract "post-fs-data.sh"

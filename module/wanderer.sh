@@ -144,7 +144,7 @@ checkout_modules_dir() {
 
 }
 
-checkout_meta_module() {
+scan_metamodule() {
 
     for moddir in "$current_modules_dir" "$update_modules_dir"; do
         [ -d "$moddir" ] || continue
@@ -165,6 +165,8 @@ checkout_meta_module() {
     return 1
 
 }
+
+try_metamodule() { [ "$1" = true ] && [ "$2" -ge "$3" ]; }
 
 file_compare() {
     local file_a="$1"

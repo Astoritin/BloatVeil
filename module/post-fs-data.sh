@@ -50,10 +50,10 @@ preparation() {
     if [ "$DETECT_KSU" = true ] || [ "$DETECT_APATCH" = true ]; then
         MN_SUPPORT=true
         checkout_modules_dir
-        if [ "$KSU_KERNEL_VER_CODE" -ge "$MIN_VER_KERNELSU_TRY_METAMODULE" ] && checkout_meta_module; then
+        if [ "$KSU_KERNEL_VER_CODE" -ge "$MIN_VER_KERNELSU_TRY_METAMODULE" ] && scan_metamodule; then
             MR_SUPPORT=true
             ME_SUPPORT=true
-        elif [ "$APATCH_VER_CODE" -ge "$MIN_VER_APATCH_TRY_METAMODULE" ] && checkout_meta_module; then
+        elif [ "$APATCH_VER_CODE" -ge "$MIN_VER_APATCH_TRY_METAMODULE" ] && scan_metamodule; then
             MR_SUPPORT=true
             ME_SUPPORT=true
         else
@@ -376,9 +376,9 @@ module_status_update() {
     fi
 
     if [ "$no_effect" = "false" ]; then
-        DESCRIPTION="[${process_status} vanished, ✅${hide_mode_desc}, ✅${ROOT_SOL_DETAIL}] ${MOD_DESC}"
+        DESCRIPTION="[${process_status} vanished. ✅${hide_mode_desc}, ✅${ROOT_SOL_DETAIL}] ${MOD_DESC}"
     else
-        DESCRIPTION="[${process_status} vanished, ✅${ROOT_SOL_DETAIL}] ${MOD_DESC}"
+        DESCRIPTION="[${process_status} vanished. ✅${ROOT_SOL_DETAIL}] ${MOD_DESC}"
     fi
 
     if [ -f "$MODULE_PROP" ]; then

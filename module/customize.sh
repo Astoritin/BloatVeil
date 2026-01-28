@@ -23,13 +23,12 @@ MIN_VER_KERNELSU_SUPPORT_MOUNTING=22098
 UPDATE_ONLINE=false
 
 extract() {
-    file=$1
-    dir=$2
-    junk=${3:-false}
+    file="$1"
+    dir="${2:-$MODPATH}"
+    junk="${3:-false}"
     opts="-o"
 
-    [ -z "$dir" ] && dir="$MODPATH"
-    file_path="$dir/$file"
+    file_path="$dir/$file"  
     hash_path="$TMPDIR/$file.sha256"
 
     if [ "$junk" = true ]; then
@@ -38,11 +37,14 @@ extract() {
         hash_path="$TMPDIR/$(basename "$file").sha256"
     fi
 
+    file_dir="$(dirname $file_path)"
+    mkdir -p "$file_dir" || abort "! Failed to create dir $dir!"
+
     unzip $opts "$ZIPFILE" "$file" -d "$dir" >&2
-    [ -f "$file_path" ] || abort "! $file does not exist"
+    [ -f "$file_path" ] || abort "! $file does NOT exist"
 
     unzip $opts "$ZIPFILE" "${file}.sha256" -d "$TMPDIR" >&2
-    [ -f "$hash_path" ] || abort "! ${file}.sha256 does not exist"
+    [ -f "$hash_path" ] || abort "! ${file}.sha256 does NOT exist"
 
     expected_hash="$(cat "$hash_path")"
     calculated_hash="$(sha256sum "$file_path" | cut -d ' ' -f1)"

@@ -1,8 +1,6 @@
 is_magisk() {
 
-    if ! command -v magisk >/dev/null 2>&1; then
-        return 1
-    fi
+    command -v magisk >/dev/null 2>&1 || return 1
 
     MAGISK_V_VER_NAME="$(magisk -v)"
     MAGISK_V_VER_CODE="$(magisk -V)"

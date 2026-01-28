@@ -18,7 +18,8 @@ POST_D="/data/adb/post-fs-data.d/"
 CLEANUP_SH="bloat_veil_unbrick.sh"
 CLEANUP_PATH="${POST_D}/${CLEANUP_SH}"
 
-MIN_VER_KERNELSU_SUPPORT_MOUNTING=22098
+MIN_VER_KERNELSU_TRY_METAMODULE=22098
+MIN_VER_APATCH_TRY_METAMODULE=11170
 
 UPDATE_ONLINE=false
 
@@ -58,14 +59,14 @@ extract() {
 
 metamodule_required() {
 
-    if [ "$KSU_KERNEL_VER_CODE" -ge "$MIN_VER_KERNELSU_SUPPORT_MOUNTING" ]; then
-        ui_print "- Current KernelSU requires"
+    if [ "$KSU_KERNEL_VER_CODE" -ge "$MIN_VER_KERNELSU_TRY_METAMODULE" ] || [ "$APATCH_VER_CODE" -ge "$MIN_VER_APATCH_TRY_METAMODULE" ]; then
+        ui_print "- Current Root solution requires"
         ui_print "- metamodule for mounting"
         ui_print "- Scanning metamodule"
         checkout_modules_dir
         if ! checkout_meta_module; then
             ui_print "- You haven't installed any metamodule!"
-            ui_print "- Only Mount Bind mode is available on KernelSU"
+            ui_print "- Only Mount Bind mode is available"
         else
             ui_print "- Current metamodule: ${current_module_name} ${current_module_ver_name} (${current_module_ver_code})"
         fi

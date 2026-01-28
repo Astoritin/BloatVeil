@@ -21,7 +21,8 @@ MODULE_PROP="$MODDIR/module.prop"
 MN_SUPPORT=false
 MR_SUPPORT=false
 MIN_VER_MAGISK_SUPPORT_MAKENODE=28102
-MIN_VER_KERNELSU_SUPPORT_MOUNTING=22098
+MIN_VER_KERNELSU_TRY_METAMODULE=22098
+MIN_VER_APATCH_TRY_METAMODULE=11170
 
 MIRROR_DIR="$MODDIR/mirror"
 MIRROR_SYSTEM_DIR="$MODDIR/system"
@@ -49,7 +50,10 @@ preparation() {
     if [ "$DETECT_KSU" = true ] || [ "$DETECT_APATCH" = true ]; then
         MN_SUPPORT=true
         checkout_modules_dir
-        if [ "$KSU_KERNEL_VER_CODE" -ge "$MIN_VER_KERNELSU_SUPPORT_MOUNTING" ] && checkout_meta_module; then
+        if [ "$KSU_KERNEL_VER_CODE" -ge "$MIN_VER_KERNELSU_TRY_METAMODULE" ] && checkout_meta_module; then
+            MR_SUPPORT=true
+            ME_SUPPORT=true
+        elif [ "$APATCH_VER_CODE" -ge "$MIN_VER_APATCH_TRY_METAMODULE" ] && checkout_meta_module; then
             MR_SUPPORT=true
             ME_SUPPORT=true
         else

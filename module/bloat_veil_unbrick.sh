@@ -1,12 +1,5 @@
 #!/system/bin/sh
 
-MODS_DIR="/data/adb/modules"
-[ -n "$(magisk -v | grep lite)" ] && MODS_DIR="/data/adb/lite_modules"
-
-MOD_ID="bloat_veil"
-MOD_DESC="A bloatware vanishing act on system."
-MOD_DIR="$MODS_DIR/$MOD_ID"
-
 CONFIG_DIR="/data/adb/bloat_veil"
 
 CONFIG_FILE="$CONFIG_DIR/settings.conf"
@@ -17,8 +10,15 @@ TARGET_LIST="$CONFIG_DIR/targets.txt"
 TARGET_LIST_BVA="$CONFIG_DIR/targets_bva.txt"
 TARGET_LIST_LW="$LAST_WORKED_DIR/targets_lw.txt"
 
-MIRROR_DIR="$MOD_DIR/mirror"
-MIRROR_SYSTEM_DIR="$MOD_DIR/system"
+CURRRNT_MODULES_DIR="/data/adb/modules"
+[ -n "$(magisk -v | grep lite)" ] >/dev/null 2>&1 && CURRRNT_MODULES_DIR="/data/adb/lite_modules"
+
+MODID="bloat_veil"
+MODDESC="A bloatware vanishing act on system."
+MODDIR="$CURRRNT_MODULES_DIR/$MODID"
+
+MIRROR_DIR="$MODDIR/mirror"
+MIRROR_SYSTEM_DIR="$MODDIR/system"
 
 get_key_value() {
     local key=$1
@@ -87,7 +87,7 @@ unbrick() {
 
     [ "$brick_rescue" = false ] && return
     [ ! -f "$FLAG_BRICKED" ] && return
-    [ "$brick_and_disable" = "true" ] && [ ! -f "$MOD_DIR/disable" ] && return
+    [ "$brick_and_disable" = "true" ] && [ ! -f "$MODDIR/disable" ] && return
     [ "$last_worked_target_list" != "true" ] && return
     [ ! -f "$TARGET_LIST_LW" ] && return
 
@@ -96,16 +96,15 @@ unbrick() {
         return
     fi
     cp "$TARGET_LIST_LW" "$TARGET_LIST"
-    [ "$brick_and_disable" = "true" ] && rm -f "$MOD_DIR/disable"
+    [ "$brick_and_disable" = "true" ] && rm -f "$MODDIR/disable"
     rm -f "$FLAG_BRICKED"
 
 }
 
 config_loader
 unbrick
-update_key_value "description" "$MOD_DIR/module.prop" "$MOD_DESC"
+update_key_value "description" "$MODDIR/module.prop" "$MODDESC"
 
 [ -d "$MIRROR_DIR" ] && rm -rf "$MIRROR_DIR"
 [ -d "$MIRROR_SYSTEM_DIR" ] && rm -rf "$MIRROR_SYSTEM_DIR"
 rm -f "$TARGET_LIST_BVA"
-rm -f "/data/adb/post-fs-data.d/bloat_veil_unbrick.sh"

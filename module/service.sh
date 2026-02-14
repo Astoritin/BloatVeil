@@ -30,21 +30,6 @@ config_loader() {
 
 }
 
-module_description_cleanup_schedule() {
-
-    POST_D="/data/adb/post-fs-data.d/"
-    CLEANUP_SH="bloat_veil_unbrick.sh"
-    CLEANUP_PATH="${POST_D}/${CLEANUP_SH}"
-
-    if [ ! -f "$CLEANUP_PATH" ]; then
-        mkdir -p "$POST_D"
-        cat "$MODDIR/${CLEANUP_SH}" > "$CLEANUP_PATH"
-        chmod +x "$CLEANUP_PATH"
-    fi
-
-}
-
-module_description_cleanup_schedule
 config_loader
 
 if [ "$brick_rescue" = true ] && [ -f "$FLAG_BRICKED" ]; then

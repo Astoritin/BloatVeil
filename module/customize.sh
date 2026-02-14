@@ -14,10 +14,6 @@ MOD_NAME="$(grep_prop name "$MOD_PROP")"
 MOD_VER="$(grep_prop version "$MOD_PROP") ($(grep_prop versionCode "$MOD_PROP"))"
 MOD_DESC="A bloatware vanishing act on system."
 
-POST_D="/data/adb/post-fs-data.d/"
-CLEANUP_SH="bloat_veil_unbrick.sh"
-CLEANUP_PATH="${POST_D}/${CLEANUP_SH}"
-
 MIN_VER_KERNELSU_TRY_METAMODULE=22098
 MIN_VER_APATCH_TRY_METAMODULE=11170
 
@@ -79,7 +75,7 @@ extract "wanderer.sh" "$TMPDIR" >/dev/null 2>&1
 ui_print "- Setting up $MOD_NAME"
 ui_print "- Version: $MOD_VER"
 install_env_check
-init_dir "$LAST_WORKED_DIR" "$POST_D"
+init_dir "$LAST_WORKED_DIR" "/data/adb/post-fs-data.d"
 ui_print "- Installing from $ROOT_SOL app"
 ui_print "- Root: $ROOT_SOL_DETAIL"
 [ "$DETECT_KSU" = true ] && metamodule_required "$DETECT_KSU" "$KSU_KERNEL_VER_CODE" "$MIN_VER_KERNELSU_TRY_METAMODULE" "KernelSU"
@@ -89,8 +85,8 @@ extract "wanderer.sh"
 extract "post-fs-data.sh"
 extract "service.sh"
 extract "$CLEANUP_SH"
-cat "$MODPATH/$CLEANUP_SH" > "$CLEANUP_PATH"
-chmod +x "$CLEANUP_PATH"
+cat "$MODPATH/$CLEANUP_SH" > "/data/adb/post-fs-data.d/bloat_veil_unbrick.sh"
+chmod +x "/data/adb/post-fs-data.d/bloat_veil_unbrick.sh"
 extract "action.sh"
 extract "uninstall.sh"
 extract "targets.txt" "$TMPDIR"

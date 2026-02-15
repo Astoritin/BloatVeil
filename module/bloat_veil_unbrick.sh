@@ -85,25 +85,27 @@ config_loader() {
 
 unbrick() {
 
-    [ "$brick_rescue" = false ] && return
-    [ ! -f "$FLAG_BRICKED" ] && return
-    [ "$brick_and_disable" = "true" ] && [ ! -f "$MODDIR/disable" ] && return
-    [ "$last_worked_target_list" != "true" ] && return
-    [ ! -f "$TARGET_LIST_LW" ] && return
+    [ "$brick_rescue" = true ] || return
+    [ -f "$FLAG_BRICKED" ] || return
 
-    if file_compare "$TARGET_LIST_LW" "$TARGET_LIST"; then
-        rm -f "$TARGET_LIST_LW"
-        return
+    [ "$brick_and_disable" = true ] && [ ! -f "$MODDIR/disable" ] && rm -f "$FLAG_BRICKED"
+
+    if [ "$last_worked_target_list" = true ]; then
+        [ -f "$TARGET_LIST_LW" ] || return
+        if file_compare "$TARGET_LIST_LW" "$TARGET_LIST"; then
+            rm -f "$TARGET_LIST_LW"
+            return
+        fi
+        cp "$TARGET_LIST_LW" "$TARGET_LIST"
+        rm -f "$MODDIR/disable"
+        rm -f "$FLAG_BRICKED"
     fi
-    cp "$TARGET_LIST_LW" "$TARGET_LIST"
-    [ "$brick_and_disable" = "true" ] && rm -f "$MODDIR/disable"
-    rm -f "$FLAG_BRICKED"
 
 }
 
 config_loader
-unbrick
 update_key_value "description" "$MODDIR/module.prop" "$MODDESC"
+unbrick
 
 [ -d "$MIRROR_DIR" ] && rm -rf "$MIRROR_DIR"
 [ -d "$MIRROR_SYSTEM_DIR" ] && rm -rf "$MIRROR_SYSTEM_DIR"

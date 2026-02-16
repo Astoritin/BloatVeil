@@ -3,8 +3,6 @@ MODDIR=${0%/*}
 
 . "$MODDIR/wanderer.sh"
 
-MOD_DESC="A bloatware vanishing act on system."
-
 CONFIG_DIR="/data/adb/bloat_veil"
 
 CONFIG_FILE="$CONFIG_DIR/settings.conf"
@@ -15,8 +13,6 @@ LAST_WORKED_DIR="$CONFIG_DIR/last_worked"
 TARGET_LIST_LW="$LAST_WORKED_DIR/targets_lw.txt"
 
 FLAG_BRICKED="$CONFIG_DIR/bricked"
-
-MODULE_PROP="$MODDIR/module.prop"
 
 config_loader() {
 
@@ -45,8 +41,6 @@ while [ "$(getprop sys.boot_completed)" != "1" ]; do
         if [ "$brick_and_disable" = true ]; then
             touch "$MODDIR/disable"
         fi
-        DESCRIPTION="[❌Triggered brick rescue!] $MOD_DESC"
-        update_key_value "description" "$MODULE_PROP" "$DESCRIPTION"
 		sync
         setprop sys.powerctl reboot
         sleep 5

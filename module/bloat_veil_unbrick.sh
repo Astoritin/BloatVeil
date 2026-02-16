@@ -100,7 +100,9 @@ unbrick() {
         rm -f "$MODDIR/disable"
         rm -f "$FLAG_BRICKED"
     fi
-
+    MODDESC="[❌Triggered brick rescue!] $MODDESC"
+    update_key_value "description" "$MODDIR/module.prop" "$MODDESC"
+    
 }
 
 config_loader

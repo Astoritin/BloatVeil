@@ -29,8 +29,8 @@ MIRROR_SYSTEM_DIR="$MODDIR/system"
 
 unbrick() {
     
-    [ "$brick_rescue" != true ] && return 1
-    [ -f "$FLAG_BRICKED" ] && exit 1
+    [ "$brick_rescue" = true ] || return 1
+    [ ! -f "$FLAG_BRICKED" ] || exit 1
 
 }
 

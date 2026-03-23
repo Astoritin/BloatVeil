@@ -78,8 +78,7 @@ preparation() {
     [ "$hide_mode" = "MB" ] && mkdir -p "$MIRROR_DIR"
 
     if [ ! -f "$TARGET_LIST" ]; then
-        DESCRIPTION="[❌Target list does not exist!] ${MOD_DESC}"
-        update_key_value "description" "$MODULE_PROP" "$DESCRIPTION"
+        update_description "[❌Target list does not exist!] ${MOD_DESC}"
         exit 1
     fi
 }
@@ -326,63 +325,44 @@ bloat_veil() {
 module_status_update() {
     mb_call=false
     
-    apps_not_found_count=$((total_apps_count - vanished_apps_count - duplicated_apps_count))
-
     hide_mode_desc=""
-    if [ $mb_count -gt 0 ] && [ $me_count -gt 0 ]; then
-        hide_mode_desc="Mount Bind(${mb_count}), Mount Empty(${me_count})"
-        mb_call=true
-    elif [ $mb_count -gt 0 ] && [ $mn_count -gt 0 ]; then
-        hide_mode_desc="Mount Bind(${mb_count}), Make Node(${mn_count})"
-        mb_call=true
-    elif [ $mr_count -gt 0 ] && [ $me_count -gt 0 ]; then
-        hide_mode_desc="Magisk Replace(${mr_count}), Mount Empty File(${me_count})"   
-    elif [ $mr_count -gt 0 ] && [ $mn_count -gt 0 ]; then
-        hide_mode_desc="Magisk Replace(${mr_count}), Make Node(${mn_count})" 
-    elif [ $mb_count -gt 0 ]; then
-        hide_mode_desc="Mount Bind"
-        mb_call=true
-    elif [ $mr_count -gt 0 ]; then
-        hide_mode_desc="Magisk Replace"
-    elif [ $me_count -gt 0 ]; then
-        hide_mode_desc="Mount Empty File"
-    elif [ $mn_count -gt 0 ]; then
-        hide_mode_desc="Make Node"
-    else
-        hide_mode_desc="N/A"
-    fi
+    [ $mb_count -gt 0 ] && hide_mode_desc="${hide_mode_desc}Mount Bind(${mb_count})," && mb_call=true
+    [ $mr_count -gt 0 ] && hide_mode_desc="${hide_mode_desc}Magisk Replace(${mr_count}),"
+    [ $me_count -gt 0 ] && hide_mode_desc="${hide_mode_desc}Mount Empty(${me_count}),"
+    [ $mn_count -gt 0 ] && hide_mode_desc="${hide_mode_desc}Make Node(${mn_count}),"
+    hide_mode_desc="${hide_mode_desc%,}"
+    [ -z "$hide_mode_desc" ] && hide_mode_desc="N/A"
 
     no_effect=false
     process_status=""
 
-    if [ $vanished_apps_count -gt 0 ]; then
-        if [ $apps_not_found_count -gt 0 ]; then
-            process_status="✅${vanished_apps_count}/${total_apps_count} App(s)"
+    success_count=$((vanished_apps_count + duplicated_apps_count))
+    failed_count=$((total_apps_count - success_count))
+
+    if [ $success_count -gt 0 ]; then
+        if [ $failed_count -gt 0 ]; then
+            process_status="✅Vanished: ${success_count}/${total_apps_count}, failed: ${failed_count}"
         else
-            process_status="✅${vanished_apps_count} App(s)"
+            process_status="✅Vanished: ${success_count}"
         fi
-    elif [ $duplicated_apps_count -gt 0 ]; then
-        if [ $apps_not_found_count -gt 0 ]; then
-            process_status="✅${duplicated_apps_count}/${total_apps_count} App(s)"
-        else
-            process_status="✅${duplicated_apps_count} App(s)"
-        fi
-    elif [ $total_apps_count -gt 0 ]; then
-        process_status="❎0/${total_apps_count} App(s)"
-        no_effect=true
     else
-        process_status="❌0/0 App(s)"
+        if [ $total_apps_count -eq 0 ]; then
+            process_status="❌Vanished: 0"
+        else
+            process_status="❌Vanished: 0/${total_apps_count}"
+            [ $failed_count -gt 0 ] && process_status="${process_status}, all failed"
+        fi
         no_effect=true
     fi
 
     if [ "$no_effect" = "false" ]; then
-        DESCRIPTION="[${process_status} vanished. ✅${hide_mode_desc}, ✅${ROOT_SOL_DETAIL}] ${MOD_DESC}"
+        DESCRIPTION="[${process_status}, ✅${hide_mode_desc}, ✅${ROOT_SOL_DETAIL}] ${MOD_DESC}"
     else
-        DESCRIPTION="[${process_status} vanished. ✅${ROOT_SOL_DETAIL}] ${MOD_DESC}"
+        DESCRIPTION="[${process_status}, ✅${ROOT_SOL_DETAIL}] ${MOD_DESC}"
     fi
 
     if [ -f "$MODULE_PROP" ]; then
-        update_key_value "description" "$MODULE_PROP" "$DESCRIPTION"
+        update_description "$DESCRIPTION"
         update_key_value "mb_call" "$CONFIG_FILE" "$mb_call"
     fi
 }

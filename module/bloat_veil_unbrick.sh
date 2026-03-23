@@ -44,22 +44,7 @@ get_key_value() {
     [ $? -eq 0 ] || return 1
 }
 
-update_key_value() {
-    local key="$1"
-    local conf="$2"
-    local expected="$3"
-    local append="${4:-false}"
-
-    [ -z "$key" ] || [ -z "$expected" ] || [ -z "$conf" ] || [ ! -f "$conf" ] && return 1
-
-    if grep -q "^${key}=" "$conf"; then
-        [ "$append" = true ] && return 0
-        sed -i "/^${key}=/c\\${key}=${expected}" "$conf"
-    else
-        [ -n "$(tail -c1 "$conf")" ] && echo >> "$conf"
-        printf '%s=%s\n' "$key" "$expected" >> "$conf"
-    fi
-}
+update_description() { [ -n "$1" ] || return 1; sed -i "s/^description=.*/description=$1/" "$MODDIR/module.prop"; }
 
 file_compare() {
     local file_a="$1"
@@ -100,13 +85,11 @@ unbrick() {
         rm -f "$MODDIR/disable"
         rm -f "$FLAG_BRICKED"
     fi
-    MODDESC="[❌Triggered brick rescue!] $MODDESC"
-    update_key_value "description" "$MODDIR/module.prop" "$MODDESC"
-    
+    update_description "[❌Triggered brick rescue!] $MODDESC"
 }
 
 config_loader
-update_key_value "description" "$MODDIR/module.prop" "$MODDESC"
+update_description "$MODDESC"
 unbrick
 
 [ -d "$MIRROR_DIR" ] && rm -rf "$MIRROR_DIR"

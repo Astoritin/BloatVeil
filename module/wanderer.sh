@@ -124,6 +124,8 @@ update_key_value() {
     fi
 }
 
+update_description() { [ -n "$1" ] || return 1; sed -i "s/^description=.*/description=$1/" "$MODDIR/module.prop"; }
+
 remove_config_var() {
     local key="$1"
     local conf="$2"

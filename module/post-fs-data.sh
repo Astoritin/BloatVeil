@@ -326,10 +326,10 @@ module_status_update() {
     mb_call=false
     
     hide_mode_desc=""
-    [ $mb_count -gt 0 ] && hide_mode_desc="${hide_mode_desc}Mount Bind(${mb_count})," && mb_call=true
-    [ $mr_count -gt 0 ] && hide_mode_desc="${hide_mode_desc}Magisk Replace(${mr_count}),"
-    [ $me_count -gt 0 ] && hide_mode_desc="${hide_mode_desc}Mount Empty(${me_count}),"
-    [ $mn_count -gt 0 ] && hide_mode_desc="${hide_mode_desc}Make Node(${mn_count}),"
+    [ $mb_count -gt 0 ] && hide_mode_desc="${hide_mode_desc}Mount Bind (${mb_count})," && mb_call=true
+    [ $mr_count -gt 0 ] && hide_mode_desc="${hide_mode_desc}Magisk Replace (${mr_count}),"
+    [ $me_count -gt 0 ] && hide_mode_desc="${hide_mode_desc}Mount Empty (${me_count}),"
+    [ $mn_count -gt 0 ] && hide_mode_desc="${hide_mode_desc}Make Node (${mn_count}),"
     hide_mode_desc="${hide_mode_desc%,}"
     [ -z "$hide_mode_desc" ] && hide_mode_desc="N/A"
 
@@ -337,28 +337,21 @@ module_status_update() {
     process_status=""
 
     success_count=$((vanished_apps_count + duplicated_apps_count))
-    failed_count=$((total_apps_count - success_count))
-
     if [ $success_count -gt 0 ]; then
         if [ $failed_count -gt 0 ]; then
-            process_status="✅Vanished: ${success_count}/${total_apps_count}, failed: ${failed_count}"
+            process_status="✅Vanished: ${success_count}/${total_apps_count}"
         else
             process_status="✅Vanished: ${success_count}"
         fi
     else
-        if [ $total_apps_count -eq 0 ]; then
-            process_status="❌Vanished: 0"
-        else
-            process_status="❌Vanished: 0/${total_apps_count}"
-            [ $failed_count -gt 0 ] && process_status="${process_status}, all failed"
-        fi
+        process_status="❌Vanished: 0/${total_apps_count}"
         no_effect=true
     fi
 
     if [ "$no_effect" = "false" ]; then
-        DESCRIPTION="[${process_status}, ✅${hide_mode_desc}, ✅${ROOT_SOL_DETAIL}] ${MOD_DESC}"
+        DESCRIPTION="[${process_status}, ✅Mode: ${hide_mode_desc}, ✅Root: ${ROOT_SOL_DETAIL}] ${MOD_DESC}"
     else
-        DESCRIPTION="[${process_status}, ✅${ROOT_SOL_DETAIL}] ${MOD_DESC}"
+        DESCRIPTION="[${process_status}, ✅Root: ${ROOT_SOL_DETAIL}] ${MOD_DESC}"
     fi
 
     if [ -f "$MODULE_PROP" ]; then

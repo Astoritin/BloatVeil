@@ -339,19 +339,19 @@ module_status_update() {
     success_count=$((vanished_apps_count + duplicated_apps_count))
     if [ $success_count -gt 0 ]; then
         if [ $failed_count -gt 0 ]; then
-            process_status="✅Vanished: ${success_count}/${total_apps_count}"
+            process_status="✅${success_count}/${total_apps_count} vanished"
         else
-            process_status="✅Vanished: ${success_count}"
+            process_status="✅${success_count} vanished"
         fi
     else
-        process_status="❌Vanished: 0/${total_apps_count}"
+        process_status="❌0/${total_apps_count} vanished"
         no_effect=true
     fi
 
     if [ "$no_effect" = "false" ]; then
-        DESCRIPTION="[${process_status}, ✅Mode: ${hide_mode_desc}, ✅Root: ${ROOT_SOL_DETAIL}] ${MOD_DESC}"
+        DESCRIPTION="[${process_status}, ✅${hide_mode_desc}, ✅${ROOT_SOL_DETAIL}] ${MOD_DESC}"
     else
-        DESCRIPTION="[${process_status}, ✅Root: ${ROOT_SOL_DETAIL}] ${MOD_DESC}"
+        DESCRIPTION="[${process_status}, ✅${ROOT_SOL_DETAIL}] ${MOD_DESC}"
     fi
 
     if [ -f "$MODULE_PROP" ]; then
